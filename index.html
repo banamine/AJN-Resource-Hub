@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AJN Audio/Video Resource Links</title>
+    <meta name="keywords" content="Alex Jones Network Audio Video Resource Links">
+    <meta name="description" content="Alex Jones Network Live Streams and Resources">
+    <meta name="author" content="alexjones.media">
+    
+    <!-- Tailwind CSS for modern, responsive styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- HLS.js for rendering the m3u8 live video stream -->
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@1"></script>
+
+    <style>
+        /* Custom scrollbar for a sleek look */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1e293b; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #475569; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #64748b; 
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-200 font-sans antialiased">
+
+    <div class="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
+        
+        <header class="mb-10 text-center sm:text-left border-b border-slate-700 pb-6 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <div>
+                <h1 class="text-3xl font-extrabold text-white tracking-tight sm:text-4xl">AJN Resource Hub</h1>
+                <p class="mt-2 text-sm text-slate-400">Audio/Video Links, Live Streams, and Dynamic Segments</p>
+            </div>
+            <div class="text-right">
+                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-emerald-900 text-emerald-300">
+                    <span class="w-2 h-2 mr-2 bg-emerald-400 rounded-full animate-pulse"></span>
+                    System Live
+                </span>
+                <p id="last-updated-text" class="text-xs text-slate-500 mt-2">Loading latest data...</p>
+            </div>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
+            <!-- Main Content Area: Video & Dynamic Links -->
+            <div class="lg:col-span-2 space-y-8">
+                
+                <!-- Live Now Video Player -->
+                <section class="bg-slate-800 rounded-xl shadow-xl overflow-hidden border border-slate-700">
+                    <div class="p-4 bg-slate-900 border-b border-slate-700 flex justify-between items-center">
+                        <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                            <span class="text-red-500">🔴</span> Live Now
+                        </h2>
+                    </div>
+                    <div class="aspect-video bg-black relative">
+                        <video id="live-video" controls class="w-full h-full object-cover" poster="https://placehold.co/1280x720/1e293b/ffffff?text=Loading+Live+Stream..."></video>
+                    </div>
+                    <div class="p-4">
+                        <p class="text-sm text-slate-400 break-all">Source: <a href="https://rumble.com/live-hls-dvr/77ec70/playlist.m3u8?" class="text-blue-400 hover:text-blue-300 underline" target="_blank">https://rumble.com/live-hls-dvr/77ec70/playlist.m3u8?</a></p>
+                    </div>
+                </section>
+
+                <!-- Dynamic Hourly Segments -->
+                <section class="bg-slate-800 rounded-xl shadow-xl p-6 border border-slate-700">
+                    <div class="flex justify-between items-end mb-4">
+                        <h2 class="text-xl font-bold text-white">Latest Hourly Segments</h2>
+                        <span class="text-xs text-slate-400">Auto-updates on reload</span>
+                    </div>
+                    <p class="text-sm text-slate-400 mb-4">The links below are dynamically generated for the current date and the most recent hours.</p>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4" id="dynamic-segments-container">
+                        <!-- Populated by JavaScript -->
+                    </div>
+                </section>
+
+                <!-- Audio Feeds Section -->
+                <section class="bg-slate-800 rounded-xl shadow-xl p-6 border border-slate-700">
+                    <h2 class="text-xl font-bold text-white mb-6">Live Audio Feeds</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        
+                        <div class="bg-slate-900 p-4 rounded-lg border border-slate-700">
+                            <h3 class="text-md font-semibold text-white mb-3">Alex Jones Show Feed</h3>
+                            <audio controls preload="none" class="w-full">
+                                <source src="https://stream.alexjones.media/stream/1/" type="audio/aac">
+                                <source src="https://stream.alexjones.media/stream/2/" type="audio/mpeg">
+                                Your browser does not support the audio element.
+                            </audio>
+                        </div>
+
+                        <div class="bg-slate-900 p-4 rounded-lg border border-slate-700">
+                            <h3 class="text-md font-semibold text-white mb-3">War Room Show Feed</h3>
+                            <audio controls preload="none" class="w-full">
+                                <source src="https://stream.alexjones.media/stream/4/" type="audio/aac">
+                                <source src="https://stream.alexjones.media/stream/6/" type="audio/mpeg">
+                                Your browser does not support the audio element.
+                            </audio>
+                        </div>
+
+                        <div class="bg-slate-900 p-4 rounded-lg border border-slate-700 md:col-span-2">
+                            <h3 class="text-md font-semibold text-white mb-3">Network Stream (All Shows)</h3>
+                            <audio controls preload="none" class="w-full">
+                                <source src="https://stream.alexjones.media/stream/7/" type="audio/aac">
+                                <source src="https://stream.alexjones.media/stream/8/" type="audio/mpeg">
+                                Your browser does not support the audio element.
+                            </audio>
+                        </div>
+
+                    </div>
+                </section>
+
+            </div>
+
+            <!-- Sidebar Area: Indexes, Phones, Affiliates -->
+            <div class="space-y-8">
+                
+                <!-- Indexes -->
+                <section class="bg-slate-800 rounded-xl shadow-xl p-6 border border-slate-700">
+                    <h2 class="text-lg font-bold text-white mb-4 border-b border-slate-700 pb-2">HTML Indexes</h2>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="https://rss.alexjones.media/Alex.html" class="block p-2 rounded hover:bg-slate-700 text-blue-400 transition" target="_blank">The Alex Jones Show</a></li>
+                        <li><a href="https://rss.alexjones.media/WarRoom.html" class="block p-2 rounded hover:bg-slate-700 text-blue-400 transition" target="_blank">War Room with Harrison Smith</a></li>
+                        <li><a href="https://rss.alexjones.media/SundayLive.html" class="block p-2 rounded hover:bg-slate-700 text-blue-400 transition" target="_blank">Sunday Night Live</a></li>
+                        <li><a href="https://rss.alexjones.media/AJNHourlyVideo.html" class="block p-2 rounded hover:bg-slate-700 text-blue-400 transition" target="_blank">Network Feed Hourly Video</a></li>
+                        <li><a href="https://rss.alexjones.media/AJNHourlyAudio.html" class="block p-2 rounded hover:bg-slate-700 text-blue-400 transition" target="_blank">Network Feed Hourly Audio</a></li>
+                    </ul>
+
+                    <h2 class="text-lg font-bold text-white mt-6 mb-2 border-b border-slate-700 pb-2">Podcast XML Links</h2>
+                    <p class="text-xs text-slate-400 mb-3">(Copy & paste directly into your Podcast App)</p>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="https://rss.alexjones.media/Alex.xml" class="block p-2 rounded hover:bg-slate-700 text-blue-400 transition" target="_blank">Alex Jones Show</a></li>
+                        <li><a href="https://rss.alexjones.media/WarRoom.xml" class="block p-2 rounded hover:bg-slate-700 text-blue-400 transition" target="_blank">War Room with Harrison Smith</a></li>
+                        <li><a href="https://rss.alexjones.media/SundayLive.xml" class="block p-2 rounded hover:bg-slate-700 text-blue-400 transition" target="_blank">Sunday Night Live</a></li>
+                    </ul>
+                </section>
+
+                <!-- Listen-by-phone Numbers -->
+                <section class="bg-slate-800 rounded-xl shadow-xl p-6 border border-slate-700">
+                    <h2 class="text-lg font-bold text-white mb-2 border-b border-slate-700 pb-2">Listen-by-Phone</h2>
+                    <p class="text-xs text-slate-400 mb-4">(Long distance charges may apply)</p>
+                    <ul class="space-y-4">
+                        <li class="flex justify-between items-center">
+                            <span class="text-sm font-medium text-slate-300">Alex Jones Show</span>
+                            <a href="tel:+16054755800" class="text-sm font-bold text-blue-400 hover:text-blue-300">+1 (605) 475-5800</a>
+                        </li>
+                        <li class="flex justify-between items-center">
+                            <span class="text-sm font-medium text-slate-300">American Journal <span class="text-xs text-red-400 ml-1">(On Break)</span></span>
+                            <a href="tel:+16054753290" class="text-sm font-bold text-slate-500 pointer-events-none">+1 (605) 475-3290</a>
+                        </li>
+                        <li class="flex justify-between items-center">
+                            <span class="text-sm font-medium text-slate-300">War Room</span>
+                            <a href="tel:+16054753291" class="text-sm font-bold text-blue-400 hover:text-blue-300">+1 (605) 475-3291</a>
+                        </li>
+                        <li class="flex justify-between items-center">
+                            <span class="text-sm font-medium text-slate-300">Network Feed</span>
+                            <a href="tel:+16054753292" class="text-sm font-bold text-blue-400 hover:text-blue-300">+1 (605) 475-3292</a>
+                        </li>
+                    </ul>
+                </section>
+
+                <!-- Affiliate Resources -->
+                <section class="bg-slate-800 rounded-xl shadow-xl p-6 border border-slate-700">
+                    <h2 class="text-lg font-bold text-white mb-4 border-b border-slate-700 pb-2">Affiliate Resources</h2>
+                    <div class="flex flex-wrap gap-2">
+                        <a href="https://rss.alexjones.media/mp4-segs.html" class="inline-block bg-slate-700 hover:bg-slate-600 text-sm text-slate-200 px-3 py-2 rounded shadow transition" target="_blank">mp4 Segs</a>
+                        <a href="https://rss.alexjones.media/mp3-hourly.html" class="inline-block bg-slate-700 hover:bg-slate-600 text-sm text-slate-200 px-3 py-2 rounded shadow transition" target="_blank">mp3 Hourly</a>
+                        <a href="https://rss.alexjones.media/mp3-segs.html" class="inline-block bg-slate-700 hover:bg-slate-600 text-sm text-slate-200 px-3 py-2 rounded shadow transition" target="_blank">mp3 Segs</a>
+                        <a href="https://rss.alexjones.media/mp3-segs-legacy.html" class="inline-block bg-slate-700 hover:bg-slate-600 text-sm text-slate-200 px-3 py-2 rounded shadow transition" target="_blank">Legacy Segs</a>
+                        <a href="https://rss.alexjones.media/Programming-Clock.png" class="inline-block bg-blue-900/50 hover:bg-blue-800/50 text-sm text-blue-300 border border-blue-800 px-3 py-2 rounded shadow transition w-full text-center mt-2" target="_blank">Affiliate Clock</a>
+                    </div>
+                </section>
+                
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-12 border-t border-slate-800 pt-6 text-center">
+            <p class="text-sm text-slate-500">
+                <a href="https://alexjoneslive.com" class="hover:text-slate-300 transition" target="_blank">AlexJonesLive.com</a> | 
+                <a href="https://alexjones.media" class="hover:text-slate-300 transition" target="_blank">AlexJones.media</a>
+            </p>
+        </footer>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // --- 1. Setup HLS Video Player ---
+            const video = document.getElementById('live-video');
+            const videoSrc = 'https://rumble.com/live-hls-dvr/77ec70/playlist.m3u8?';
+
+            // Check if HLS is supported natively or via the HLS.js library
+            if (Hls.isSupported()) {
+                const hls = new Hls({
+                    debug: false,
+                    enableWorker: true
+                });
+                hls.loadSource(videoSrc);
+                hls.attachMedia(video);
+                hls.on(Hls.Events.MANIFEST_PARSED, function() {
+                    // Video is ready to play
+                });
+            }
+            // For Safari natively supporting HLS
+            else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+                video.src = videoSrc;
+            }
+
+
+            // --- 2. Generate Dynamic Links Based on Current Time ---
+            const generateDynamicLinks = () => {
+                const container = document.getElementById('dynamic-segments-container');
+                const lastUpdatedText = document.getElementById('last-updated-text');
+                const now = new Date();
+                
+                // Format update text
+                lastUpdatedText.innerText = `Links updated: ${now.toLocaleString()}`;
+
+                // Extract date info for URL strings
+                const year = now.getFullYear();
+                const month = String(now.getMonth() + 1).padStart(2, '0');
+                const day = String(now.getDate()).padStart(2, '0');
+                
+                // Generate links for the current hour and previous 3 hours
+                container.innerHTML = ''; // Clear container
+
+                for(let i = 0; i < 4; i++) {
+                    let calcHour = now.getHours() - i;
+                    
+                    // Handle rolling back past midnight
+                    let targetDay = day;
+                    let targetMonth = month;
+                    let targetYear = year;
+
+                    if (calcHour < 0) {
+                        calcHour += 24;
+                        // For simplicity in this demo, if it rolls back past midnight we won't compute
+                        // complex date math to step back a full day, but ideally you'd use a Date offset.
+                        // We will subtract 1 day directly via date object to be precise:
+                        let prevDate = new Date(now.getTime() - (24 * 60 * 60 * 1000));
+                        targetDay = String(prevDate.getDate()).padStart(2, '0');
+                        targetMonth = String(prevDate.getMonth() + 1).padStart(2, '0');
+                        targetYear = prevDate.getFullYear();
+                    }
+
+                    const hourFormatted = String(calcHour).padStart(2, '0') + "00";
+                    
+                    // Construct mock dynamic URLs structure (You can adjust this to exactly match the real server structure)
+                    const mp4Url = `https://rss.alexjones.media/segments/${targetYear}/${targetMonth}/${targetDay}/video_${hourFormatted}.mp4`;
+                    const mp3Url = `https://rss.alexjones.media/segments/${targetYear}/${targetMonth}/${targetDay}/audio_${hourFormatted}.mp3`;
+
+                    // Create HTML block for the hour
+                    const block = document.createElement('div');
+                    block.className = "bg-slate-900 border border-slate-700 p-3 rounded-lg flex flex-col gap-2";
+                    
+                    block.innerHTML = `
+                        <div class="text-slate-300 font-semibold text-sm border-b border-slate-700 pb-1 mb-1">
+                            ${targetYear}-${targetMonth}-${targetDay} @ ${hourFormatted}
+                        </div>
+                        <a href="${mp4Url}" target="_blank" class="text-xs flex items-center gap-2 text-blue-400 hover:text-blue-300 bg-slate-800 p-2 rounded">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M2 6a2 2 0 012-2h6a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6zM14.553 7.106A1 1 0 0014 8v4a1 1 0 00.553.894l2 1A1 1 0 0018 13V7a1 1 0 00-1.447-.894l-2 1z"></path></svg>
+                            MP4 Video
+                        </a>
+                        <a href="${mp3Url}" target="_blank" class="text-xs flex items-center gap-2 text-green-400 hover:text-green-300 bg-slate-800 p-2 rounded">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.415z" clip-rule="evenodd"></path></svg>
+                            MP3 Audio
+                        </a>
+                    `;
+                    container.appendChild(block);
+                }
+            };
+
+            // Run the generator immediately
+            generateDynamicLinks();
+
+        });
+    </script>
+</body>
+</html>

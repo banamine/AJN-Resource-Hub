@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AJN Audio/Video Resource Links</title>
+    <title>AJN Audio/Video Resource Hub</title>
     <meta name="keywords" content="Alex Jones Network Audio Video Resource Links">
     <meta name="description" content="Alex Jones Network Live Streams and Resources">
     <meta name="author" content="alexjones.media">
@@ -99,6 +99,19 @@
             padding: 0.5rem 1rem;
             text-align: center;
         }
+        .loading-spinner {
+            border: 2px solid #334155;
+            border-top: 2px solid #3b82f6;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 10px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body class="bg-slate-900 text-slate-200 font-sans antialiased">
@@ -120,7 +133,7 @@
         <header class="mb-10 text-center sm:text-left border-b border-slate-700 pb-6 flex flex-col sm:flex-row justify-between items-center gap-4">
             <div>
                 <h1 class="text-3xl font-extrabold text-white tracking-tight sm:text-4xl">AJN Resource Hub</h1>
-                <p class="mt-2 text-sm text-slate-400">Audio/Video Links, Live Streams, and Dynamic Segments</p>
+                <p class="mt-2 text-sm text-slate-400">Live Streams + Fresh Video Segments (fetched on load)</p>
             </div>
             <div class="text-right">
                 <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-emerald-900 text-emerald-300">
@@ -156,19 +169,22 @@
                     </div>
                 </section>
 
-                <!-- Dynamic Hourly Segments - NOW SCRAPING mp4-segs.html -->
+                <!-- Dynamic Hourly Segments - SCRAPING AJNHourlyVideo.html -->
                 <section class="bg-slate-800 rounded-xl shadow-xl p-6 border border-slate-700">
                     <div class="flex justify-between items-end mb-4">
                         <h2 class="text-xl font-bold text-white">Latest Hourly Segments</h2>
                         <span class="text-xs text-slate-400">Fresh on each page load</span>
                     </div>
                     <p class="text-sm text-slate-400 mb-4">
-                        Fetching from <a href="https://rss.alexjones.media/mp4-segs.html" target="_blank" rel="noopener noreferrer" class="text-blue-400 hover:text-blue-300 underline">MP4 Segments Feed</a> — 
+                        Fetching from <a href="https://rss.alexjones.media/AJNHourlyVideo.html" target="_blank" rel="noopener noreferrer" class="text-blue-400 hover:text-blue-300 underline">AJN Hourly Video Feed</a> — 
                         click <strong class="text-slate-300">▶ Play Video</strong> to open in pop-out player.
                     </p>
                     
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4" id="dynamic-segments-container">
-                        <div class="col-span-2 text-center py-8 text-slate-400">Loading latest 6 videos...</div>
+                    <div id="dynamic-segments-container" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="col-span-2 text-center py-8">
+                            <div class="loading-spinner"></div>
+                            <p class="text-slate-400">Fetching latest 6 videos...</p>
+                        </div>
                     </div>
                 </section>
 
@@ -272,7 +288,7 @@
     <script>
     document.addEventListener('DOMContentLoaded', () => {
 
-        // HLS Live Player
+        // ========== 1. HLS LIVE PLAYER ==========
         const liveVideo = document.getElementById('live-video');
         const liveError = document.getElementById('live-error');
         const liveVideoSrc = 'https://rumble.com/live-hls-dvr/77ec70/playlist.m3u8?';
@@ -296,7 +312,7 @@
             showLiveError();
         }
 
-        // Video Modal
+        // ========== 2. VIDEO MODAL (FLYOUT PLAYER) ==========
         const modal = document.getElementById('video-modal');
         const modalVideo = document.getElementById('modal-video');
         const modalTitle = document.getElementById('modal-title-text');
@@ -343,60 +359,56 @@
         modal.addEventListener('click', (e) => { if (e.target === modal) closeVideoModal(); });
         document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && modal.classList.contains('open')) closeVideoModal(); });
 
-        // FETCH LATEST 6 .mp4 LINKS FROM mp4-segs.html
-        const SEGMENTS_URL = 'https://rss.alexjones.media/mp4-segs.html';
-        const BASE_URL = 'https://affils-files.alexjones.media/mp4-segs/';
+        // ========== 3. FETCH LATEST 6 .m4v LINKS FROM AJNHourlyVideo.html ==========
+        const SOURCE_URL = 'https://rss.alexjones.media/AJNHourlyVideo.html';
 
         async function fetchLatestSegments() {
             const container = document.getElementById('dynamic-segments-container');
             const lastUpdated = document.getElementById('last-updated-text');
             
             try {
-                const response = await fetch(SEGMENTS_URL);
+                const response = await fetch(SOURCE_URL, { cache: 'no-store' });
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
                 const html = await response.text();
                 
-                // Extract all .mp4 filenames from the directory listing
-                const mp4Files = [];
-                const lines = html.split('\n');
+                // Extract all .m4v links from the page (they are in <p><a href="...m4v">...</a></p> format)
+                const linkRegex = /<a\s+href="([^"]+\.m4v)"[^>]*>([^<]+)<\/a>/gi;
+                const links = [];
+                let match;
                 
-                for (const line of lines) {
-                    // Match pattern: filename like "Mon-Alex-Hr1-Seg1.mp4"
-                    const match = line.match(/([A-Za-z]+-[A-Za-z]+-Hr\d+-Seg\d+\.mp4)/);
-                    if (match) {
-                        const filename = match[1];
-                        // Build full URL
-                        const fullUrl = BASE_URL + filename;
-                        // Create readable title
-                        let title = filename.replace('.mp4', '').replace(/-/g, ' ');
-                        mp4Files.push({ url: fullUrl, title: title, filename: filename });
+                while ((match = linkRegex.exec(html)) !== null) {
+                    let url = match[1];
+                    let title = match[2].trim();
+                    
+                    // Ensure URL is absolute
+                    if (url.startsWith('/')) {
+                        url = 'https://rss.alexjones.media' + url;
+                    }
+                    
+                    if (url.endsWith('.m4v') && !links.find(l => l.url === url)) {
+                        links.push({ url, title });
                     }
                 }
                 
-                if (mp4Files.length === 0) throw new Error('No .mp4 files found');
-                
-                // Get unique files (remove duplicates) and take first 6
-                const unique = [];
-                const seen = new Set();
-                for (const file of mp4Files) {
-                    if (!seen.has(file.filename)) {
-                        seen.add(file.filename);
-                        unique.push(file);
-                    }
+                if (links.length === 0) {
+                    throw new Error('No .m4v links found in the page');
                 }
                 
-                const top6 = unique.slice(0, 6);
-                renderSegments(top6);
-                lastUpdated.innerText = `Loaded ${top6.length} segments · ${new Date().toLocaleString()}`;
+                // Take first 6 (most recent)
+                const topSix = links.slice(0, 6);
+                renderSegments(topSix);
+                lastUpdated.innerText = `Loaded ${topSix.length} segments · ${new Date().toLocaleString()}`;
                 
             } catch (err) {
                 console.error('Fetch error:', err);
-                container.innerHTML = `<div class="col-span-2 bg-red-950 border border-red-800 text-red-300 text-sm p-4 rounded-lg">
-                    ⚠️ Could not load segments — <a href="${SEGMENTS_URL}" target="_blank" class="underline">open feed directly</a>
+                container.innerHTML = `<div class="col-span-2 bg-red-950 border border-red-800 text-red-300 text-sm p-4 rounded-lg text-center">
+                    ⚠️ Could not load segments — <a href="${SOURCE_URL}" target="_blank" class="underline hover:text-red-200">open feed directly</a>
                 </div>`;
-                lastUpdated.innerText = 'Failed to load';
+                lastUpdated.innerText = 'Failed to load segments';
             }
         }
 
+        // Helper functions for badges
         function getBadgeClass(title) {
             const t = title.toUpperCase();
             if (t.includes('WARROOM')) return 'bg-purple-900 text-purple-300';
@@ -455,12 +467,13 @@
                         <svg class="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd"/>
                         </svg>
-                        ⬇ Download .mp4
+                        ⬇ Download .m4v
                     </a>
                 `;
                 container.appendChild(block);
             });
             
+            // Attach click handlers to play buttons
             document.querySelectorAll('.play-segment-btn').forEach(btn => {
                 btn.addEventListener('click', () => {
                     openVideoModal(btn.dataset.video, btn.dataset.label);
@@ -468,7 +481,7 @@
             });
         }
 
-        // Load ONCE on page load
+        // ========== 4. LOAD SEGMENTS ONCE ON PAGE LOAD ==========
         fetchLatestSegments();
 
     });

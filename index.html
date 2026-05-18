@@ -3,11 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AJN Audio/Video Resource Hub</title>
-    <meta name="keywords" content="Alex Jones Network Audio Video Resource Links">
-    <meta name="description" content="Alex Jones Network Live Streams and Resources">
-    <meta name="author" content="alexjones.media">
+    <title>AJN Resource Hub | Live Streams + Video Segments</title>
+    <meta name="description" content="Alex Jones Network Live Streams and fresh video segments">
     
+    <!-- Use a local CSS approach instead of CDN for production - but CDN is fine for testing -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/hls.js@1"></script>
 
@@ -28,22 +27,19 @@
             justify-content: center;
             padding: 1rem;
         }
-        #video-modal.open {
-            display: flex;
-        }
+        #video-modal.open { display: flex; }
         #video-modal .modal-box {
             background: #1e293b;
             border: 1px solid #334155;
             border-radius: 1rem;
             width: 100%;
             max-width: 900px;
-            box-shadow: 0 25px 60px rgba(0,0,0,0.7);
             overflow: hidden;
             animation: modalIn 0.2s ease;
         }
         @keyframes modalIn {
             from { opacity: 0; transform: scale(0.96) translateY(8px); }
-            to   { opacity: 1; transform: scale(1) translateY(0); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
         }
         #video-modal .modal-header {
             display: flex;
@@ -108,20 +104,17 @@
             animation: spin 0.8s linear infinite;
             margin: 0 auto 10px auto;
         }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body class="bg-slate-900 text-slate-200 font-sans antialiased">
 
     <!-- VIDEO FLYOUT MODAL -->
-    <div id="video-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title-text">
+    <div id="video-modal" role="dialog">
         <div class="modal-box">
             <div class="modal-header">
                 <span class="modal-title" id="modal-title-text">Loading…</span>
-                <button class="modal-close" id="modal-close-btn" aria-label="Close video">&times;</button>
+                <button class="modal-close" id="modal-close-btn">&times;</button>
             </div>
             <video id="modal-video" controls playsinline></video>
             <div id="modal-url-bar"></div>
@@ -133,7 +126,7 @@
         <header class="mb-10 text-center sm:text-left border-b border-slate-700 pb-6 flex flex-col sm:flex-row justify-between items-center gap-4">
             <div>
                 <h1 class="text-3xl font-extrabold text-white tracking-tight sm:text-4xl">AJN Resource Hub</h1>
-                <p class="mt-2 text-sm text-slate-400">Live Streams + Fresh Video Segments (fetched on load)</p>
+                <p class="mt-2 text-sm text-slate-400">Live Streams + Fresh Video Segments</p>
             </div>
             <div class="text-right">
                 <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-emerald-900 text-emerald-300">
@@ -150,7 +143,7 @@
                 
                 <!-- Live Now Video Player -->
                 <section class="bg-slate-800 rounded-xl shadow-xl overflow-hidden border border-slate-700">
-                    <div class="p-4 bg-slate-900 border-b border-slate-700 flex justify-between items-center">
+                    <div class="p-4 bg-slate-900 border-b border-slate-700">
                         <h2 class="text-xl font-bold text-white flex items-center gap-2">
                             <span class="text-red-500">🔴</span> Live Now
                         </h2>
@@ -162,21 +155,19 @@
                     </div>
                     <div class="p-4">
                         <p class="text-sm text-slate-400 break-all">
-                            Source: <a href="https://rumble.com/live-hls-dvr/77ec70/playlist.m3u8?" rel="noopener noreferrer"
-                               class="text-blue-400 hover:text-blue-300 underline" target="_blank">
-                               https://rumble.com/live-hls-dvr/77ec70/playlist.m3u8?</a>
+                            Source: <a href="https://rumble.com/live-hls-dvr/77ec70/playlist.m3u8?" rel="noopener noreferrer" class="text-blue-400 hover:text-blue-300 underline" target="_blank">Rumble HLS Stream</a>
                         </p>
                     </div>
                 </section>
 
-                <!-- Dynamic Hourly Segments - SCRAPING AJNHourlyVideo.html -->
+                <!-- Dynamic Hourly Segments -->
                 <section class="bg-slate-800 rounded-xl shadow-xl p-6 border border-slate-700">
                     <div class="flex justify-between items-end mb-4">
                         <h2 class="text-xl font-bold text-white">Latest Hourly Segments</h2>
                         <span class="text-xs text-slate-400">Fresh on each page load</span>
                     </div>
                     <p class="text-sm text-slate-400 mb-4">
-                        Fetching from <a href="https://rss.alexjones.media/AJNHourlyVideo.html" target="_blank" rel="noopener noreferrer" class="text-blue-400 hover:text-blue-300 underline">AJN Hourly Video Feed</a> — 
+                        Fetching from <a href="https://ajn.archives.pub/hourly-m4v/" target="_blank" rel="noopener noreferrer" class="text-blue-400 hover:text-blue-300 underline">AJN Archives</a> — 
                         click <strong class="text-slate-300">▶ Play Video</strong> to open in pop-out player.
                     </p>
                     
@@ -193,35 +184,34 @@
                     <h2 class="text-xl font-bold text-white mb-4">Live Audio Stream Links</h2>
                     <p class="text-xs text-slate-500 mb-4">Direct stream URLs — copy into any media player or app</p>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
-                        <a href="https://stream.alexjones.media/alexjonesshow" rel="noopener noreferrer" target="_blank" class="flex items-center gap-2 bg-slate-900 hover:bg-slate-700 border border-slate-700 text-blue-400 hover:text-blue-300 px-3 py-2 rounded transition">🎙 Alex Jones Show (AAC)</a>
-                        <a href="https://stream.alexjones.media/alexjonesshow.mp3" rel="noopener noreferrer" target="_blank" class="flex items-center gap-2 bg-slate-900 hover:bg-slate-700 border border-slate-700 text-blue-400 hover:text-blue-300 px-3 py-2 rounded transition">🎙 Alex Jones Show (MP3)</a>
-                        <a href="https://audio.alexjoneslive.com:8443/alexjonesshow.opus" rel="noopener noreferrer" target="_blank" class="flex items-center gap-2 bg-slate-900 hover:bg-slate-700 border border-slate-700 text-blue-400 hover:text-blue-300 px-3 py-2 rounded transition">🎙 Alex Jones Show (OPUS)</a>
-                        <a href="https://audio.alexjoneslive.com:8443/alexjonesshow.aac" rel="noopener noreferrer" target="_blank" class="flex items-center gap-2 bg-slate-900 hover:bg-slate-700 border border-slate-700 text-blue-400 hover:text-blue-300 px-3 py-2 rounded transition">🎙 Alex Jones Show (Alt AAC)</a>
-                        <a href="https://stream.alexjones.media/warroom/" rel="noopener noreferrer" target="_blank" class="flex items-center gap-2 bg-slate-900 hover:bg-slate-700 border border-slate-700 text-blue-400 hover:text-blue-300 px-3 py-2 rounded transition">🎙 War Room with Harrison Smith</a>
-                        <a href="https://stream.alexjones.media/stream/7/" rel="noopener noreferrer" target="_blank" class="flex items-center gap-2 bg-slate-900 hover:bg-slate-700 border border-slate-700 text-blue-400 hover:text-blue-300 px-3 py-2 rounded transition">🎙 Network Feed — All Live Shows</a>
+                        <a href="https://stream.alexjones.media/alexjonesshow" target="_blank" class="flex items-center gap-2 bg-slate-900 hover:bg-slate-700 border border-slate-700 text-blue-400 px-3 py-2 rounded">🎙 Alex Jones Show (AAC)</a>
+                        <a href="https://stream.alexjones.media/alexjonesshow.mp3" target="_blank" class="flex items-center gap-2 bg-slate-900 hover:bg-slate-700 border border-slate-700 text-blue-400 px-3 py-2 rounded">🎙 Alex Jones Show (MP3)</a>
+                        <a href="https://audio.alexjoneslive.com:8443/alexjonesshow.opus" target="_blank" class="flex items-center gap-2 bg-slate-900 hover:bg-slate-700 border border-slate-700 text-blue-400 px-3 py-2 rounded">🎙 Alex Jones Show (OPUS)</a>
+                        <a href="https://stream.alexjones.media/warroom/" target="_blank" class="flex items-center gap-2 bg-slate-900 hover:bg-slate-700 border border-slate-700 text-blue-400 px-3 py-2 rounded">🎙 War Room with Harrison Smith</a>
+                        <a href="https://stream.alexjones.media/stream/7/" target="_blank" class="flex items-center gap-2 bg-slate-900 hover:bg-slate-700 border border-slate-700 text-blue-400 px-3 py-2 rounded">🎙 Network Feed — All Live Shows</a>
                     </div>
                 </section>
 
-                <!-- Audio Feeds Section -->
+                <!-- Embedded Audio Feeds -->
                 <section class="bg-slate-800 rounded-xl shadow-xl p-6 border border-slate-700">
-                    <h2 class="text-xl font-bold text-white mb-6">Live Audio Feeds</h2>
+                    <h2 class="text-xl font-bold text-white mb-6">Embedded Audio Players</h2>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="bg-slate-900 p-4 rounded-lg border border-slate-700">
-                            <h3 class="text-md font-semibold text-white mb-3">Alex Jones Show Feed</h3>
+                            <h3 class="text-md font-semibold text-white mb-3">Alex Jones Show</h3>
                             <audio controls preload="none" class="w-full">
                                 <source src="https://stream.alexjones.media/stream/1/" type="audio/aac">
                                 <source src="https://stream.alexjones.media/stream/2/" type="audio/mpeg">
                             </audio>
                         </div>
                         <div class="bg-slate-900 p-4 rounded-lg border border-slate-700">
-                            <h3 class="text-md font-semibold text-white mb-3">War Room Show Feed</h3>
+                            <h3 class="text-md font-semibold text-white mb-3">War Room</h3>
                             <audio controls preload="none" class="w-full">
                                 <source src="https://stream.alexjones.media/stream/4/" type="audio/aac">
                                 <source src="https://stream.alexjones.media/stream/6/" type="audio/mpeg">
                             </audio>
                         </div>
                         <div class="bg-slate-900 p-4 rounded-lg border border-slate-700 md:col-span-2">
-                            <h3 class="text-md font-semibold text-white mb-3">Network Stream (All Shows)</h3>
+                            <h3 class="text-md font-semibold text-white mb-3">Network Stream</h3>
                             <audio controls preload="none" class="w-full">
                                 <source src="https://stream.alexjones.media/stream/7/" type="audio/aac">
                                 <source src="https://stream.alexjones.media/stream/8/" type="audio/mpeg">
@@ -234,53 +224,31 @@
             <!-- Sidebar -->
             <div class="space-y-8">
                 <section class="bg-slate-800 rounded-xl shadow-xl p-6 border border-slate-700">
-                    <h2 class="text-lg font-bold text-white mb-4 border-b border-slate-700 pb-2">HTML Indexes</h2>
+                    <h2 class="text-lg font-bold text-white mb-4 border-b border-slate-700 pb-2">📁 Resources</h2>
                     <ul class="space-y-2 text-sm">
-                        <li><a href="https://rss.alexjones.media/Alex.html" rel="noopener noreferrer" class="block p-2 rounded hover:bg-slate-700 text-blue-400 transition" target="_blank">The Alex Jones Show</a></li>
-                        <li><a href="https://rss.alexjones.media/WarRoom.html" rel="noopener noreferrer" class="block p-2 rounded hover:bg-slate-700 text-blue-400 transition" target="_blank">War Room with Harrison Smith</a></li>
-                        <li><a href="https://rss.alexjones.media/SundayLive.html" rel="noopener noreferrer" class="block p-2 rounded hover:bg-slate-700 text-blue-400 transition" target="_blank">Sunday Night Live</a></li>
-                        <li><a href="https://rss.alexjones.media/AJNHourlyVideo.html" rel="noopener noreferrer" class="block p-2 rounded hover:bg-slate-700 text-blue-400 transition" target="_blank">Network Feed Hourly Video</a></li>
-                        <li><a href="https://rss.alexjones.media/AJNHourlyAudio.html" rel="noopener noreferrer" class="block p-2 rounded hover:bg-slate-700 text-blue-400 transition" target="_blank">Network Feed Hourly Audio</a></li>
-                    </ul>
-                    <h2 class="text-lg font-bold text-white mt-6 mb-2 border-b border-slate-700 pb-2">Podcast XML Links</h2>
-                    <p class="text-xs text-slate-400 mb-3">(Copy &amp; paste directly into your Podcast App)</p>
-                    <ul class="space-y-2 text-sm">
-                        <li><a href="https://rss.alexjones.media/Alex.xml" rel="noopener noreferrer" class="block p-2 rounded hover:bg-slate-700 text-blue-400 transition" target="_blank">Alex Jones Show</a></li>
-                        <li><a href="https://rss.alexjones.media/WarRoom.xml" rel="noopener noreferrer" class="block p-2 rounded hover:bg-slate-700 text-blue-400 transition" target="_blank">War Room with Harrison Smith</a></li>
-                        <li><a href="https://rss.alexjones.media/SundayLive.xml" rel="noopener noreferrer" class="block p-2 rounded hover:bg-slate-700 text-blue-400 transition" target="_blank">Sunday Night Live</a></li>
-                        <li><a href="https://rss.alexjones.media/AJNHourlyVideo.xml" rel="noopener noreferrer" class="block p-2 rounded hover:bg-slate-700 text-blue-400 transition" target="_blank">Network Feed Hourly Video</a></li>
-                        <li><a href="https://rss.alexjones.media/AJNHourlyAudio.xml" rel="noopener noreferrer" class="block p-2 rounded hover:bg-slate-700 text-blue-400 transition" target="_blank">Network Feed Hourly Audio</a></li>
+                        <li><a href="https://rss.alexjones.media/Alex.html" target="_blank" class="block p-2 rounded hover:bg-slate-700 text-blue-400">The Alex Jones Show</a></li>
+                        <li><a href="https://rss.alexjones.media/WarRoom.html" target="_blank" class="block p-2 rounded hover:bg-slate-700 text-blue-400">War Room with Harrison Smith</a></li>
+                        <li><a href="https://rss.alexjones.media/SundayLive.html" target="_blank" class="block p-2 rounded hover:bg-slate-700 text-blue-400">Sunday Night Live</a></li>
+                        <li><a href="https://rss.alexjones.media/AJNHourlyVideo.xml" target="_blank" class="block p-2 rounded hover:bg-slate-700 text-blue-400">Hourly Video XML</a></li>
+                        <li><a href="https://rss.alexjones.media/AJNHourlyAudio.xml" target="_blank" class="block p-2 rounded hover:bg-slate-700 text-blue-400">Hourly Audio XML</a></li>
                     </ul>
                 </section>
 
                 <section class="bg-slate-800 rounded-xl shadow-xl p-6 border border-slate-700">
-                    <h2 class="text-lg font-bold text-white mb-2 border-b border-slate-700 pb-2">Listen-by-Phone</h2>
-                    <p class="text-xs text-slate-400 mb-4">(Long distance charges may apply)</p>
-                    <ul class="space-y-4">
-                        <li class="flex justify-between items-center"><span class="text-sm font-medium text-slate-300">Alex Jones Show</span><a href="tel:+16054755800" class="text-sm font-bold text-blue-400 hover:text-blue-300">+1 (605) 475-5800</a></li>
-                        <li class="flex justify-between items-center"><span class="text-sm font-medium text-slate-300">American Journal <span class="text-xs text-red-400 ml-1">(On Break)</span></span><span class="text-sm font-bold text-slate-500">+1 (605) 475-3290</span></li>
-                        <li class="flex justify-between items-center"><span class="text-sm font-medium text-slate-300">War Room</span><a href="tel:+16054753291" class="text-sm font-bold text-blue-400 hover:text-blue-300">+1 (605) 475-3291</a></li>
-                        <li class="flex justify-between items-center"><span class="text-sm font-medium text-slate-300">Network Feed</span><a href="tel:+16054753292" class="text-sm font-bold text-blue-400 hover:text-blue-300">+1 (605) 475-3292</a></li>
+                    <h2 class="text-lg font-bold text-white mb-2 border-b border-slate-700 pb-2">📞 Listen-by-Phone</h2>
+                    <ul class="space-y-3 text-sm">
+                        <li><a href="tel:+16054755800" class="text-blue-400">Alex Jones: +1 (605) 475-5800</a></li>
+                        <li><a href="tel:+16054753291" class="text-blue-400">War Room: +1 (605) 475-3291</a></li>
+                        <li><a href="tel:+16054753292" class="text-blue-400">Network: +1 (605) 475-3292</a></li>
                     </ul>
-                </section>
-
-                <section class="bg-slate-800 rounded-xl shadow-xl p-6 border border-slate-700">
-                    <h2 class="text-lg font-bold text-white mb-4 border-b border-slate-700 pb-2">Affiliate Resources</h2>
-                    <div class="flex flex-wrap gap-2">
-                        <a href="https://rss.alexjones.media/mp4-segs.html" rel="noopener noreferrer" class="inline-block bg-slate-700 hover:bg-slate-600 text-sm text-slate-200 px-3 py-2 rounded shadow transition" target="_blank">mp4 Segs</a>
-                        <a href="https://rss.alexjones.media/mp3-hourly.html" rel="noopener noreferrer" class="inline-block bg-slate-700 hover:bg-slate-600 text-sm text-slate-200 px-3 py-2 rounded shadow transition" target="_blank">mp3 Hourly</a>
-                        <a href="https://rss.alexjones.media/mp3-segs.html" rel="noopener noreferrer" class="inline-block bg-slate-700 hover:bg-slate-600 text-sm text-slate-200 px-3 py-2 rounded shadow transition" target="_blank">mp3 Segs</a>
-                        <a href="https://rss.alexjones.media/mp3-segs-legacy.html" rel="noopener noreferrer" class="inline-block bg-slate-700 hover:bg-slate-600 text-sm text-slate-200 px-3 py-2 rounded shadow transition" target="_blank">Legacy Segs</a>
-                        <a href="https://rss.alexjones.media/Programming-Clock.png" rel="noopener noreferrer" class="inline-block bg-blue-900/50 hover:bg-blue-800/50 text-sm text-blue-300 border border-blue-800 px-3 py-2 rounded shadow transition w-full text-center mt-2" target="_blank">Affiliate Clock</a>
-                    </div>
                 </section>
             </div>
         </div>
 
         <footer class="mt-12 border-t border-slate-800 pt-6 text-center">
             <p class="text-sm text-slate-500">
-                <a href="https://alexjoneslive.com" rel="noopener noreferrer" class="hover:text-slate-300 transition" target="_blank">AlexJonesLive.com</a> | 
-                <a href="https://alexjones.media" rel="noopener noreferrer" class="hover:text-slate-300 transition" target="_blank">AlexJones.media</a>
+                <a href="https://alexjoneslive.com" target="_blank" class="hover:text-slate-300">AlexJonesLive.com</a> | 
+                <a href="https://alexjones.media" target="_blank" class="hover:text-slate-300">AlexJones.media</a>
             </p>
         </footer>
     </div>
@@ -288,7 +256,7 @@
     <script>
     document.addEventListener('DOMContentLoaded', () => {
 
-        // ========== 1. HLS LIVE PLAYER ==========
+        // ========== HLS LIVE PLAYER ==========
         const liveVideo = document.getElementById('live-video');
         const liveError = document.getElementById('live-error');
         const liveVideoSrc = 'https://rumble.com/live-hls-dvr/77ec70/playlist.m3u8?';
@@ -298,13 +266,11 @@
             liveVideo.poster = 'https://placehold.co/1280x720/450a0a/fca5a5?text=Stream+Offline';
         }
 
-        if (Hls.isSupported()) {
-            const hls = new Hls({ debug: false, enableWorker: true });
+        if (typeof Hls !== 'undefined' && Hls.isSupported()) {
+            const hls = new Hls({ debug: false });
             hls.loadSource(liveVideoSrc);
             hls.attachMedia(liveVideo);
-            hls.on(Hls.Events.ERROR, (event, data) => {
-                if (data.fatal) showLiveError();
-            });
+            hls.on(Hls.Events.ERROR, (event, data) => { if (data.fatal) showLiveError(); });
         } else if (liveVideo.canPlayType('application/vnd.apple.mpegurl')) {
             liveVideo.src = liveVideoSrc;
             liveVideo.addEventListener('error', showLiveError);
@@ -312,7 +278,7 @@
             showLiveError();
         }
 
-        // ========== 2. VIDEO MODAL (FLYOUT PLAYER) ==========
+        // ========== VIDEO MODAL ==========
         const modal = document.getElementById('video-modal');
         const modalVideo = document.getElementById('modal-video');
         const modalTitle = document.getElementById('modal-title-text');
@@ -328,7 +294,7 @@
             modalTitle.textContent = label;
             modalUrlBar.textContent = url;
 
-            if (url.includes('.m3u8') && Hls.isSupported()) {
+            if (url.includes('.m3u8') && typeof Hls !== 'undefined' && Hls.isSupported()) {
                 modalHls = new Hls({ debug: false });
                 modalHls.loadSource(url);
                 modalHls.attachMedia(modalVideo);
@@ -359,39 +325,61 @@
         modal.addEventListener('click', (e) => { if (e.target === modal) closeVideoModal(); });
         document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && modal.classList.contains('open')) closeVideoModal(); });
 
-        // ========== 3. FETCH LATEST 6 .m4v LINKS FROM AJNHourlyVideo.html ==========
-        const SOURCE_URL = 'https://rss.alexjones.media/AJNHourlyVideo.html';
-
+        // ========== FETCH .m4v LINKS FROM ARCHIVE (USING CORS PROXY FOR LOCAL FILE ACCESS) ==========
+        // The archive URL that actually works
+        const ARCHIVE_URL = 'https://ajn.archives.pub/hourly-m4v/';
+        // Use a CORS proxy to bypass the file:// restriction when opened locally
+        const CORS_PROXY = 'https://api.allorigins.win/raw?url=';
+        
         async function fetchLatestSegments() {
             const container = document.getElementById('dynamic-segments-container');
             const lastUpdated = document.getElementById('last-updated-text');
             
             try {
-                const response = await fetch(SOURCE_URL, { cache: 'no-store' });
+                // Try direct fetch first (works if served from a web server)
+                let response;
+                try {
+                    response = await fetch(ARCHIVE_URL, { cache: 'no-store' });
+                } catch (directError) {
+                    // If direct fetch fails (CORS), try with proxy
+                    console.log('Direct fetch failed, trying CORS proxy...');
+                    response = await fetch(CORS_PROXY + encodeURIComponent(ARCHIVE_URL), { cache: 'no-store' });
+                }
+                
                 if (!response.ok) throw new Error(`HTTP ${response.status}`);
                 const html = await response.text();
                 
-                // Extract all .m4v links from the page (they are in <p><a href="...m4v">...</a></p> format)
-                const linkRegex = /<a\s+href="([^"]+\.m4v)"[^>]*>([^<]+)<\/a>/gi;
+                // Extract .m4v links from the HTML
                 const links = [];
+                // Match patterns like: <a href="20260516_Sat_Alex-Special.m4v"> or full URLs
+                const linkRegex = /href="([^"]+\.m4v)"/gi;
                 let match;
                 
                 while ((match = linkRegex.exec(html)) !== null) {
                     let url = match[1];
-                    let title = match[2].trim();
+                    let title = '';
                     
-                    // Ensure URL is absolute
-                    if (url.startsWith('/')) {
-                        url = 'https://rss.alexjones.media' + url;
+                    // Build full URL if relative
+                    if (!url.startsWith('http')) {
+                        url = ARCHIVE_URL + url.replace(/^\.\//, '');
                     }
                     
-                    if (url.endsWith('.m4v') && !links.find(l => l.url === url)) {
+                    // Try to get the title from the link text (look for the text between > and < after this href)
+                    const textRegex = new RegExp(`href="${escapeForRegex(match[1])}"[^>]*>([^<]+)`, 'i');
+                    const textMatch = textRegex.exec(html);
+                    if (textMatch) {
+                        title = textMatch[1].trim();
+                    } else {
+                        title = url.split('/').pop().replace('.m4v', '').replace(/_/g, ' ');
+                    }
+                    
+                    if (!links.find(l => l.url === url)) {
                         links.push({ url, title });
                     }
                 }
                 
                 if (links.length === 0) {
-                    throw new Error('No .m4v links found in the page');
+                    throw new Error('No .m4v links found');
                 }
                 
                 // Take first 6 (most recent)
@@ -402,13 +390,16 @@
             } catch (err) {
                 console.error('Fetch error:', err);
                 container.innerHTML = `<div class="col-span-2 bg-red-950 border border-red-800 text-red-300 text-sm p-4 rounded-lg text-center">
-                    ⚠️ Could not load segments — <a href="${SOURCE_URL}" target="_blank" class="underline hover:text-red-200">open feed directly</a>
+                    ⚠️ Could not load segments. <a href="${ARCHIVE_URL}" target="_blank" class="underline hover:text-red-200">Open archive page directly</a>
                 </div>`;
                 lastUpdated.innerText = 'Failed to load segments';
             }
         }
+        
+        function escapeForRegex(str) {
+            return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        }
 
-        // Helper functions for badges
         function getBadgeClass(title) {
             const t = title.toUpperCase();
             if (t.includes('WARROOM')) return 'bg-purple-900 text-purple-300';
@@ -473,7 +464,6 @@
                 container.appendChild(block);
             });
             
-            // Attach click handlers to play buttons
             document.querySelectorAll('.play-segment-btn').forEach(btn => {
                 btn.addEventListener('click', () => {
                     openVideoModal(btn.dataset.video, btn.dataset.label);
@@ -481,7 +471,7 @@
             });
         }
 
-        // ========== 4. LOAD SEGMENTS ONCE ON PAGE LOAD ==========
+        // Load segments on page load
         fetchLatestSegments();
 
     });

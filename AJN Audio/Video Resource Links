@@ -1,0 +1,127 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+    <title>AJN Audio/Video Resource Links</title>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <meta name="keywords" content="Alex Jones Network Audio Video Resource Links"/>
+    <meta name="description" content="Alex Jones Network"/>
+    <meta name="robots" content="ALL"/>
+    <meta name="rating" content="General"/>
+    <meta name="copyright" content="Alex Jones Network"/>
+    <meta name="author" content="alexjones.media"/>
+    <meta name="language" content="en"/>
+    <base href="https://rss.alexjones.media" />
+    <meta name="viewport" content="width=screen.width; user-scalable=no" />
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.png" />
+    <link rel="stylesheet" href="/js/jquery.mobile-1.0a1.min.css" />
+    <script src="/js/jquery-1.4.3.min.js"></script>
+    <script src="/js/jquery.mobile-1.0a1.min.js"></script>
+</head>
+
+<body>
+
+<div data-role="page" align="center" data-theme="a" no-repeat;">
+
+<br />
+<h1>
+AJN Audio/Video Resource Links<br/>
+</h1>
+<div data-role="content" data-theme="a">
+<h2>
+Available HTML Indexes<br/>
+<p><a href="https://rss.alexjones.media/Alex.html" rel="external" data-role="button">The Alex Jones Show</a></p>
+<p><a href="https://rss.alexjones.media/WarRoom.html" rel="external" data-role="button">War Room with Harrison Smith</a></p>
+<p><a href="https://rss.alexjones.media/SundayLive.html" rel="external" data-role="button">Sunday Night Live</a></p>
+<p><a href="https://rss.alexjones.media/AJNHourlyVideo.html" rel="external" data-role="button">Network Feed Hourly Video</a></p>
+<p><a href="https://rss.alexjones.media/AJNHourlyAudio.html" rel="external" data-role="button">Network Feed Hourly Audio</a></p>
+<br/>
+Available Podcast Indexes</h2>
+(May need to copy and paste link directly into Podcast App)<br/>
+<h2>
+<p><a href="https://rss.alexjones.media/Alex.xml" rel="external" data-role="button">Alex Jones Show</a></p>
+<p><a href="https://rss.alexjones.media/WarRoom.xml" rel="external" data-role="button">War Room with Harrison Smith</a></p>
+<p><a href="https://rss.alexjones.media/SundayLive.xml" rel="external" data-role="button">Sunday Night Live</a></p>
+<p><a href="https://rss.alexjones.media/AJNHourlyVideo.xml" rel="external" data-role="button">Network Feed Hourly Video</a></p>
+<p><a href="https://rss.alexjones.media/AJNHourlyAudio.xml" rel="external" data-role="button">Network Feed Hourly Audio</a></p>
+<h2>
+<br/>
+Live Audio Stream Links<br/>
+</h2>
+<p><a href="https://stream.alexjones.media/alexjonesshow" rel="external" data-role="button">Alex Jones Show (AAC)</a></p>
+<p><a href="https://stream.alexjones.media/alexjonesshow.mp3" rel="external" data-role="button">Alex Jones Show (MP3)</a></p>
+<p><a href="https://audio.alexjoneslive.com:8443/alexjonesshow.opus" rel="external" data-role="button">Alex Jones Show (OPUS)</a></p>
+<p><a href="https://audio.alexjoneslive.com:8443/alexjonesshow.aac" rel="external" data-role="button">Alex Jones Show (alternate AAC)</a></p>
+<p><a href="https://stream.alexjones.media/warroom/" rel="external" data-role="button">War Room with Harrison Smith</a></p>
+<p><a href="https://stream.alexjones.media/stream/7/" rel="external" data-role="button">Network Feed - All Live Shows</a></p>
+<p>
+<h2>
+<br/>
+Alex Jones Show Feed<br/>
+</h2>
+<audio controls="controls" preload="none">
+  <source src="https://stream.alexjones.media/stream/1/" type="audio/aac">
+  <source src="https://stream.alexjones.media/stream/2/" type="audio/mpeg">
+  Your browser does not support the audio element.
+</audio>
+
+<h2>
+<br/>
+War Room Show Feed<br/>
+</h2>
+<audio controls="controls" preload="none">
+  <source src="https://stream.alexjones.media/stream/4/" type="audio/aac">
+  <source src="https://stream.alexjones.media/stream/6/" type="audio/mpeg">
+  Your browser does not support the audio element.
+</audio>
+
+<h2>
+<br/>
+Network Stream (All Shows)<br/>
+</h2>
+<audio controls="controls" preload="none">
+  <source src="https://stream.alexjones.media/stream/7/" type="audio/aac">
+  <source src="https://stream.alexjones.media/stream/8/" type="audio/mpeg">
+  Your browser does not support the audio element.
+</audio>
+
+</p>
+
+<h2>
+<br/>
+Listen-by-phone Numbers
+</h2>
+(long distance charges may apply)<br/>
+<h3>
+Alex Jones Show<br/>+1(605)475-5800<br/><br/>
+American Journal (on break)<br/>+1(605)475-3290<br/><br/>
+War Room<br/>+1(605)475-3291<br/><br/>
+Network Feed (all live shows)<br/>+1(605)475-3292<br/><br/>
+</h3>
+
+<br/>
+<h2>
+<br/>
+Affiliate Resources
+</h2>
+<p><a href="https://rss.alexjones.media/mp4-segs.html" rel="external" data-role="button">mp4 Segment Files</a></p>
+<p><a href="https://rss.alexjones.media/mp3-hourly.html" rel="external" data-role="button">mp3 Hourly Files</a></p>
+<p><a href="https://rss.alexjones.media/mp3-segs.html" rel="external" data-role="button">mp3 Segment Files</a></p>
+<p><a href="https://rss.alexjones.media/mp3-segs-legacy.html" rel="external" data-role="button">mp3 Segs - Legacy</a></p>
+<p><a href="https://rss.alexjones.media/Programming-Clock.png" rel="external" data-role="button">Affiliate Clock</a></p>
+
+<br/>
+
+</div>
+
+<div data-role="footer" data-theme="a">
+<p><font size="-1" face="Verdana, Geneva, sans-serif"><a href="https://alexjoneslive.com">AlexJonesLive.com</a> - <a href="https://alexjones.media">AlexJones.media</a></font></p>
+</div>
+
+</div>
+
+</body>
+</html>
+
+

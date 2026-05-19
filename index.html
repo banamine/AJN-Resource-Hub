@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AJN Resource Hub | Live Streams + Video Segments</title>
     <meta name="description" content="Alex Jones Network Live Streams and fresh video segments">
+    <meta name="author" content="alexjones.media">
     
-    <!-- Use a local CSS approach instead of CDN for production - but CDN is fine for testing -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/hls.js@1"></script>
 
@@ -105,6 +105,13 @@
             margin: 0 auto 10px auto;
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .segment-card {
+            transition: all 0.2s ease;
+        }
+        .segment-card:hover {
+            transform: translateY(-2px);
+            border-color: #3b82f6;
+        }
     </style>
 </head>
 <body class="bg-slate-900 text-slate-200 font-sans antialiased">
@@ -160,7 +167,7 @@
                     </div>
                 </section>
 
-                <!-- Dynamic Hourly Segments -->
+                <!-- Dynamic Hourly Segments - FIXED SOURCE -->
                 <section class="bg-slate-800 rounded-xl shadow-xl p-6 border border-slate-700">
                     <div class="flex justify-between items-end mb-4">
                         <h2 class="text-xl font-bold text-white">Latest Hourly Segments</h2>
@@ -241,6 +248,16 @@
                         <li><a href="tel:+16054753291" class="text-blue-400">War Room: +1 (605) 475-3291</a></li>
                         <li><a href="tel:+16054753292" class="text-blue-400">Network: +1 (605) 475-3292</a></li>
                     </ul>
+                </section>
+
+                <section class="bg-slate-800 rounded-xl shadow-xl p-6 border border-slate-700">
+                    <h2 class="text-lg font-bold text-white mb-4 border-b border-slate-700 pb-2">📡 Affiliate</h2>
+                    <div class="flex flex-wrap gap-2">
+                        <a href="https://rss.alexjones.media/mp4-segs.html" target="_blank" class="bg-slate-700 hover:bg-slate-600 text-sm px-3 py-2 rounded">mp4 Segs</a>
+                        <a href="https://rss.alexjones.media/mp3-hourly.html" target="_blank" class="bg-slate-700 hover:bg-slate-600 text-sm px-3 py-2 rounded">mp3 Hourly</a>
+                        <a href="https://rss.alexjones.media/mp3-segs.html" target="_blank" class="bg-slate-700 hover:bg-slate-600 text-sm px-3 py-2 rounded">mp3 Segs</a>
+                        <a href="https://rss.alexjones.media/Programming-Clock.png" target="_blank" class="bg-blue-900/50 hover:bg-blue-800/50 text-blue-300 text-sm px-3 py-2 rounded w-full text-center">Affiliate Clock</a>
+                    </div>
                 </section>
             </div>
         </div>
@@ -325,33 +342,27 @@
         modal.addEventListener('click', (e) => { if (e.target === modal) closeVideoModal(); });
         document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && modal.classList.contains('open')) closeVideoModal(); });
 
-        // ========== FETCH .m4v LINKS FROM ARCHIVE (USING CORS PROXY FOR LOCAL FILE ACCESS) ==========
-        // The archive URL that actually works
+        // ========== FETCH LATEST .m4v LINKS ==========
+        // The working archive URL
         const ARCHIVE_URL = 'https://ajn.archives.pub/hourly-m4v/';
-        // Use a CORS proxy to bypass the file:// restriction when opened locally
-        const CORS_PROXY = 'https://api.allorigins.win/raw?url=';
         
         async function fetchLatestSegments() {
             const container = document.getElementById('dynamic-segments-container');
             const lastUpdated = document.getElementById('last-updated-text');
             
             try {
-                // Try direct fetch first (works if served from a web server)
-                let response;
-                try {
-                    response = await fetch(ARCHIVE_URL, { cache: 'no-store' });
-                } catch (directError) {
-                    // If direct fetch fails (CORS), try with proxy
-                    console.log('Direct fetch failed, trying CORS proxy...');
-                    response = await fetch(CORS_PROXY + encodeURIComponent(ARCHIVE_URL), { cache: 'no-store' });
-                }
+                // Try direct fetch first (works on GitHub Pages because it's served over HTTPS)
+                const response = await fetch(ARCHIVE_URL, { 
+                    cache: 'no-store',
+                    mode: 'cors'  // Try CORS mode
+                });
                 
                 if (!response.ok) throw new Error(`HTTP ${response.status}`);
                 const html = await response.text();
                 
-                // Extract .m4v links from the HTML
+                // Extract all .m4v links from the HTML
                 const links = [];
-                // Match patterns like: <a href="20260516_Sat_Alex-Special.m4v"> or full URLs
+                // Match pattern: href="filename.m4v" or href="https://...m4v"
                 const linkRegex = /href="([^"]+\.m4v)"/gi;
                 let match;
                 
@@ -364,12 +375,13 @@
                         url = ARCHIVE_URL + url.replace(/^\.\//, '');
                     }
                     
-                    // Try to get the title from the link text (look for the text between > and < after this href)
-                    const textRegex = new RegExp(`href="${escapeForRegex(match[1])}"[^>]*>([^<]+)`, 'i');
+                    // Extract title from the link text (the text between > and < after this href)
+                    const textRegex = new RegExp(`href="${escapeRegex(match[1])}"[^>]*>([^<]+)`, 'i');
                     const textMatch = textRegex.exec(html);
                     if (textMatch) {
                         title = textMatch[1].trim();
                     } else {
+                        // Fallback: use filename as title
                         title = url.split('/').pop().replace('.m4v', '').replace(/_/g, ' ');
                     }
                     
@@ -390,13 +402,14 @@
             } catch (err) {
                 console.error('Fetch error:', err);
                 container.innerHTML = `<div class="col-span-2 bg-red-950 border border-red-800 text-red-300 text-sm p-4 rounded-lg text-center">
-                    ⚠️ Could not load segments. <a href="${ARCHIVE_URL}" target="_blank" class="underline hover:text-red-200">Open archive page directly</a>
+                    ⚠️ Could not load segments. <a href="${ARCHIVE_URL}" target="_blank" class="underline hover:text-red-200">Open archive page directly</a><br>
+                    <span class="text-xs">Error: ${err.message}</span>
                 </div>`;
                 lastUpdated.innerText = 'Failed to load segments';
             }
         }
         
-        function escapeForRegex(str) {
+        function escapeRegex(str) {
             return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
         }
 
@@ -440,7 +453,7 @@
                 const ring = idx === 0 ? 'ring-1 ring-blue-500' : '';
                 
                 const block = document.createElement('div');
-                block.className = `bg-slate-900 border border-slate-700 p-3 rounded-lg flex flex-col gap-2 ${ring}`;
+                block.className = `segment-card bg-slate-900 border border-slate-700 p-3 rounded-lg flex flex-col gap-2 ${ring}`;
                 block.innerHTML = `
                     <div class="flex justify-between items-center border-b border-slate-700 pb-1 mb-1">
                         <span class="text-slate-300 font-semibold text-sm truncate pr-2" title="${escapeHtml(seg.title)}">${escapeHtml(seg.title)}</span>

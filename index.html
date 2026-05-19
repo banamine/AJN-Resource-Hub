@@ -105,13 +105,8 @@
             margin: 0 auto 10px auto;
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        .segment-card {
-            transition: all 0.2s ease;
-        }
-        .segment-card:hover {
-            transform: translateY(-2px);
-            border-color: #3b82f6;
-        }
+        .segment-card { transition: all 0.2s ease; }
+        .segment-card:hover { transform: translateY(-2px); border-color: #3b82f6; }
     </style>
 </head>
 <body class="bg-slate-900 text-slate-200 font-sans antialiased">
@@ -167,14 +162,14 @@
                     </div>
                 </section>
 
-                <!-- Dynamic Hourly Segments - FIXED SOURCE -->
+                <!-- Dynamic Hourly Segments -->
                 <section class="bg-slate-800 rounded-xl shadow-xl p-6 border border-slate-700">
                     <div class="flex justify-between items-end mb-4">
                         <h2 class="text-xl font-bold text-white">Latest Hourly Segments</h2>
                         <span class="text-xs text-slate-400">Fresh on each page load</span>
                     </div>
                     <p class="text-sm text-slate-400 mb-4">
-                        Fetching from <a href="https://ajn.archives.pub/hourly-m4v/" target="_blank" rel="noopener noreferrer" class="text-blue-400 hover:text-blue-300 underline">AJN Archives</a> — 
+                        Fetching from <a href="https://rss.alexjones.media/AJNHourlyVideo.html" target="_blank" rel="noopener noreferrer" class="text-blue-400 hover:text-blue-300 underline">AJN Hourly Video Feed</a> — 
                         click <strong class="text-slate-300">▶ Play Video</strong> to open in pop-out player.
                     </p>
                     
@@ -342,56 +337,57 @@
         modal.addEventListener('click', (e) => { if (e.target === modal) closeVideoModal(); });
         document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && modal.classList.contains('open')) closeVideoModal(); });
 
-        // ========== FETCH LATEST .m4v LINKS ==========
-        // The working archive URL
-        const ARCHIVE_URL = 'https://ajn.archives.pub/hourly-m4v/';
+        // ========== FETCH LATEST 6 .m4v LINKS ==========
+        // The correct source URL
+        const SOURCE_URL = 'https://rss.alexjones.media/AJNHourlyVideo.html';
+        // CORS proxy for local file access - works when opened from file://
+        const CORS_PROXY = 'https://api.allorigins.win/raw?url=';
         
         async function fetchLatestSegments() {
             const container = document.getElementById('dynamic-segments-container');
             const lastUpdated = document.getElementById('last-updated-text');
             
             try {
-                // Try direct fetch first (works on GitHub Pages because it's served over HTTPS)
-                const response = await fetch(ARCHIVE_URL, { 
-                    cache: 'no-store',
-                    mode: 'cors'  // Try CORS mode
-                });
+                // Try direct fetch first (works on GitHub Pages)
+                let response;
+                try {
+                    response = await fetch(SOURCE_URL, { cache: 'no-store' });
+                } catch (directError) {
+                    // If CORS error, use proxy
+                    console.log('Direct fetch failed, using CORS proxy...');
+                    response = await fetch(CORS_PROXY + encodeURIComponent(SOURCE_URL), { cache: 'no-store' });
+                }
                 
                 if (!response.ok) throw new Error(`HTTP ${response.status}`);
                 const html = await response.text();
                 
-                // Extract all .m4v links from the HTML
+                // Extract all .m4v links using regex that matches the exact pattern in the page
+                // Pattern: href="https://ajn.archives.pub/hourly-m4v/20260518_Mon_WarRoom-Hr3.m4v"
+                const linkRegex = /href="(https:\/\/ajn\.archives\.pub\/hourly-m4v\/[^"]+\.m4v)"/gi;
+                const titleRegex = /<a[^>]*href="[^"]+\.m4v"[^>]*>([^<]+)<\/a>/gi;
+                
                 const links = [];
-                // Match pattern: href="filename.m4v" or href="https://...m4v"
-                const linkRegex = /href="([^"]+\.m4v)"/gi;
                 let match;
                 
+                // Extract URLs
+                const urls = [];
                 while ((match = linkRegex.exec(html)) !== null) {
-                    let url = match[1];
-                    let title = '';
-                    
-                    // Build full URL if relative
-                    if (!url.startsWith('http')) {
-                        url = ARCHIVE_URL + url.replace(/^\.\//, '');
-                    }
-                    
-                    // Extract title from the link text (the text between > and < after this href)
-                    const textRegex = new RegExp(`href="${escapeRegex(match[1])}"[^>]*>([^<]+)`, 'i');
-                    const textMatch = textRegex.exec(html);
-                    if (textMatch) {
-                        title = textMatch[1].trim();
-                    } else {
-                        // Fallback: use filename as title
-                        title = url.split('/').pop().replace('.m4v', '').replace(/_/g, ' ');
-                    }
-                    
-                    if (!links.find(l => l.url === url)) {
-                        links.push({ url, title });
-                    }
+                    urls.push(match[1]);
+                }
+                
+                // Extract titles
+                const titles = [];
+                while ((match = titleRegex.exec(html)) !== null) {
+                    titles.push(match[1].trim());
+                }
+                
+                // Combine URLs and titles
+                for (let i = 0; i < urls.length && i < titles.length; i++) {
+                    links.push({ url: urls[i], title: titles[i] });
                 }
                 
                 if (links.length === 0) {
-                    throw new Error('No .m4v links found');
+                    throw new Error('No .m4v links found in the page');
                 }
                 
                 // Take first 6 (most recent)
@@ -402,15 +398,11 @@
             } catch (err) {
                 console.error('Fetch error:', err);
                 container.innerHTML = `<div class="col-span-2 bg-red-950 border border-red-800 text-red-300 text-sm p-4 rounded-lg text-center">
-                    ⚠️ Could not load segments. <a href="${ARCHIVE_URL}" target="_blank" class="underline hover:text-red-200">Open archive page directly</a><br>
+                    ⚠️ Could not load segments. <a href="${SOURCE_URL}" target="_blank" class="underline hover:text-red-200">Open feed directly</a><br>
                     <span class="text-xs">Error: ${err.message}</span>
                 </div>`;
                 lastUpdated.innerText = 'Failed to load segments';
             }
-        }
-        
-        function escapeRegex(str) {
-            return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
         }
 
         function getBadgeClass(title) {

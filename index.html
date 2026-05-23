@@ -2,8 +2,15 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>AJN Hourly Segments · Newest First</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>AJN Hourly Segments · PWA</title>
+    <meta name="description" content="AJN Hourly Video Archive - Progressive Web App with offline support">
+    <meta name="theme-color" content="#0a0f1c">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="AJN Hub">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="apple-touch-icon" href="/icon-192.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body { background: #0a0f1c; }
@@ -15,28 +22,74 @@
         .playlist-scroll::-webkit-scrollbar { width: 5px; }
         .playlist-scroll::-webkit-scrollbar-track { background: #1e293b; border-radius: 10px; }
         .playlist-scroll::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 10px; }
-        .retry-btn { transition: all 0.2s; }
-        .retry-btn:hover { background: #2563eb; transform: scale(1.02); }
+        .update-toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1e293b;
+            border: 1px solid #3b82f6;
+            border-radius: 50px;
+            padding: 12px 24px;
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            z-index: 9999;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.5);
+            animation: slideUp 0.3s ease;
+        }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+        .update-toast button {
+            background: #3b82f6;
+            border: none;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+        .update-toast button:hover { background: #2563eb; }
+        .offline-banner {
+            background: #7f1d1d;
+            color: #fca5a5;
+            text-align: center;
+            padding: 6px;
+            font-size: 12px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 10000;
+            display: none;
+        }
     </style>
 </head>
 <body class="font-sans antialiased text-gray-200">
 
+    <div id="offline-banner" class="offline-banner">📡 You are offline — showing cached content</div>
+    <div id="update-toast" style="display: none;" class="update-toast">
+        <span>🔄 New segments available!</span>
+        <button id="refresh-btn">Refresh Now</button>
+    </div>
+
     <div class="max-w-6xl mx-auto px-4 py-6 md:py-8">
-        <!-- Header -->
         <div class="flex flex-col md:flex-row justify-between items-center border-b border-slate-800 pb-5 mb-6 gap-3">
             <div>
                 <h1 class="text-3xl font-extrabold bg-gradient-to-r from-emerald-400 to-blue-500 bg-clip-text text-transparent">AJN Hourly Segments</h1>
-                <p class="text-sm text-slate-400 mt-1">Newest first · Auto-plays sequentially by date & hour</p>
+                <p class="text-sm text-slate-400 mt-1">Newest first · Auto-plays sequentially · Offline ready</p>
             </div>
             <div class="flex items-center gap-3 text-xs bg-slate-900 px-4 py-2 rounded-full">
-                <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
+                <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" id="status-dot"></span>
                 <span id="feed-status" class="text-slate-300">Loading segments...</span>
             </div>
         </div>
 
-        <!-- Main Grid -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <!-- Video Player -->
             <div class="lg:col-span-2 space-y-4">
                 <div class="player-container bg-slate-900 border border-slate-700 rounded-2xl overflow-hidden shadow-2xl">
                     <div class="bg-black relative aspect-video">
@@ -62,7 +115,6 @@
                 </div>
             </div>
 
-            <!-- Playlist Sidebar -->
             <div class="bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden flex flex-col h-[540px]">
                 <div class="bg-slate-950 px-4 py-3 border-b border-slate-800 flex justify-between items-center">
                     <h3 class="font-bold text-white text-sm">📋 Segments (Newest → Oldest)</h3>
@@ -78,15 +130,72 @@
         </div>
 
         <footer class="mt-10 text-center text-xs text-slate-600 border-t border-slate-800 pt-5">
-            <p>AJN Resource Hub — Plays newest segment first, then continues by descending date/hour order</p>
+            <p>AJN Resource Hub — PWA ready | Install for offline access</p>
         </footer>
     </div>
 
     <script>
-        // ============================================================
-        // FIXED: Parse dates correctly and sort NEWEST FIRST
-        // ============================================================
+        // ========== PWA: Service Worker Registration with Update Detection ==========
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(reg => {
+                        console.log('SW registered:', reg.scope);
+                        
+                        // Check for waiting service worker (update available)
+                        if (reg.waiting) {
+                            showUpdateToast();
+                        }
+                        
+                        // Listen for new service worker installing
+                        reg.addEventListener('updatefound', () => {
+                            const newWorker = reg.installing;
+                            newWorker.addEventListener('statechange', () => {
+                                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                    showUpdateToast();
+                                }
+                            });
+                        });
+                    })
+                    .catch(err => console.log('SW registration failed:', err));
+                
+                // Listen for controller change (after skipWaiting)
+                let refreshing = false;
+                navigator.serviceWorker.addEventListener('controllerchange', () => {
+                    if (refreshing) return;
+                    refreshing = true;
+                    window.location.reload();
+                });
+            });
+        }
         
+        // Show update notification
+        function showUpdateToast() {
+            const toast = document.getElementById('update-toast');
+            if (toast) toast.style.display = 'flex';
+        }
+        
+        document.getElementById('refresh-btn')?.addEventListener('click', () => {
+            if (navigator.serviceWorker.controller) {
+                navigator.serviceWorker.controller.postMessage({ type: 'SKIP_WAITING' });
+            }
+            window.location.reload();
+        });
+        
+        // Online/offline detection
+        window.addEventListener('online', () => {
+            document.getElementById('offline-banner').style.display = 'none';
+            document.getElementById('status-dot')?.classList.add('bg-emerald-500');
+            document.getElementById('status-dot')?.classList.remove('bg-red-500');
+            loadSegments(); // Refresh when back online
+        });
+        window.addEventListener('offline', () => {
+            document.getElementById('offline-banner').style.display = 'block';
+            document.getElementById('status-dot')?.classList.remove('bg-emerald-500');
+            document.getElementById('status-dot')?.classList.add('bg-red-500');
+        });
+        
+        // ========== CORE PLAYER LOGIC ==========
         const FEED_URL = 'https://rss.alexjones.media/AJNHourlyVideo.html';
         const CORS_PROXY = 'https://api.allorigins.win/raw?url=';
         
@@ -100,32 +209,19 @@
         let segmentCountSpan = document.getElementById('segment-count');
         let playlistContainer = document.getElementById('playlist-container');
         
-        // Parse date from filename like: 20260522_Fri_WarRoom-Hr3.m4v
-        // Extract YYYYMMDD and hour number
         function parseVideoDate(filename, titleText) {
-            // Try to get date from filename first (most reliable)
             let dateMatch = filename.match(/(\d{8})/);
             let dateStr = dateMatch ? dateMatch[1] : '';
-            
-            // If no date in filename, try title text
             if (!dateStr) {
                 dateMatch = titleText.match(/(\d{4})-(\d{2})-(\d{2})/);
-                if (dateMatch) {
-                    dateStr = dateMatch[1] + dateMatch[2] + dateMatch[3];
-                }
+                if (dateMatch) dateStr = dateMatch[1] + dateMatch[2] + dateMatch[3];
             }
-            
-            // Extract hour number (Hr1, Hr2, Hr3, Hr4)
             let hourMatch = filename.match(/Hr(\d)/i);
             let hour = hourMatch ? parseInt(hourMatch[1], 10) : 0;
-            
-            // Also check title for hour
             if (hour === 0) {
                 hourMatch = titleText.match(/Hr(\d)/i);
                 hour = hourMatch ? parseInt(hourMatch[1], 10) : 0;
             }
-            
-            // Calculate sortable timestamp
             let timestamp = 0;
             if (dateStr && dateStr.length === 8) {
                 let year = parseInt(dateStr.substring(0,4), 10);
@@ -134,120 +230,72 @@
                 let dateObj = new Date(year, month, day);
                 timestamp = dateObj.getTime() + (hour * 3600000);
             } else {
-                // Fallback: use current time minus days based on position (crude but works)
                 timestamp = Date.now() - (100 - hour) * 86400000;
             }
-            
             return { dateStr, hour, timestamp };
         }
         
-        // Fetch and parse the HTML feed
         async function loadSegments() {
             feedStatusSpan.innerHTML = '🔄 Fetching segments...';
             playlistContainer.innerHTML = `<div class="text-center py-10"><div class="spinner mx-auto w-6 h-6 border-2 border-slate-600 border-t-blue-500 rounded-full animate-spin mb-2"></div><p class="text-slate-400 text-sm">Loading from AJN archive...</p></div>`;
             
             try {
-                // Try direct fetch first
                 let response;
                 try {
                     response = await fetch(FEED_URL, { cache: 'no-store' });
                     if (!response.ok) throw new Error(`HTTP ${response.status}`);
                 } catch (directErr) {
-                    // Fallback to CORS proxy
                     response = await fetch(CORS_PROXY + encodeURIComponent(FEED_URL), { cache: 'no-store' });
                     if (!response.ok) throw new Error('Proxy fetch failed');
                 }
                 
                 const html = await response.text();
-                
-                // Parse all <a> tags with .m4v links
                 const parser = new DOMParser();
                 const doc = parser.parseFromString(html, 'text/html');
                 const links = doc.querySelectorAll('a[href*=".m4v"]');
                 
                 const segments = [];
-                
                 for (let link of links) {
                     let url = link.getAttribute('href');
                     if (!url || !url.includes('ajn.archives.pub')) continue;
-                    
                     let titleText = link.textContent.trim();
-                    // Extract filename from URL
                     let filename = url.split('/').pop() || '';
-                    
                     let { dateStr, hour, timestamp } = parseVideoDate(filename, titleText);
-                    
-                    // Format display date
-                    let displayDate = '';
-                    if (dateStr && dateStr.length === 8) {
-                        displayDate = `${dateStr.substring(0,4)}-${dateStr.substring(4,6)}-${dateStr.substring(6,8)}`;
-                    } else {
-                        displayDate = titleText.split(',')[0] || 'Latest';
-                    }
-                    
-                    segments.push({
-                        url: url,
-                        title: titleText,
-                        filename: filename,
-                        dateStr: dateStr,
-                        hour: hour,
-                        timestamp: timestamp,
-                        displayDate: displayDate
-                    });
+                    let displayDate = (dateStr && dateStr.length === 8) ? `${dateStr.substring(0,4)}-${dateStr.substring(4,6)}-${dateStr.substring(6,8)}` : (titleText.split(',')[0] || 'Latest');
+                    segments.push({ url, title: titleText, filename, dateStr, hour, timestamp, displayDate });
                 }
                 
-                if (segments.length === 0) {
-                    throw new Error('No video segments found');
-                }
-                
-                // CRITICAL FIX: Sort by timestamp DESCENDING (newest first)
+                if (segments.length === 0) throw new Error('No video segments found');
                 segments.sort((a, b) => b.timestamp - a.timestamp);
                 
+                // Check if new segments arrived (for update notification)
+                if (videoSegments.length > 0 && JSON.stringify(videoSegments[0]) !== JSON.stringify(segments[0])) {
+                    showUpdateToast();
+                }
+                
                 videoSegments = segments;
-                
-                console.log(`Loaded ${videoSegments.length} segments, sorted newest first`);
-                console.log('Newest:', videoSegments[0]?.title);
-                console.log('Oldest:', videoSegments[videoSegments.length-1]?.title);
-                
                 feedStatusSpan.innerHTML = `✅ ${videoSegments.length} segments (newest first)`;
                 segmentCountSpan.innerText = `${videoSegments.length} videos`;
-                
                 renderPlaylist();
                 
-                if (videoSegments.length > 0) {
-                    currentIndex = 0;
+                if (videoSegments.length > 0 && currentIndex === 0) {
                     loadSegment(0);
                     setupAutoNext();
                 }
-                
             } catch (err) {
                 console.error('Load error:', err);
                 feedStatusSpan.innerHTML = '⚠️ Failed to load';
-                playlistContainer.innerHTML = `
-                    <div class="text-center text-red-400 text-sm p-4">
-                        <svg class="w-10 h-10 mx-auto mb-2 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
-                        </svg>
-                        <p class="mb-2">Could not load segments from AJN feed.</p>
-                        <p class="text-xs text-slate-400 mb-3">${err.message}</p>
-                        <button onclick="location.reload()" class="retry-btn bg-blue-700 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm">⟳ Retry</button>
-                        <div class="mt-3 text-xs">
-                            <a href="${FEED_URL}" target="_blank" class="text-blue-400 underline">Open feed directly</a>
-                        </div>
-                    </div>
-                `;
+                if (videoSegments.length === 0) {
+                    playlistContainer.innerHTML = `<div class="text-center text-red-400 text-sm p-4">Could not load segments.<br><button onclick="location.reload()" class="mt-2 bg-blue-700 px-3 py-1 rounded text-white text-xs">Retry</button></div>`;
+                }
             }
         }
         
-        // Render playlist with newest FIRST (top of list)
         function renderPlaylist() {
             if (!playlistContainer) return;
             playlistContainer.innerHTML = '';
-            
             videoSegments.forEach((seg, idx) => {
                 const isActive = (idx === currentIndex);
-                
-                // Extract show name and hour for display
                 let showName = 'AJN';
                 if (seg.title.includes('WarRoom')) showName = 'War Room';
                 else if (seg.title.includes('Alex')) showName = 'Alex Jones';
@@ -255,141 +303,52 @@
                 else if (seg.title.includes('TNT')) showName = 'TNT';
                 else if (seg.title.includes('Sortor')) showName = 'Sortor';
                 else if (seg.title.includes('AmericanJournal')) showName = 'American Journal';
-                
                 const hourLabel = seg.hour ? `Hr${seg.hour}` : '';
-                const dateLabel = seg.displayDate;
-                
                 const div = document.createElement('div');
                 div.className = `segment-item p-3 rounded-xl border-l-4 ${isActive ? 'segment-active border-blue-500 bg-slate-800/60' : 'border-transparent bg-slate-800/30 hover:bg-slate-800/70'}`;
                 div.setAttribute('data-index', idx);
-                div.innerHTML = `
-                    <div class="flex justify-between items-start gap-2">
-                        <div class="flex-1 min-w-0">
-                            <div class="flex items-center gap-2 flex-wrap mb-1">
-                                <span class="text-xs font-semibold text-emerald-400">${showName}</span>
-                                ${hourLabel ? `<span class="text-xs font-mono text-blue-300">${hourLabel}</span>` : ''}
-                                <span class="text-[10px] bg-slate-700 px-1.5 py-0.5 rounded-full">${dateLabel}</span>
-                                ${idx === 0 ? '<span class="text-[10px] bg-emerald-800 text-emerald-200 px-1.5 py-0.5 rounded-full">NEWEST</span>' : ''}
-                            </div>
-                            <p class="text-sm font-medium text-white truncate" title="${escapeHtml(seg.title)}">${escapeHtml(seg.title.substring(0, 55))}${seg.title.length > 55 ? '…' : ''}</p>
-                        </div>
-                        ${isActive ? '<span class="text-green-400 text-xs flex-shrink-0">▶ PLAYING</span>' : '<span class="text-slate-500 text-xs flex-shrink-0">●</span>'}
-                    </div>
-                `;
-                div.addEventListener('click', () => {
-                    const newIdx = parseInt(div.dataset.index, 10);
-                    if (!isNaN(newIdx) && newIdx !== currentIndex) {
-                        currentIndex = newIdx;
-                        loadSegment(currentIndex);
-                        setupAutoNext();
-                        renderPlaylist();
-                    }
-                });
+                div.innerHTML = `<div class="flex justify-between items-start gap-2"><div class="flex-1 min-w-0"><div class="flex items-center gap-2 flex-wrap mb-1"><span class="text-xs font-semibold text-emerald-400">${showName}</span>${hourLabel ? `<span class="text-xs font-mono text-blue-300">${hourLabel}</span>` : ''}<span class="text-[10px] bg-slate-700 px-1.5 py-0.5 rounded-full">${seg.displayDate}</span>${idx === 0 ? '<span class="text-[10px] bg-emerald-800 text-emerald-200 px-1.5 py-0.5 rounded-full">NEWEST</span>' : ''}</div><p class="text-sm font-medium text-white truncate" title="${escapeHtml(seg.title)}">${escapeHtml(seg.title.substring(0, 55))}${seg.title.length > 55 ? '…' : ''}</p></div>${isActive ? '<span class="text-green-400 text-xs flex-shrink-0">▶ PLAYING</span>' : '<span class="text-slate-500 text-xs flex-shrink-0">●</span>'}</div>`;
+                div.addEventListener('click', () => { const newIdx = parseInt(div.dataset.index, 10); if (!isNaN(newIdx) && newIdx !== currentIndex) { currentIndex = newIdx; loadSegment(currentIndex); setupAutoNext(); renderPlaylist(); } });
                 playlistContainer.appendChild(div);
             });
-            
-            // Scroll active into view
             const active = playlistContainer.querySelector('.segment-active');
             if (active) active.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
         
-        // Load and play a specific segment
         function loadSegment(index) {
             if (!videoSegments.length || index < 0 || index >= videoSegments.length) return;
             const seg = videoSegments[index];
             if (!seg.url) return;
-            
             videoPlayer.pause();
             videoPlayer.src = seg.url;
             videoPlayer.load();
-            
-            const playPromise = videoPlayer.play();
-            if (playPromise !== undefined) {
-                playPromise.catch(e => console.log('Autoplay prevented:', e));
-            }
-            
+            videoPlayer.play().catch(e => console.log('Autoplay prevented:', e));
             currentTitleSpan.innerText = seg.title;
             positionBadge.innerText = `${index + 1} / ${videoSegments.length}`;
             progressFill.style.width = '0%';
         }
         
         function playNext() {
-            if (currentIndex + 1 < videoSegments.length) {
-                currentIndex++;
-                loadSegment(currentIndex);
-                setupAutoNext();
-                renderPlaylist();
-            } else {
-                // Loop back to newest
-                currentIndex = 0;
-                loadSegment(0);
-                setupAutoNext();
-                renderPlaylist();
-            }
+            if (currentIndex + 1 < videoSegments.length) { currentIndex++; loadSegment(currentIndex); setupAutoNext(); renderPlaylist(); }
+            else { currentIndex = 0; loadSegment(0); setupAutoNext(); renderPlaylist(); }
         }
-        
         function playPrev() {
-            if (currentIndex - 1 >= 0) {
-                currentIndex--;
-                loadSegment(currentIndex);
-                setupAutoNext();
-                renderPlaylist();
-            } else {
-                // Go to oldest
-                currentIndex = videoSegments.length - 1;
-                loadSegment(currentIndex);
-                setupAutoNext();
-                renderPlaylist();
-            }
+            if (currentIndex - 1 >= 0) { currentIndex--; loadSegment(currentIndex); setupAutoNext(); renderPlaylist(); }
+            else { currentIndex = videoSegments.length - 1; loadSegment(currentIndex); setupAutoNext(); renderPlaylist(); }
         }
+        function setupAutoNext() { videoPlayer.removeEventListener('ended', onEnded); videoPlayer.addEventListener('ended', onEnded); }
+        function onEnded() { playNext(); }
         
-        function setupAutoNext() {
-            videoPlayer.removeEventListener('ended', onEnded);
-            videoPlayer.addEventListener('ended', onEnded);
-        }
+        videoPlayer.addEventListener('timeupdate', () => { if (videoPlayer.duration && !isNaN(videoPlayer.duration)) { const percent = (videoPlayer.currentTime / videoPlayer.duration) * 100; progressFill.style.width = `${percent}%`; } });
+        videoPlayer.addEventListener('error', () => { setTimeout(() => playNext(), 1000); });
         
-        function onEnded() {
-            playNext();
-        }
+        function escapeHtml(str) { if (!str) return ''; return str.replace(/[&<>]/g, m => { if (m === '&') return '&amp;'; if (m === '<') return '&lt;'; if (m === '>') return '&gt;'; return m; }); }
         
-        // Update progress bar
-        videoPlayer.addEventListener('timeupdate', () => {
-            if (videoPlayer.duration && !isNaN(videoPlayer.duration)) {
-                const percent = (videoPlayer.currentTime / videoPlayer.duration) * 100;
-                progressFill.style.width = `${percent}%`;
-            }
-        });
-        
-        // Error handling - skip to next on error
-        videoPlayer.addEventListener('error', () => {
-            console.log('Video error, skipping to next');
-            setTimeout(() => playNext(), 1000);
-        });
-        
-        function escapeHtml(str) {
-            if (!str) return '';
-            return str.replace(/[&<>]/g, m => {
-                if (m === '&') return '&amp;';
-                if (m === '<') return '&lt;';
-                if (m === '>') return '&gt;';
-                return m;
-            });
-        }
-        
-        // Button events
         document.getElementById('next-segment-btn')?.addEventListener('click', playNext);
         document.getElementById('prev-segment-btn')?.addEventListener('click', playPrev);
+        window.addEventListener('keydown', (e) => { if (e.key === 'ArrowLeft') { playPrev(); e.preventDefault(); } if (e.key === 'ArrowRight') { playNext(); e.preventDefault(); } });
         
-        // Keyboard controls
-        window.addEventListener('keydown', (e) => {
-            if (e.key === 'ArrowLeft') { playPrev(); e.preventDefault(); }
-            if (e.key === 'ArrowRight') { playNext(); e.preventDefault(); }
-        });
-        
-        // Initialize
         loadSegments();
-        
-        // Refresh every 10 minutes
         setInterval(() => { loadSegments(); }, 10 * 60 * 1000);
     </script>
 </body>

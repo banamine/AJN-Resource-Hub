@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
-    <title>AJN Hourly Segments · PWA · Alex Hr1→Hr4 then WarRoom Hr1→Hr4</title>
-    <meta name="description" content="AJN Hourly Video Archive - Custom order: Alex Hr1→Hr4 (oldest to newest), then WarRoom Hr1→Hr4">
+    <title>AJN Hourly Segments · Auto-Retry · Hang Tough Info Warrior</title>
+    <meta name="description" content="AJN Hourly Video Archive - Custom order: Alex Hr1→Hr4 then WarRoom Hr1→Hr4 with auto-retry">
     <meta name="theme-color" content="#0a0f1c">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -67,15 +67,60 @@
             z-index: 10000;
             display: none;
         }
-        .order-info {
-            font-size: 10px;
-            color: #64748b;
-            margin-top: 4px;
+        /* Persistent loading overlay / spinner with "Hang Tough" message */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(10, 15, 28, 0.92);
+            backdrop-filter: blur(4px);
+            z-index: 20000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 20px;
+            transition: opacity 0.3s ease;
+        }
+        .loading-spinner-large {
+            width: 60px;
+            height: 60px;
+            border: 4px solid #1e293b;
+            border-top: 4px solid #3b82f6;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .loading-message {
             text-align: center;
+            color: #cbd5e1;
+            font-size: 1rem;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+        .loading-sub {
+            font-size: 0.75rem;
+            color: #64748b;
+            margin-top: 8px;
+        }
+        .retry-attempt {
+            font-family: monospace;
+            font-size: 0.7rem;
+            color: #475569;
         }
     </style>
 </head>
 <body class="font-sans antialiased text-gray-200">
+
+    <!-- Global loading overlay - shows when no segments are loaded yet (auto-retry) -->
+    <div id="loadingOverlay" class="loading-overlay" aria-live="polite" role="status" aria-label="Parsing last 300 hours of AJN archives, hang tough Info Warrior">
+        <div class="loading-spinner-large" aria-hidden="true"></div>
+        <div class="loading-message">⚡ Hang Tough, Info Warrior ⚡</div>
+        <div class="loading-sub">Parsing last 300 hours of AJN archives</div>
+        <div id="retryCounter" class="retry-attempt">Establishing connection to archive feed...</div>
+    </div>
 
     <div id="offline-banner" class="offline-banner">📡 You are offline — showing cached content</div>
     <div id="update-toast" style="display: none;" class="update-toast">
@@ -87,11 +132,11 @@
         <div class="flex flex-col md:flex-row justify-between items-center border-b border-slate-800 pb-5 mb-6 gap-3">
             <div>
                 <h1 class="text-3xl font-extrabold bg-gradient-to-r from-emerald-400 to-blue-500 bg-clip-text text-transparent">AJN Hourly Segments</h1>
-                <p class="text-sm text-slate-400 mt-1">Alex Hr1→Hr4 (oldest→newest) · War Room Hr1→Hr4 · Offline ready</p>
+                <p class="text-sm text-slate-400 mt-1">Alex Hr1→Hr4 (oldest→newest) · War Room Hr1→Hr4 · Auto-retry</p>
             </div>
             <div class="flex items-center gap-3 text-xs bg-slate-900 px-4 py-2 rounded-full">
                 <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" id="status-dot"></span>
-                <span id="feed-status" class="text-slate-300">Loading segments...</span>
+                <span id="feed-status" class="text-slate-300">Initializing archive scan...</span>
             </div>
         </div>
 
@@ -104,14 +149,14 @@
                     <div class="p-4 bg-slate-800/80 border-t border-slate-700">
                         <div class="flex flex-wrap justify-between items-center gap-3">
                             <div class="flex-1 min-w-0">
-                                <h2 id="current-title" class="text-white font-bold text-lg truncate">Select a segment</h2>
+                                <h2 id="current-title" class="text-white font-bold text-lg truncate">Awaiting archive load...</h2>
                                 <div class="flex items-center gap-3 mt-1">
                                     <span id="position-badge" class="text-[10px] bg-slate-700 px-2 py-0.5 rounded-full">0 / 0</span>
                                 </div>
                             </div>
                             <div class="flex gap-2">
-                                <button id="prev-segment-btn" class="bg-slate-700 hover:bg-slate-600 text-white px-3 py-1.5 rounded-full text-sm transition">◀ Prev</button>
-                                <button id="next-segment-btn" class="bg-blue-700 hover:bg-blue-600 text-white px-3 py-1.5 rounded-full text-sm transition">Next ▶</button>
+                                <button id="prev-segment-btn" class="bg-slate-700 hover:bg-slate-600 text-white px-3 py-1.5 rounded-full text-sm transition" disabled>◀ Prev</button>
+                                <button id="next-segment-btn" class="bg-blue-700 hover:bg-blue-600 text-white px-3 py-1.5 rounded-full text-sm transition" disabled>Next ▶</button>
                             </div>
                         </div>
                         <div class="mt-3 w-full bg-slate-700 rounded-full h-1.5 overflow-hidden">
@@ -124,10 +169,10 @@
             <div class="bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden flex flex-col h-[540px]">
                 <div class="bg-slate-950 px-4 py-3 border-b border-slate-800 flex justify-between items-center">
                     <h3 class="font-bold text-white text-sm">📋 Playlist (Exact Order)</h3>
-                    <span id="segment-count" class="text-[11px] text-slate-400">0 items</span>
+                    <span id="segment-count" class="text-[11px] text-slate-400">— items</span>
                 </div>
                 <div id="playlist-container" class="flex-1 overflow-y-auto playlist-scroll p-2 space-y-2">
-                    <div class="text-center text-slate-500 text-sm py-10">Loading playlist...</div>
+                    <div class="text-center text-slate-500 text-sm py-10 italic">Scanning archive feed...</div>
                 </div>
                 <div class="p-3 border-t border-slate-800">
                     <div class="text-[10px] text-slate-500 text-center">
@@ -139,7 +184,7 @@
         </div>
 
         <footer class="mt-10 text-center text-xs text-slate-600 border-t border-slate-800 pt-5">
-            <p>AJN Resource Hub — PWA ready | Auto-refresh every 60 min | Install for offline access</p>
+            <p>AJN Resource Hub — Auto-retry every 5 sec until archive loads | Install for offline access</p>
         </footer>
     </div>
 
@@ -148,18 +193,8 @@
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('/sw.js')
-                    .then(reg => {
-                        console.log('SW registered:', reg.scope);
-                        if (reg.waiting) showUpdateToast();
-                        reg.addEventListener('updatefound', () => {
-                            const newWorker = reg.installing;
-                            newWorker.addEventListener('statechange', () => {
-                                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) showUpdateToast();
-                            });
-                        });
-                    })
+                    .then(reg => console.log('SW registered:', reg.scope))
                     .catch(err => console.log('SW registration failed:', err));
-                
                 let refreshing = false;
                 navigator.serviceWorker.addEventListener('controllerchange', () => {
                     if (refreshing) return;
@@ -172,7 +207,6 @@
         function showUpdateToast() { 
             const toast = document.getElementById('update-toast'); 
             if (toast) toast.style.display = 'flex'; 
-            // Auto-hide after 8 seconds
             setTimeout(() => { if (toast) toast.style.display = 'none'; }, 8000);
         }
         document.getElementById('refresh-btn')?.addEventListener('click', () => {
@@ -180,19 +214,7 @@
             window.location.reload();
         });
         
-        window.addEventListener('online', () => {
-            document.getElementById('offline-banner').style.display = 'none';
-            document.getElementById('status-dot')?.classList.add('bg-emerald-500');
-            document.getElementById('status-dot')?.classList.remove('bg-red-500');
-            loadSegments();
-        });
-        window.addEventListener('offline', () => {
-            document.getElementById('offline-banner').style.display = 'block';
-            document.getElementById('status-dot')?.classList.remove('bg-emerald-500');
-            document.getElementById('status-dot')?.classList.add('bg-red-500');
-        });
-        
-        // ========== CORE PLAYER LOGIC with EXACT ORDER ==========
+        // ========== CORE PLAYER LOGIC with AUTO-RETRY (no manual button) ==========
         const FEED_URL = 'https://rss.alexjones.media/AJNHourlyVideo.html';
         const CORS_PROXY = 'https://api.allorigins.win/raw?url=';
         
@@ -205,105 +227,92 @@
         let feedStatusSpan = document.getElementById('feed-status');
         let segmentCountSpan = document.getElementById('segment-count');
         let playlistContainer = document.getElementById('playlist-container');
+        let loadingOverlay = document.getElementById('loadingOverlay');
+        let retryCounterSpan = document.getElementById('retryCounter');
+        
+        let retryAttempt = 0;
+        let autoRetryTimer = null;
+        let isCurrentlyLoading = false;
         
         // Parse segment details from filename and title
         function parseSegment(filename, titleText, url) {
-            // Extract date (YYYYMMDD)
             let dateMatch = filename.match(/(\d{8})/);
             let dateStr = dateMatch ? dateMatch[1] : '';
             if (!dateStr) {
                 dateMatch = titleText.match(/(\d{4})-(\d{2})-(\d{2})/);
                 if (dateMatch) dateStr = dateMatch[1] + dateMatch[2] + dateMatch[3];
             }
-            
-            // Extract hour number (Hr1, Hr2, Hr3, Hr4)
             let hourMatch = filename.match(/Hr(\d)/i);
             let hour = hourMatch ? parseInt(hourMatch[1], 10) : 0;
             if (hour === 0) {
                 hourMatch = titleText.match(/Hr(\d)/i);
                 hour = hourMatch ? parseInt(hourMatch[1], 10) : 0;
             }
-            
-            // Determine show type (Alex or WarRoom)
             let lowerTitle = titleText.toLowerCase();
             let isAlex = lowerTitle.includes('alex') && !lowerTitle.includes('warroom');
             let isWarRoom = lowerTitle.includes('warroom');
-            
-            // Compute sortable timestamp for date comparison (older dates first)
             let dateTimestamp = 0;
             if (dateStr && dateStr.length === 8) {
                 let year = parseInt(dateStr.substring(0,4), 10);
                 let month = parseInt(dateStr.substring(4,6), 10) - 1;
                 let day = parseInt(dateStr.substring(6,8), 10);
                 dateTimestamp = new Date(year, month, day).getTime();
-            } else {
-                dateTimestamp = 0;
             }
-            
-            // Format display date
-            let displayDate = '';
-            if (dateStr && dateStr.length === 8) {
-                displayDate = `${dateStr.substring(0,4)}-${dateStr.substring(4,6)}-${dateStr.substring(6,8)}`;
-            } else {
-                displayDate = titleText.split(',')[0] || 'Latest';
-            }
-            
-            return {
-                url,
-                title: titleText,
-                filename,
-                dateStr,
-                hour,
-                isAlex,
-                isWarRoom,
-                dateTimestamp,
-                displayDate
-            };
+            let displayDate = (dateStr && dateStr.length === 8) ? `${dateStr.substring(0,4)}-${dateStr.substring(4,6)}-${dateStr.substring(6,8)}` : (titleText.split(',')[0] || 'Latest');
+            return { url, title: titleText, filename, dateStr, hour, isAlex, isWarRoom, dateTimestamp, displayDate };
         }
         
-        // CUSTOM ORDER: Group by date (oldest first), then within each date:
-        // Alex Hr1, Hr2, Hr3, Hr4 (ascending hour) followed by WarRoom Hr1, Hr2, Hr3, Hr4 (ascending hour)
+        // Apply custom order: group by date (oldest first), then Alex Hr1-4, then WarRoom Hr1-4
         function applyCustomOrder(segments) {
-            // Filter only Alex and WarRoom segments
             const valid = segments.filter(s => s.isAlex || s.isWarRoom);
             if (valid.length === 0) return [];
-            
-            // Group by date (YYYYMMDD)
             const byDate = new Map();
             for (const seg of valid) {
                 const dateKey = seg.dateStr || 'unknown';
                 if (!byDate.has(dateKey)) byDate.set(dateKey, []);
                 byDate.get(dateKey).push(seg);
             }
-            
-            // Sort dates ascending (oldest first)
             const sortedDates = Array.from(byDate.keys()).sort((a, b) => {
                 if (a === 'unknown') return 1;
                 if (b === 'unknown') return -1;
                 return a.localeCompare(b);
             });
-            
             const orderedResult = [];
-            
             for (const date of sortedDates) {
                 const daySegments = byDate.get(date);
-                
-                // Split into Alex and WarRoom
                 const alexSegs = daySegments.filter(s => s.isAlex).sort((a, b) => a.hour - b.hour);
                 const warSegs = daySegments.filter(s => s.isWarRoom).sort((a, b) => a.hour - b.hour);
-                
-                // Order: Alex Hr1, Hr2, Hr3, Hr4 then WarRoom Hr1, Hr2, Hr3, Hr4
                 orderedResult.push(...alexSegs);
                 orderedResult.push(...warSegs);
             }
-            
             return orderedResult;
         }
         
-        async function loadSegments() {
-            feedStatusSpan.innerHTML = '🔄 Fetching segments...';
-            playlistContainer.innerHTML = `<div class="text-center py-10"><div class="spinner mx-auto w-6 h-6 border-2 border-slate-600 border-t-blue-500 rounded-full animate-spin mb-2"></div><p class="text-slate-400 text-sm">Loading from AJN archive...</p></div>`;
-            
+        // Hide loading overlay and enable UI
+        function hideLoadingAndEnableUI() {
+            if (loadingOverlay) {
+                loadingOverlay.style.opacity = '0';
+                setTimeout(() => { loadingOverlay.style.display = 'none'; }, 300);
+            }
+            // Enable prev/next buttons
+            const prevBtn = document.getElementById('prev-segment-btn');
+            const nextBtn = document.getElementById('next-segment-btn');
+            if (prevBtn) prevBtn.disabled = false;
+            if (nextBtn) nextBtn.disabled = false;
+        }
+        
+        // Show persistent loading (only when no segments)
+        function showPersistentLoading(message) {
+            if (!loadingOverlay) return;
+            loadingOverlay.style.display = 'flex';
+            loadingOverlay.style.opacity = '1';
+            if (retryCounterSpan) retryCounterSpan.innerText = message || 'Retrying connection to archive...';
+        }
+        
+        // Core fetch + parse + order
+        async function fetchAndParseSegments() {
+            if (isCurrentlyLoading) return null;
+            isCurrentlyLoading = true;
             try {
                 let response;
                 try {
@@ -313,12 +322,10 @@
                     response = await fetch(CORS_PROXY + encodeURIComponent(FEED_URL), { cache: 'no-store' });
                     if (!response.ok) throw new Error('Proxy fetch failed');
                 }
-                
                 const html = await response.text();
                 const parser = new DOMParser();
                 const doc = parser.parseFromString(html, 'text/html');
                 const links = doc.querySelectorAll('a[href*=".m4v"]');
-                
                 const rawSegments = [];
                 for (let link of links) {
                     let url = link.getAttribute('href');
@@ -328,79 +335,94 @@
                     let parsed = parseSegment(filename, titleText, url);
                     rawSegments.push(parsed);
                 }
-                
-                if (rawSegments.length === 0) throw new Error('No segments found in feed');
-                
-                // Apply custom ordering (oldest date first, Alex then WarRoom, hours ascending)
+                if (rawSegments.length === 0) throw new Error('No segments found');
                 const ordered = applyCustomOrder(rawSegments);
-                
-                if (ordered.length === 0) throw new Error('No Alex or WarRoom segments found');
-                
-                // Check if content changed (for update notification)
-                let hasNewContent = false;
-                if (videoSegments.length > 0 && ordered.length > 0) {
-                    if (videoSegments[0].url !== ordered[0].url || videoSegments.length !== ordered.length) {
-                        hasNewContent = true;
-                    }
-                }
-                if (hasNewContent) showUpdateToast();
-                
-                videoSegments = ordered;
-                
-                // Update status display
-                const alexCount = videoSegments.filter(s => s.isAlex).length;
-                const warCount = videoSegments.filter(s => s.isWarRoom).length;
-                feedStatusSpan.innerHTML = `✅ ${videoSegments.length} segments (Alex: ${alexCount}, WarRoom: ${warCount})`;
-                segmentCountSpan.innerText = `${videoSegments.length} videos`;
-                
-                renderPlaylist();
-                
-                if (videoSegments.length > 0 && currentIndex === 0) {
-                    loadSegment(0);
-                    setupAutoNext();
-                }
-                
-                console.log('Playlist order:', videoSegments.map(s => `${s.isAlex ? 'Alex' : 'WarRoom'} Hr${s.hour} (${s.dateStr})`));
-                
+                if (ordered.length === 0) throw new Error('No Alex/WarRoom segments');
+                return ordered;
             } catch (err) {
-                console.error('Load error:', err);
-                feedStatusSpan.innerHTML = '⚠️ Failed to load';
-                if (videoSegments.length === 0) {
-                    playlistContainer.innerHTML = `<div class="text-center text-red-400 text-sm p-4">
-                        <p class="mb-2">Could not load segments.</p>
-                        <button onclick="location.reload()" class="bg-blue-700 px-4 py-2 rounded-lg text-white text-xs">⟳ Retry</button>
-                        <div class="mt-3 text-xs"><a href="${FEED_URL}" target="_blank" class="text-blue-400 underline">Open feed directly</a></div>
-                    </div>`;
-                }
+                console.warn('Fetch attempt failed:', err.message);
+                return null;
+            } finally {
+                isCurrentlyLoading = false;
             }
+        }
+        
+        // Main load with auto-retry logic (no manual button)
+        async function loadSegmentsWithAutoRetry() {
+            if (videoSegments.length > 0) {
+                // Already have segments, just do silent background refresh (60 min)
+                try {
+                    const newSegments = await fetchAndParseSegments();
+                    if (newSegments && newSegments.length > 0 && JSON.stringify(newSegments[0]) !== JSON.stringify(videoSegments[0])) {
+                        videoSegments = newSegments;
+                        renderPlaylist();
+                        if (currentIndex >= videoSegments.length) currentIndex = 0;
+                        loadSegment(currentIndex);
+                        setupAutoNext();
+                        feedStatusSpan.innerHTML = `✅ ${videoSegments.length} segments (auto-refreshed)`;
+                        showUpdateToast();
+                    }
+                } catch(e) { console.log('Background refresh failed'); }
+                return;
+            }
+            
+            // No segments yet — show loading overlay and retry until success
+            showPersistentLoading('🔁 Scanning AJN archives (last 300 hours)...');
+            retryAttempt = 0;
+            
+            const attemptLoad = async () => {
+                if (videoSegments.length > 0) return; // already loaded
+                retryAttempt++;
+                if (retryCounterSpan) {
+                    let waitMsg = `Retry #${retryAttempt} · parsing latest hourly segments · hang tight`;
+                    retryCounterSpan.innerText = waitMsg;
+                }
+                feedStatusSpan.innerHTML = `⏳ Loading attempt ${retryAttempt}... parsing 300h archive`;
+                const segments = await fetchAndParseSegments();
+                if (segments && segments.length > 0) {
+                    videoSegments = segments;
+                    const alexCount = videoSegments.filter(s => s.isAlex).length;
+                    const warCount = videoSegments.filter(s => s.isWarRoom).length;
+                    feedStatusSpan.innerHTML = `✅ ${videoSegments.length} segments (Alex: ${alexCount}, WarRoom: ${warCount})`;
+                    segmentCountSpan.innerText = `${videoSegments.length} videos`;
+                    renderPlaylist();
+                    if (videoSegments.length > 0) {
+                        currentIndex = 0;
+                        loadSegment(0);
+                        setupAutoNext();
+                        hideLoadingAndEnableUI();
+                    }
+                    if (autoRetryTimer) clearInterval(autoRetryTimer);
+                    autoRetryTimer = null;
+                } else {
+                    // Still no data: schedule next retry in 5 seconds
+                    if (autoRetryTimer) clearTimeout(autoRetryTimer);
+                    autoRetryTimer = setTimeout(attemptLoad, 5000);
+                }
+            };
+            
+            attemptLoad();
         }
         
         function renderPlaylist() {
             if (!playlistContainer) return;
             playlistContainer.innerHTML = '';
-            
             videoSegments.forEach((seg, idx) => {
                 const isActive = (idx === currentIndex);
                 const showName = seg.isAlex ? 'Alex Jones' : 'War Room';
                 const hourLabel = seg.hour ? `Hr${seg.hour}` : '';
-                const bgColor = seg.isAlex ? 'border-l-blue-500/30' : 'border-l-purple-500/30';
-                
-                // Special badges
                 let extraBadge = '';
                 if (idx === 0) extraBadge = '<span class="text-[9px] bg-emerald-800 text-emerald-200 px-1.5 py-0.5 rounded-full ml-1">FIRST</span>';
                 if (idx === videoSegments.length - 1) extraBadge = '<span class="text-[9px] bg-amber-800 text-amber-200 px-1.5 py-0.5 rounded-full ml-1">LATEST</span>';
-                
-                // Separator between Alex and War Room blocks (visual)
-                let separator = '';
+                let separatorHtml = '';
                 if (idx > 0 && seg.isWarRoom && videoSegments[idx-1].isAlex) {
-                    separator = '<div class="relative my-2"><div class="absolute inset-0 flex items-center"><div class="w-full border-t border-slate-700"></div></div><div class="relative flex justify-center text-xs"><span class="bg-slate-900 px-2 text-slate-400">⟶ WAR ROOM SEGMENTS ⟶</span></div></div>';
+                    separatorHtml = '<div class="relative my-2"><div class="absolute inset-0 flex items-center"><div class="w-full border-t border-slate-700"></div></div><div class="relative flex justify-center text-xs"><span class="bg-slate-900 px-2 text-slate-400">⟶ WAR ROOM SEGMENTS ⟶</span></div></div>';
                 }
-                
                 const div = document.createElement('div');
-                div.className = `segment-item p-3 rounded-xl border-l-4 ${isActive ? 'segment-active border-blue-500 bg-slate-800/60' : `border-transparent ${bgColor} bg-slate-800/30 hover:bg-slate-800/70`}`;
+                div.className = `segment-item p-3 rounded-xl border-l-4 ${isActive ? 'segment-active border-blue-500 bg-slate-800/60' : 'border-transparent bg-slate-800/30 hover:bg-slate-800/70'}`;
                 div.setAttribute('data-index', idx);
                 div.innerHTML = `
-                    ${separator}
+                    ${separatorHtml}
                     <div class="flex justify-between items-start gap-2">
                         <div class="flex-1 min-w-0">
                             <div class="flex items-center gap-2 flex-wrap mb-1">
@@ -414,9 +436,9 @@
                         ${isActive ? '<span class="text-green-400 text-xs flex-shrink-0">▶ PLAYING</span>' : '<span class="text-slate-500 text-xs flex-shrink-0">●</span>'}
                     </div>
                 `;
+                div.addEventListener('click', () => { const newIdx = parseInt(div.dataset.index, 10); if (!isNaN(newIdx) && newIdx !== currentIndex) { currentIndex = newIdx; loadSegment(currentIndex); setupAutoNext(); renderPlaylist(); } });
                 playlistContainer.appendChild(div);
             });
-            
             const active = playlistContainer.querySelector('.segment-active');
             if (active) active.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
@@ -425,25 +447,23 @@
             if (!videoSegments.length || index < 0 || index >= videoSegments.length) return;
             const seg = videoSegments[index];
             if (!seg.url) return;
-            
             videoPlayer.pause();
             videoPlayer.src = seg.url;
             videoPlayer.load();
             videoPlayer.play().catch(e => console.log('Autoplay prevented:', e));
-            
             currentTitleSpan.innerText = seg.title;
             positionBadge.innerText = `${index + 1} / ${videoSegments.length}`;
             progressFill.style.width = '0%';
         }
         
         function playNext() {
+            if (videoSegments.length === 0) return;
             if (currentIndex + 1 < videoSegments.length) { 
                 currentIndex++; 
                 loadSegment(currentIndex); 
                 setupAutoNext(); 
                 renderPlaylist(); 
             } else { 
-                // Loop back to first (Alex Hr1 of oldest date)
                 currentIndex = 0; 
                 loadSegment(0); 
                 setupAutoNext(); 
@@ -452,13 +472,13 @@
         }
         
         function playPrev() {
+            if (videoSegments.length === 0) return;
             if (currentIndex - 1 >= 0) { 
                 currentIndex--; 
                 loadSegment(currentIndex); 
                 setupAutoNext(); 
                 renderPlaylist(); 
             } else { 
-                // Go to last (WarRoom Hr4 of newest date)
                 currentIndex = videoSegments.length - 1; 
                 loadSegment(currentIndex); 
                 setupAutoNext(); 
@@ -470,10 +490,7 @@
             videoPlayer.removeEventListener('ended', onEnded); 
             videoPlayer.addEventListener('ended', onEnded); 
         }
-        
-        function onEnded() { 
-            playNext(); 
-        }
+        function onEnded() { playNext(); }
         
         videoPlayer.addEventListener('timeupdate', () => { 
             if (videoPlayer.duration && !isNaN(videoPlayer.duration)) { 
@@ -481,39 +498,41 @@
                 progressFill.style.width = `${percent}%`; 
             } 
         });
-        
-        videoPlayer.addEventListener('error', () => { 
-            console.log('Video error, skipping to next');
-            setTimeout(() => playNext(), 1000); 
-        });
+        videoPlayer.addEventListener('error', () => { setTimeout(() => playNext(), 1000); });
         
         function escapeHtml(str) { 
             if (!str) return ''; 
-            return str.replace(/[&<>]/g, m => { 
-                if (m === '&') return '&amp;'; 
-                if (m === '<') return '&lt;'; 
-                if (m === '>') return '&gt;'; 
-                return m; 
-            }); 
+            return str.replace(/[&<>]/g, m => { if (m === '&') return '&amp;'; if (m === '<') return '&lt;'; if (m === '>') return '&gt;'; return m; }); 
         }
         
         document.getElementById('next-segment-btn')?.addEventListener('click', playNext);
         document.getElementById('prev-segment-btn')?.addEventListener('click', playPrev);
-        
         window.addEventListener('keydown', (e) => { 
             if (e.key === 'ArrowLeft') { playPrev(); e.preventDefault(); } 
             if (e.key === 'ArrowRight') { playNext(); e.preventDefault(); } 
         });
         
-        // Initial load
-        loadSegments();
+        // Start the auto-retry loader
+        loadSegmentsWithAutoRetry();
         
-        // Auto-refresh every 60 minutes (60000 ms * 60)
-        const REFRESH_INTERVAL_MS = 60 * 60 * 1000;
+        // Background refresh every 60 minutes once segments are loaded
         setInterval(() => { 
-            console.log('Auto-refreshing feed (60 min interval)...');
-            loadSegments(); 
-        }, REFRESH_INTERVAL_MS);
+            if (videoSegments.length > 0) {
+                console.log('Background refresh (60 min)');
+                loadSegmentsWithAutoRetry(); 
+            }
+        }, 60 * 60 * 1000);
+        
+        // Online/Offline handling
+        window.addEventListener('online', () => {
+            document.getElementById('offline-banner').style.display = 'none';
+            if (videoSegments.length === 0) loadSegmentsWithAutoRetry();
+            else feedStatusSpan.innerHTML = `✅ ${videoSegments.length} segments (back online)`;
+        });
+        window.addEventListener('offline', () => {
+            document.getElementById('offline-banner').style.display = 'block';
+            feedStatusSpan.innerHTML = `📡 Offline — ${videoSegments.length} cached segments`;
+        });
     </script>
 </body>
 </html>

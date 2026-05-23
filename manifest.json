@@ -1,21 +1,21 @@
 {
-  "name": "AJN Archive Player",
-  "short_name": "AJN Player",
-  "description": "Hourly video archive with calendar date picker",
-  "start_url": "/",
+  "name": "AJN Hourly Segments",
+  "short_name": "AJN Hub",
+  "description": "Hourly video archive for AJN - Progressive Web App",
+  "start_url": ".",
   "display": "standalone",
   "background_color": "#0a0f1c",
   "theme_color": "#0a0f1c",
   "orientation": "portrait",
   "icons": [
     {
-      "src": "/icon-192.png",
+      "src": "icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "/icon-512.png",
+      "src": "icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"

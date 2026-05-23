@@ -1,5 +1,5 @@
-// sw.js - Proper Service Worker with NO DOM manipulation
-const CACHE_NAME = 'ajn-shell-v3';
+// sw.js - Production Service Worker with clean cache management
+const CACHE_NAME = 'ajn-shell-v4';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
@@ -8,7 +8,6 @@ const ASSETS_TO_CACHE = [
   '/icon-512.png'
 ];
 
-// Install: cache app shell
 self.addEventListener('install', (event) => {
   console.log('[SW] Installing...');
   event.waitUntil(
@@ -17,37 +16,44 @@ self.addEventListener('install', (event) => {
   self.skipWaiting();
 });
 
-// Activate: clean old caches
 self.addEventListener('activate', (event) => {
   console.log('[SW] Activating...');
   event.waitUntil(
     caches.keys().then((keys) => Promise.all(
-      keys.map((key) => key !== CACHE_NAME && caches.delete(key))
+      keys.map((key) => {
+        if (key !== CACHE_NAME) {
+          console.log('[SW] Deleting old cache:', key);
+          return caches.delete(key);
+        }
+      })
     ))
   );
   self.clients.claim();
 });
 
-// Fetch: cache-first for assets, network-first for feed (handled by main script)
 self.addEventListener('fetch', (event) => {
   const url = event.request.url;
   
-  // Don't cache video files (they're large and streamed)
-  if (url.includes('.m4v') || url.includes('.mp4')) {
+  // Don't cache video files (streaming optimization)
+  if (url.includes('.m4v') || url.includes('.mp4') || url.includes('.ts') || url.includes('.m3u8')) {
     event.respondWith(fetch(event.request));
     return;
   }
   
-  // Cache-first for everything else
+  // Cache-first strategy for all other assets
   event.respondWith(
-    caches.match(event.request).then((cached) => {
-      return cached || fetch(event.request).then((response) => {
-        // Cache valid responses
-        if (response && response.status === 200 && response.type === 'basic') {
-          const responseToCache = response.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, responseToCache));
+    caches.match(event.request).then((cachedResponse) => {
+      if (cachedResponse) {
+        return cachedResponse;
+      }
+      return fetch(event.request).then((networkResponse) => {
+        if (networkResponse && networkResponse.status === 200 && networkResponse.type === 'basic') {
+          const responseToCache = networkResponse.clone();
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put(event.request, responseToCache);
+          });
         }
-        return response;
+        return networkResponse;
       });
     })
   );

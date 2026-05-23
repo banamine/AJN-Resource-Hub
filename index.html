@@ -2,484 +2,395 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AJN Resource Hub | Live Streams + Video Segments</title>
-    <meta name="description" content="Alex Jones Network Live Streams and fresh video segments">
-    <meta name="author" content="alexjones.media">
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>AJN Hourly Segments · Newest First</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/hls.js@1"></script>
-
     <style>
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #1e293b; }
-        ::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #64748b; }
-
-        #video-modal {
-            display: none;
-            position: fixed;
-            inset: 0;
-            z-index: 9999;
-            background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(4px);
-            align-items: center;
-            justify-content: center;
-            padding: 1rem;
-        }
-        #video-modal.open { display: flex; }
-        #video-modal .modal-box {
-            background: #1e293b;
-            border: 1px solid #334155;
-            border-radius: 1rem;
-            width: 100%;
-            max-width: 900px;
-            overflow: hidden;
-            animation: modalIn 0.2s ease;
-        }
-        @keyframes modalIn {
-            from { opacity: 0; transform: scale(0.96) translateY(8px); }
-            to { opacity: 1; transform: scale(1) translateY(0); }
-        }
-        #video-modal .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0.875rem 1.25rem;
-            background: #0f172a;
-            border-bottom: 1px solid #334155;
-        }
-        #video-modal .modal-title {
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: #e2e8f0;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-width: 80%;
-        }
-        #video-modal .modal-close {
-            background: #334155;
-            color: #94a3b8;
-            border: none;
-            border-radius: 50%;
-            width: 32px;
-            height: 32px;
-            cursor: pointer;
-            font-size: 1.1rem;
-            line-height: 32px;
-            text-align: center;
-            transition: background 0.15s, color 0.15s;
-            flex-shrink: 0;
-        }
-        #video-modal .modal-close:hover { background: #ef4444; color: #fff; }
-        #modal-video {
-            width: 100%;
-            display: block;
-            background: #000;
-            max-height: 70vh;
-        }
-        #modal-url-bar {
-            padding: 0.6rem 1.25rem;
-            background: #0f172a;
-            border-top: 1px solid #1e293b;
-            font-size: 0.7rem;
-            color: #64748b;
-            word-break: break-all;
-        }
-        #live-error {
-            display: none;
-            background: #7f1d1d;
-            color: #fca5a5;
-            font-size: 0.8rem;
-            padding: 0.5rem 1rem;
-            text-align: center;
-        }
-        .loading-spinner {
-            border: 2px solid #334155;
-            border-top: 2px solid #3b82f6;
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            animation: spin 0.8s linear infinite;
-            margin: 0 auto 10px auto;
-        }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        .segment-card { transition: all 0.2s ease; }
-        .segment-card:hover { transform: translateY(-2px); border-color: #3b82f6; }
+        body { background: #0a0f1c; }
+        .player-container { background: #000; border-radius: 1.2rem; overflow: hidden; box-shadow: 0 20px 35px -12px rgba(0,0,0,0.6); }
+        .segment-item { transition: all 0.2s ease; cursor: pointer; }
+        .segment-item:hover { background: #1e293b; transform: translateX(4px); }
+        .segment-active { background: #0f2b3d; border-left: 3px solid #3b82f6; }
+        .playlist-scroll { scrollbar-width: thin; scrollbar-color: #3b82f6 #1e293b; }
+        .playlist-scroll::-webkit-scrollbar { width: 5px; }
+        .playlist-scroll::-webkit-scrollbar-track { background: #1e293b; border-radius: 10px; }
+        .playlist-scroll::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 10px; }
+        .retry-btn { transition: all 0.2s; }
+        .retry-btn:hover { background: #2563eb; transform: scale(1.02); }
     </style>
 </head>
-<body class="bg-slate-900 text-slate-200 font-sans antialiased">
+<body class="font-sans antialiased text-gray-200">
 
-    <!-- VIDEO FLYOUT MODAL -->
-    <div id="video-modal" role="dialog">
-        <div class="modal-box">
-            <div class="modal-header">
-                <span class="modal-title" id="modal-title-text">Loading…</span>
-                <button class="modal-close" id="modal-close-btn">&times;</button>
-            </div>
-            <video id="modal-video" controls playsinline></video>
-            <div id="modal-url-bar"></div>
-        </div>
-    </div>
-
-    <div class="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
-        
-        <header class="mb-10 text-center sm:text-left border-b border-slate-700 pb-6 flex flex-col sm:flex-row justify-between items-center gap-4">
+    <div class="max-w-6xl mx-auto px-4 py-6 md:py-8">
+        <!-- Header -->
+        <div class="flex flex-col md:flex-row justify-between items-center border-b border-slate-800 pb-5 mb-6 gap-3">
             <div>
-                <h1 class="text-3xl font-extrabold text-white tracking-tight sm:text-4xl">AJN Resource Hub</h1>
-                <p class="mt-2 text-sm text-slate-400">Live Streams + Fresh Video Segments</p>
+                <h1 class="text-3xl font-extrabold bg-gradient-to-r from-emerald-400 to-blue-500 bg-clip-text text-transparent">AJN Hourly Segments</h1>
+                <p class="text-sm text-slate-400 mt-1">Newest first · Auto-plays sequentially by date & hour</p>
             </div>
-            <div class="text-right">
-                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-emerald-900 text-emerald-300">
-                    <span class="w-2 h-2 mr-2 bg-emerald-400 rounded-full animate-pulse"></span>
-                    System Live
-                </span>
-                <p id="last-updated-text" class="text-xs text-slate-500 mt-2">Loading latest data...</p>
-            </div>
-        </header>
-
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            
-            <div class="lg:col-span-2 space-y-8">
-                
-                <!-- Live Now Video Player -->
-                <section class="bg-slate-800 rounded-xl shadow-xl overflow-hidden border border-slate-700">
-                    <div class="p-4 bg-slate-900 border-b border-slate-700">
-                        <h2 class="text-xl font-bold text-white flex items-center gap-2">
-                            <span class="text-red-500">🔴</span> Live Now
-                        </h2>
-                    </div>
-                    <div id="live-error">⚠️ Stream unavailable or offline. Please try again later.</div>
-                    <div class="aspect-video bg-black relative">
-                        <video id="live-video" controls class="w-full h-full object-cover"
-                               poster="https://placehold.co/1280x720/1e293b/ffffff?text=Loading+Live+Stream..."></video>
-                    </div>
-                    <div class="p-4">
-                        <p class="text-sm text-slate-400 break-all">
-                            Source: <a href="https://ntd02.akamaized.net/NTD-UK/index.m3u8" rel="noopener noreferrer" class="text-blue-400 hover:text-blue-300 underline" target="_blank">Rumble HLS Stream</a>
-                        </p>
-                    </div>
-                </section>
-
-                <!-- Dynamic Hourly Segments -->
-                <section class="bg-slate-800 rounded-xl shadow-xl p-6 border border-slate-700">
-                    <div class="flex justify-between items-end mb-4">
-                        <h2 class="text-xl font-bold text-white">Latest Hourly Segments</h2>
-                        <span class="text-xs text-slate-400">Fresh on each page load</span>
-                    </div>
-                    <p class="text-sm text-slate-400 mb-4">
-                        Fetching from <a href="https://rss.alexjones.media/AJNHourlyVideo.html" target="_blank" rel="noopener noreferrer" class="text-blue-400 hover:text-blue-300 underline">AJN Hourly Video Feed</a> — 
-                        click <strong class="text-slate-300">▶ Play Video</strong> to open in pop-out player.
-                    </p>
-                    
-                    <div id="dynamic-segments-container" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div class="col-span-2 text-center py-8">
-                            <div class="loading-spinner"></div>
-                            <p class="text-slate-400">Fetching latest 6 videos...</p>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- Live Audio Stream Links -->
-                <section class="bg-slate-800 rounded-xl shadow-xl p-6 border border-slate-700">
-                    <h2 class="text-xl font-bold text-white mb-4">Live Audio Stream Links</h2>
-                    <p class="text-xs text-slate-500 mb-4">Direct stream URLs — copy into any media player or app</p>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
-                        <a href="https://stream.alexjones.media/alexjonesshow" target="_blank" class="flex items-center gap-2 bg-slate-900 hover:bg-slate-700 border border-slate-700 text-blue-400 px-3 py-2 rounded">🎙 Alex Jones Show (AAC)</a>
-                        <a href="https://stream.alexjones.media/alexjonesshow.mp3" target="_blank" class="flex items-center gap-2 bg-slate-900 hover:bg-slate-700 border border-slate-700 text-blue-400 px-3 py-2 rounded">🎙 Alex Jones Show (MP3)</a>
-                        <a href="https://audio.alexjoneslive.com:8443/alexjonesshow.opus" target="_blank" class="flex items-center gap-2 bg-slate-900 hover:bg-slate-700 border border-slate-700 text-blue-400 px-3 py-2 rounded">🎙 Alex Jones Show (OPUS)</a>
-                        <a href="https://stream.alexjones.media/warroom/" target="_blank" class="flex items-center gap-2 bg-slate-900 hover:bg-slate-700 border border-slate-700 text-blue-400 px-3 py-2 rounded">🎙 War Room with Harrison Smith</a>
-                        <a href="https://stream.alexjones.media/stream/7/" target="_blank" class="flex items-center gap-2 bg-slate-900 hover:bg-slate-700 border border-slate-700 text-blue-400 px-3 py-2 rounded">🎙 Network Feed — All Live Shows</a>
-                    </div>
-                </section>
-
-                <!-- Embedded Audio Feeds -->
-                <section class="bg-slate-800 rounded-xl shadow-xl p-6 border border-slate-700">
-                    <h2 class="text-xl font-bold text-white mb-6">Embedded Audio Players</h2>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="bg-slate-900 p-4 rounded-lg border border-slate-700">
-                            <h3 class="text-md font-semibold text-white mb-3">Alex Jones Show</h3>
-                            <audio controls preload="none" class="w-full">
-                                <source src="https://stream.alexjones.media/stream/1/" type="audio/aac">
-                                <source src="https://stream.alexjones.media/stream/2/" type="audio/mpeg">
-                            </audio>
-                        </div>
-                        <div class="bg-slate-900 p-4 rounded-lg border border-slate-700">
-                            <h3 class="text-md font-semibold text-white mb-3">War Room</h3>
-                            <audio controls preload="none" class="w-full">
-                                <source src="https://stream.alexjones.media/stream/4/" type="audio/aac">
-                                <source src="https://stream.alexjones.media/stream/6/" type="audio/mpeg">
-                            </audio>
-                        </div>
-                        <div class="bg-slate-900 p-4 rounded-lg border border-slate-700 md:col-span-2">
-                            <h3 class="text-md font-semibold text-white mb-3">Network Stream</h3>
-                            <audio controls preload="none" class="w-full">
-                                <source src="https://stream.alexjones.media/stream/7/" type="audio/aac">
-                                <source src="https://stream.alexjones.media/stream/8/" type="audio/mpeg">
-                            </audio>
-                        </div>
-                    </div>
-                </section>
-            </div>
-
-            <!-- Sidebar -->
-            <div class="space-y-8">
-                <section class="bg-slate-800 rounded-xl shadow-xl p-6 border border-slate-700">
-                    <h2 class="text-lg font-bold text-white mb-4 border-b border-slate-700 pb-2">📁 Resources</h2>
-                    <ul class="space-y-2 text-sm">
-                        <li><a href="https://rss.alexjones.media/Alex.html" target="_blank" class="block p-2 rounded hover:bg-slate-700 text-blue-400">The Alex Jones Show</a></li>
-                        <li><a href="https://rss.alexjones.media/WarRoom.html" target="_blank" class="block p-2 rounded hover:bg-slate-700 text-blue-400">War Room with Harrison Smith</a></li>
-                        <li><a href="https://rss.alexjones.media/SundayLive.html" target="_blank" class="block p-2 rounded hover:bg-slate-700 text-blue-400">Sunday Night Live</a></li>
-                        <li><a href="https://rss.alexjones.media/AJNHourlyVideo.xml" target="_blank" class="block p-2 rounded hover:bg-slate-700 text-blue-400">Hourly Video XML</a></li>
-                        <li><a href="https://rss.alexjones.media/AJNHourlyAudio.xml" target="_blank" class="block p-2 rounded hover:bg-slate-700 text-blue-400">Hourly Audio XML</a></li>
-                    </ul>
-                </section>
-
-                <section class="bg-slate-800 rounded-xl shadow-xl p-6 border border-slate-700">
-                    <h2 class="text-lg font-bold text-white mb-2 border-b border-slate-700 pb-2">📞 Listen-by-Phone</h2>
-                    <ul class="space-y-3 text-sm">
-                        <li><a href="tel:+16054755800" class="text-blue-400">Alex Jones: +1 (605) 475-5800</a></li>
-                        <li><a href="tel:+16054753291" class="text-blue-400">War Room: +1 (605) 475-3291</a></li>
-                        <li><a href="tel:+16054753292" class="text-blue-400">Network: +1 (605) 475-3292</a></li>
-                    </ul>
-                </section>
-
-                <section class="bg-slate-800 rounded-xl shadow-xl p-6 border border-slate-700">
-                    <h2 class="text-lg font-bold text-white mb-4 border-b border-slate-700 pb-2">📡 Affiliate</h2>
-                    <div class="flex flex-wrap gap-2">
-                        <a href="https://rss.alexjones.media/mp4-segs.html" target="_blank" class="bg-slate-700 hover:bg-slate-600 text-sm px-3 py-2 rounded">mp4 Segs</a>
-                        <a href="https://rss.alexjones.media/mp3-hourly.html" target="_blank" class="bg-slate-700 hover:bg-slate-600 text-sm px-3 py-2 rounded">mp3 Hourly</a>
-                        <a href="https://rss.alexjones.media/mp3-segs.html" target="_blank" class="bg-slate-700 hover:bg-slate-600 text-sm px-3 py-2 rounded">mp3 Segs</a>
-                        <a href="https://rss.alexjones.media/Programming-Clock.png" target="_blank" class="bg-blue-900/50 hover:bg-blue-800/50 text-blue-300 text-sm px-3 py-2 rounded w-full text-center">Affiliate Clock</a>
-                    </div>
-                </section>
+            <div class="flex items-center gap-3 text-xs bg-slate-900 px-4 py-2 rounded-full">
+                <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
+                <span id="feed-status" class="text-slate-300">Loading segments...</span>
             </div>
         </div>
 
-        <footer class="mt-12 border-t border-slate-800 pt-6 text-center">
-            <p class="text-sm text-slate-500">
-                <a href="https://alexjoneslive.com" target="_blank" class="hover:text-slate-300">AlexJonesLive.com</a> | 
-                <a href="https://alexjones.media" target="_blank" class="hover:text-slate-300">AlexJones.media</a>
-            </p>
+        <!-- Main Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Video Player -->
+            <div class="lg:col-span-2 space-y-4">
+                <div class="player-container bg-slate-900 border border-slate-700 rounded-2xl overflow-hidden shadow-2xl">
+                    <div class="bg-black relative aspect-video">
+                        <video id="main-video" controls class="w-full h-full object-contain" poster="https://placehold.co/1280x720/0f172a/3b82f6?text=AJN+Player"></video>
+                    </div>
+                    <div class="p-4 bg-slate-800/80 border-t border-slate-700">
+                        <div class="flex flex-wrap justify-between items-center gap-3">
+                            <div class="flex-1 min-w-0">
+                                <h2 id="current-title" class="text-white font-bold text-lg truncate">Select a segment</h2>
+                                <div class="flex items-center gap-3 mt-1">
+                                    <span id="position-badge" class="text-[10px] bg-slate-700 px-2 py-0.5 rounded-full">0 / 0</span>
+                                </div>
+                            </div>
+                            <div class="flex gap-2">
+                                <button id="prev-segment-btn" class="bg-slate-700 hover:bg-slate-600 text-white px-3 py-1.5 rounded-full text-sm transition">◀ Prev</button>
+                                <button id="next-segment-btn" class="bg-blue-700 hover:bg-blue-600 text-white px-3 py-1.5 rounded-full text-sm transition">Next ▶</button>
+                            </div>
+                        </div>
+                        <div class="mt-3 w-full bg-slate-700 rounded-full h-1.5 overflow-hidden">
+                            <div id="progress-bar" class="bg-blue-500 h-full w-0 transition-all duration-300"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Playlist Sidebar -->
+            <div class="bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden flex flex-col h-[540px]">
+                <div class="bg-slate-950 px-4 py-3 border-b border-slate-800 flex justify-between items-center">
+                    <h3 class="font-bold text-white text-sm">📋 Segments (Newest → Oldest)</h3>
+                    <span id="segment-count" class="text-[11px] text-slate-400">0 items</span>
+                </div>
+                <div id="playlist-container" class="flex-1 overflow-y-auto playlist-scroll p-2 space-y-2">
+                    <div class="text-center text-slate-500 text-sm py-10">Loading playlist...</div>
+                </div>
+                <div class="p-3 border-t border-slate-800 text-[11px] text-slate-500 text-center">
+                    🎬 Source: <a href="https://rss.alexjones.media/AJNHourlyVideo.html" target="_blank" class="text-blue-400 hover:underline">AJN Hourly Archive</a>
+                </div>
+            </div>
+        </div>
+
+        <footer class="mt-10 text-center text-xs text-slate-600 border-t border-slate-800 pt-5">
+            <p>AJN Resource Hub — Plays newest segment first, then continues by descending date/hour order</p>
         </footer>
     </div>
 
     <script>
-    document.addEventListener('DOMContentLoaded', () => {
-
-        // ========== HLS LIVE PLAYER ==========
-        const liveVideo = document.getElementById('live-video');
-        const liveError = document.getElementById('live-error');
-        const liveVideoSrc = 'https://rumble.com/live-hls-dvr/77ec70/playlist.m3u8?';
-
-        function showLiveError() {
-            liveError.style.display = 'block';
-            liveVideo.poster = 'https://placehold.co/1280x720/450a0a/fca5a5?text=Stream+Offline';
-        }
-
-        if (typeof Hls !== 'undefined' && Hls.isSupported()) {
-            const hls = new Hls({ debug: false });
-            hls.loadSource(liveVideoSrc);
-            hls.attachMedia(liveVideo);
-            hls.on(Hls.Events.ERROR, (event, data) => { if (data.fatal) showLiveError(); });
-        } else if (liveVideo.canPlayType('application/vnd.apple.mpegurl')) {
-            liveVideo.src = liveVideoSrc;
-            liveVideo.addEventListener('error', showLiveError);
-        } else {
-            showLiveError();
-        }
-
-        // ========== VIDEO MODAL ==========
-        const modal = document.getElementById('video-modal');
-        const modalVideo = document.getElementById('modal-video');
-        const modalTitle = document.getElementById('modal-title-text');
-        const modalUrlBar = document.getElementById('modal-url-bar');
-        const modalClose = document.getElementById('modal-close-btn');
-
-        let modalHls = null;
-
-        function openVideoModal(url, label) {
-            if (modalHls) { modalHls.destroy(); modalHls = null; }
-            modalVideo.removeAttribute('src');
-            modalVideo.load();
-            modalTitle.textContent = label;
-            modalUrlBar.textContent = url;
-
-            if (url.includes('.m3u8') && typeof Hls !== 'undefined' && Hls.isSupported()) {
-                modalHls = new Hls({ debug: false });
-                modalHls.loadSource(url);
-                modalHls.attachMedia(modalVideo);
-                modalHls.on(Hls.Events.MANIFEST_PARSED, () => modalVideo.play());
-            } else {
-                const sourceEl = document.createElement('source');
-                sourceEl.src = url;
-                sourceEl.type = 'video/mp4';
-                modalVideo.appendChild(sourceEl);
-                modalVideo.load();
-                modalVideo.play().catch(() => {});
-            }
-            modal.classList.add('open');
-            document.body.style.overflow = 'hidden';
-        }
-
-        function closeVideoModal() {
-            modal.classList.remove('open');
-            modalVideo.pause();
-            if (modalHls) { modalHls.destroy(); modalHls = null; }
-            modalVideo.querySelectorAll('source').forEach(s => s.remove());
-            modalVideo.removeAttribute('src');
-            modalVideo.load();
-            document.body.style.overflow = '';
-        }
-
-        modalClose.addEventListener('click', closeVideoModal);
-        modal.addEventListener('click', (e) => { if (e.target === modal) closeVideoModal(); });
-        document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && modal.classList.contains('open')) closeVideoModal(); });
-
-        // ========== FETCH LATEST 6 .m4v LINKS ==========
-        // The correct source URL
-        const SOURCE_URL = 'https://rss.alexjones.media/AJNHourlyVideo.html';
-        // CORS proxy for local file access - works when opened from file://
+        // ============================================================
+        // FIXED: Parse dates correctly and sort NEWEST FIRST
+        // ============================================================
+        
+        const FEED_URL = 'https://rss.alexjones.media/AJNHourlyVideo.html';
         const CORS_PROXY = 'https://api.allorigins.win/raw?url=';
         
-        async function fetchLatestSegments() {
-            const container = document.getElementById('dynamic-segments-container');
-            const lastUpdated = document.getElementById('last-updated-text');
+        let videoSegments = [];
+        let currentIndex = 0;
+        let videoPlayer = document.getElementById('main-video');
+        let currentTitleSpan = document.getElementById('current-title');
+        let positionBadge = document.getElementById('position-badge');
+        let progressFill = document.getElementById('progress-bar');
+        let feedStatusSpan = document.getElementById('feed-status');
+        let segmentCountSpan = document.getElementById('segment-count');
+        let playlistContainer = document.getElementById('playlist-container');
+        
+        // Parse date from filename like: 20260522_Fri_WarRoom-Hr3.m4v
+        // Extract YYYYMMDD and hour number
+        function parseVideoDate(filename, titleText) {
+            // Try to get date from filename first (most reliable)
+            let dateMatch = filename.match(/(\d{8})/);
+            let dateStr = dateMatch ? dateMatch[1] : '';
+            
+            // If no date in filename, try title text
+            if (!dateStr) {
+                dateMatch = titleText.match(/(\d{4})-(\d{2})-(\d{2})/);
+                if (dateMatch) {
+                    dateStr = dateMatch[1] + dateMatch[2] + dateMatch[3];
+                }
+            }
+            
+            // Extract hour number (Hr1, Hr2, Hr3, Hr4)
+            let hourMatch = filename.match(/Hr(\d)/i);
+            let hour = hourMatch ? parseInt(hourMatch[1], 10) : 0;
+            
+            // Also check title for hour
+            if (hour === 0) {
+                hourMatch = titleText.match(/Hr(\d)/i);
+                hour = hourMatch ? parseInt(hourMatch[1], 10) : 0;
+            }
+            
+            // Calculate sortable timestamp
+            let timestamp = 0;
+            if (dateStr && dateStr.length === 8) {
+                let year = parseInt(dateStr.substring(0,4), 10);
+                let month = parseInt(dateStr.substring(4,6), 10) - 1;
+                let day = parseInt(dateStr.substring(6,8), 10);
+                let dateObj = new Date(year, month, day);
+                timestamp = dateObj.getTime() + (hour * 3600000);
+            } else {
+                // Fallback: use current time minus days based on position (crude but works)
+                timestamp = Date.now() - (100 - hour) * 86400000;
+            }
+            
+            return { dateStr, hour, timestamp };
+        }
+        
+        // Fetch and parse the HTML feed
+        async function loadSegments() {
+            feedStatusSpan.innerHTML = '🔄 Fetching segments...';
+            playlistContainer.innerHTML = `<div class="text-center py-10"><div class="spinner mx-auto w-6 h-6 border-2 border-slate-600 border-t-blue-500 rounded-full animate-spin mb-2"></div><p class="text-slate-400 text-sm">Loading from AJN archive...</p></div>`;
             
             try {
-                // Try direct fetch first (works on GitHub Pages)
+                // Try direct fetch first
                 let response;
                 try {
-                    response = await fetch(SOURCE_URL, { cache: 'no-store' });
-                } catch (directError) {
-                    // If CORS error, use proxy
-                    console.log('Direct fetch failed, using CORS proxy...');
-                    response = await fetch(CORS_PROXY + encodeURIComponent(SOURCE_URL), { cache: 'no-store' });
+                    response = await fetch(FEED_URL, { cache: 'no-store' });
+                    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                } catch (directErr) {
+                    // Fallback to CORS proxy
+                    response = await fetch(CORS_PROXY + encodeURIComponent(FEED_URL), { cache: 'no-store' });
+                    if (!response.ok) throw new Error('Proxy fetch failed');
                 }
                 
-                if (!response.ok) throw new Error(`HTTP ${response.status}`);
                 const html = await response.text();
                 
-                // Extract all .m4v links using regex that matches the exact pattern in the page
-                // Pattern: href="https://ajn.archives.pub/hourly-m4v/20260518_Mon_WarRoom-Hr3.m4v"
-                const linkRegex = /href="(https:\/\/ajn\.archives\.pub\/hourly-m4v\/[^"]+\.m4v)"/gi;
-                const titleRegex = /<a[^>]*href="[^"]+\.m4v"[^>]*>([^<]+)<\/a>/gi;
+                // Parse all <a> tags with .m4v links
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                const links = doc.querySelectorAll('a[href*=".m4v"]');
                 
-                const links = [];
-                let match;
+                const segments = [];
                 
-                // Extract URLs
-                const urls = [];
-                while ((match = linkRegex.exec(html)) !== null) {
-                    urls.push(match[1]);
+                for (let link of links) {
+                    let url = link.getAttribute('href');
+                    if (!url || !url.includes('ajn.archives.pub')) continue;
+                    
+                    let titleText = link.textContent.trim();
+                    // Extract filename from URL
+                    let filename = url.split('/').pop() || '';
+                    
+                    let { dateStr, hour, timestamp } = parseVideoDate(filename, titleText);
+                    
+                    // Format display date
+                    let displayDate = '';
+                    if (dateStr && dateStr.length === 8) {
+                        displayDate = `${dateStr.substring(0,4)}-${dateStr.substring(4,6)}-${dateStr.substring(6,8)}`;
+                    } else {
+                        displayDate = titleText.split(',')[0] || 'Latest';
+                    }
+                    
+                    segments.push({
+                        url: url,
+                        title: titleText,
+                        filename: filename,
+                        dateStr: dateStr,
+                        hour: hour,
+                        timestamp: timestamp,
+                        displayDate: displayDate
+                    });
                 }
                 
-                // Extract titles
-                const titles = [];
-                while ((match = titleRegex.exec(html)) !== null) {
-                    titles.push(match[1].trim());
+                if (segments.length === 0) {
+                    throw new Error('No video segments found');
                 }
                 
-                // Combine URLs and titles
-                for (let i = 0; i < urls.length && i < titles.length; i++) {
-                    links.push({ url: urls[i], title: titles[i] });
-                }
+                // CRITICAL FIX: Sort by timestamp DESCENDING (newest first)
+                segments.sort((a, b) => b.timestamp - a.timestamp);
                 
-                if (links.length === 0) {
-                    throw new Error('No .m4v links found in the page');
-                }
+                videoSegments = segments;
                 
-                // Take first 6 (most recent)
-                const topSix = links.slice(0, 6);
-                renderSegments(topSix);
-                lastUpdated.innerText = `Loaded ${topSix.length} segments · ${new Date().toLocaleString()}`;
+                console.log(`Loaded ${videoSegments.length} segments, sorted newest first`);
+                console.log('Newest:', videoSegments[0]?.title);
+                console.log('Oldest:', videoSegments[videoSegments.length-1]?.title);
+                
+                feedStatusSpan.innerHTML = `✅ ${videoSegments.length} segments (newest first)`;
+                segmentCountSpan.innerText = `${videoSegments.length} videos`;
+                
+                renderPlaylist();
+                
+                if (videoSegments.length > 0) {
+                    currentIndex = 0;
+                    loadSegment(0);
+                    setupAutoNext();
+                }
                 
             } catch (err) {
-                console.error('Fetch error:', err);
-                container.innerHTML = `<div class="col-span-2 bg-red-950 border border-red-800 text-red-300 text-sm p-4 rounded-lg text-center">
-                    ⚠️ Could not load segments. <a href="${SOURCE_URL}" target="_blank" class="underline hover:text-red-200">Open feed directly</a><br>
-                    <span class="text-xs">Error: ${err.message}</span>
-                </div>`;
-                lastUpdated.innerText = 'Failed to load segments';
+                console.error('Load error:', err);
+                feedStatusSpan.innerHTML = '⚠️ Failed to load';
+                playlistContainer.innerHTML = `
+                    <div class="text-center text-red-400 text-sm p-4">
+                        <svg class="w-10 h-10 mx-auto mb-2 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                        </svg>
+                        <p class="mb-2">Could not load segments from AJN feed.</p>
+                        <p class="text-xs text-slate-400 mb-3">${err.message}</p>
+                        <button onclick="location.reload()" class="retry-btn bg-blue-700 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm">⟳ Retry</button>
+                        <div class="mt-3 text-xs">
+                            <a href="${FEED_URL}" target="_blank" class="text-blue-400 underline">Open feed directly</a>
+                        </div>
+                    </div>
+                `;
             }
         }
-
-        function getBadgeClass(title) {
-            const t = title.toUpperCase();
-            if (t.includes('WARROOM')) return 'bg-purple-900 text-purple-300';
-            if (t.includes('SUNDAYLIVE')) return 'bg-yellow-900 text-yellow-300';
-            if (t.includes('TNT')) return 'bg-orange-900 text-orange-300';
-            if (t.includes('SPECIAL')) return 'bg-red-900 text-red-300';
-            if (t.includes('SORTOR')) return 'bg-teal-900 text-teal-300';
-            return 'bg-blue-900 text-blue-300';
+        
+        // Render playlist with newest FIRST (top of list)
+        function renderPlaylist() {
+            if (!playlistContainer) return;
+            playlistContainer.innerHTML = '';
+            
+            videoSegments.forEach((seg, idx) => {
+                const isActive = (idx === currentIndex);
+                
+                // Extract show name and hour for display
+                let showName = 'AJN';
+                if (seg.title.includes('WarRoom')) showName = 'War Room';
+                else if (seg.title.includes('Alex')) showName = 'Alex Jones';
+                else if (seg.title.includes('SundayLive')) showName = 'Sunday Live';
+                else if (seg.title.includes('TNT')) showName = 'TNT';
+                else if (seg.title.includes('Sortor')) showName = 'Sortor';
+                else if (seg.title.includes('AmericanJournal')) showName = 'American Journal';
+                
+                const hourLabel = seg.hour ? `Hr${seg.hour}` : '';
+                const dateLabel = seg.displayDate;
+                
+                const div = document.createElement('div');
+                div.className = `segment-item p-3 rounded-xl border-l-4 ${isActive ? 'segment-active border-blue-500 bg-slate-800/60' : 'border-transparent bg-slate-800/30 hover:bg-slate-800/70'}`;
+                div.setAttribute('data-index', idx);
+                div.innerHTML = `
+                    <div class="flex justify-between items-start gap-2">
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center gap-2 flex-wrap mb-1">
+                                <span class="text-xs font-semibold text-emerald-400">${showName}</span>
+                                ${hourLabel ? `<span class="text-xs font-mono text-blue-300">${hourLabel}</span>` : ''}
+                                <span class="text-[10px] bg-slate-700 px-1.5 py-0.5 rounded-full">${dateLabel}</span>
+                                ${idx === 0 ? '<span class="text-[10px] bg-emerald-800 text-emerald-200 px-1.5 py-0.5 rounded-full">NEWEST</span>' : ''}
+                            </div>
+                            <p class="text-sm font-medium text-white truncate" title="${escapeHtml(seg.title)}">${escapeHtml(seg.title.substring(0, 55))}${seg.title.length > 55 ? '…' : ''}</p>
+                        </div>
+                        ${isActive ? '<span class="text-green-400 text-xs flex-shrink-0">▶ PLAYING</span>' : '<span class="text-slate-500 text-xs flex-shrink-0">●</span>'}
+                    </div>
+                `;
+                div.addEventListener('click', () => {
+                    const newIdx = parseInt(div.dataset.index, 10);
+                    if (!isNaN(newIdx) && newIdx !== currentIndex) {
+                        currentIndex = newIdx;
+                        loadSegment(currentIndex);
+                        setupAutoNext();
+                        renderPlaylist();
+                    }
+                });
+                playlistContainer.appendChild(div);
+            });
+            
+            // Scroll active into view
+            const active = playlistContainer.querySelector('.segment-active');
+            if (active) active.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
-
-        function getBadgeLabel(title) {
-            const t = title.toUpperCase();
-            if (t.includes('WARROOM')) return 'War Room';
-            if (t.includes('SUNDAYLIVE')) return 'Sunday Live';
-            if (t.includes('TNT')) return 'TNT';
-            if (t.includes('SPECIAL')) return 'Special';
-            if (t.includes('SORTOR')) return 'Sortor';
-            return 'Alex Jones';
+        
+        // Load and play a specific segment
+        function loadSegment(index) {
+            if (!videoSegments.length || index < 0 || index >= videoSegments.length) return;
+            const seg = videoSegments[index];
+            if (!seg.url) return;
+            
+            videoPlayer.pause();
+            videoPlayer.src = seg.url;
+            videoPlayer.load();
+            
+            const playPromise = videoPlayer.play();
+            if (playPromise !== undefined) {
+                playPromise.catch(e => console.log('Autoplay prevented:', e));
+            }
+            
+            currentTitleSpan.innerText = seg.title;
+            positionBadge.innerText = `${index + 1} / ${videoSegments.length}`;
+            progressFill.style.width = '0%';
         }
-
+        
+        function playNext() {
+            if (currentIndex + 1 < videoSegments.length) {
+                currentIndex++;
+                loadSegment(currentIndex);
+                setupAutoNext();
+                renderPlaylist();
+            } else {
+                // Loop back to newest
+                currentIndex = 0;
+                loadSegment(0);
+                setupAutoNext();
+                renderPlaylist();
+            }
+        }
+        
+        function playPrev() {
+            if (currentIndex - 1 >= 0) {
+                currentIndex--;
+                loadSegment(currentIndex);
+                setupAutoNext();
+                renderPlaylist();
+            } else {
+                // Go to oldest
+                currentIndex = videoSegments.length - 1;
+                loadSegment(currentIndex);
+                setupAutoNext();
+                renderPlaylist();
+            }
+        }
+        
+        function setupAutoNext() {
+            videoPlayer.removeEventListener('ended', onEnded);
+            videoPlayer.addEventListener('ended', onEnded);
+        }
+        
+        function onEnded() {
+            playNext();
+        }
+        
+        // Update progress bar
+        videoPlayer.addEventListener('timeupdate', () => {
+            if (videoPlayer.duration && !isNaN(videoPlayer.duration)) {
+                const percent = (videoPlayer.currentTime / videoPlayer.duration) * 100;
+                progressFill.style.width = `${percent}%`;
+            }
+        });
+        
+        // Error handling - skip to next on error
+        videoPlayer.addEventListener('error', () => {
+            console.log('Video error, skipping to next');
+            setTimeout(() => playNext(), 1000);
+        });
+        
         function escapeHtml(str) {
             if (!str) return '';
-            return str.replace(/[&<>]/g, function(m) {
+            return str.replace(/[&<>]/g, m => {
                 if (m === '&') return '&amp;';
                 if (m === '<') return '&lt;';
                 if (m === '>') return '&gt;';
                 return m;
             });
         }
-
-        function renderSegments(segments) {
-            const container = document.getElementById('dynamic-segments-container');
-            container.innerHTML = '';
-            
-            segments.forEach((seg, idx) => {
-                const badgeClass = getBadgeClass(seg.title);
-                const badgeLabel = getBadgeLabel(seg.title);
-                const ring = idx === 0 ? 'ring-1 ring-blue-500' : '';
-                
-                const block = document.createElement('div');
-                block.className = `segment-card bg-slate-900 border border-slate-700 p-3 rounded-lg flex flex-col gap-2 ${ring}`;
-                block.innerHTML = `
-                    <div class="flex justify-between items-center border-b border-slate-700 pb-1 mb-1">
-                        <span class="text-slate-300 font-semibold text-sm truncate pr-2" title="${escapeHtml(seg.title)}">${escapeHtml(seg.title)}</span>
-                        <span class="text-xs px-2 py-0.5 rounded-full font-medium flex-shrink-0 ${badgeClass}">${badgeLabel}</span>
-                    </div>
-                    <button data-video="${escapeHtml(seg.url)}" data-label="${escapeHtml(seg.title)}"
-                        class="play-segment-btn text-xs flex items-center gap-2 text-blue-400 hover:text-white hover:bg-blue-700 bg-slate-800 p-2 rounded transition w-full text-left">
-                        <svg class="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M2 6a2 2 0 012-2h6a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6zM14.553 7.106A1 1 0 0014 8v4a1 1 0 00.553.894l2 1A1 1 0 0018 13V7a1 1 0 00-1.447-.894l-2 1z"/>
-                        </svg>
-                        ▶ Play Video
-                    </button>
-                    <a href="${escapeHtml(seg.url)}" target="_blank" rel="noopener noreferrer" download
-                        class="text-xs flex items-center gap-2 text-slate-400 hover:text-slate-200 bg-slate-800 p-2 rounded transition">
-                        <svg class="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd"/>
-                        </svg>
-                        ⬇ Download .m4v
-                    </a>
-                `;
-                container.appendChild(block);
-            });
-            
-            document.querySelectorAll('.play-segment-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    openVideoModal(btn.dataset.video, btn.dataset.label);
-                });
-            });
-        }
-
-        // Load segments on page load
-        fetchLatestSegments();
-
-    });
+        
+        // Button events
+        document.getElementById('next-segment-btn')?.addEventListener('click', playNext);
+        document.getElementById('prev-segment-btn')?.addEventListener('click', playPrev);
+        
+        // Keyboard controls
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') { playPrev(); e.preventDefault(); }
+            if (e.key === 'ArrowRight') { playNext(); e.preventDefault(); }
+        });
+        
+        // Initialize
+        loadSegments();
+        
+        // Refresh every 10 minutes
+        setInterval(() => { loadSegments(); }, 10 * 60 * 1000);
     </script>
 </body>
 </html>

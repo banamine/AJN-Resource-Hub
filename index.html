@@ -2,120 +2,63 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
-    <title>AJN Archive Player · Calendar Date Picker · Continuous Play</title>
-    <meta name="description" content="AJN Hourly Video Archive - Select any date from calendar, play Alex Hr1→Hr4 then WarRoom Hr1→Hr4 with auto-advance">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>AJN Archive Player · PWA</title>
+    <meta name="description" content="AJN Hourly Video Archive - Select date, continuous playback">
     <meta name="theme-color" content="#0a0f1c">
     <link rel="manifest" href="/manifest.json">
     <link rel="apple-touch-icon" href="/icon-192.png">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Flatpickr Calendar Library (lightweight, accessible) -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body { background: #0a0f1c; }
-        .player-container { background: #000; border-radius: 1.2rem; overflow: hidden; box-shadow: 0 20px 35px -12px rgba(0,0,0,0.6); }
+        .player-container { background: #000; border-radius: 1.2rem; overflow: hidden; }
         .segment-item { transition: all 0.2s ease; cursor: pointer; }
         .segment-item:hover { background: #1e293b; transform: translateX(4px); }
         .segment-active { background: #0f2b3d; border-left: 3px solid #3b82f6; }
-        .playlist-scroll { scrollbar-width: thin; scrollbar-color: #3b82f6 #1e293b; max-height: 400px; overflow-y: auto; }
+        .playlist-scroll { max-height: 400px; overflow-y: auto; scrollbar-width: thin; }
         .playlist-scroll::-webkit-scrollbar { width: 5px; }
-        .playlist-scroll::-webkit-scrollbar-track { background: #1e293b; border-radius: 10px; }
+        .playlist-scroll::-webkit-scrollbar-track { background: #1e293b; }
         .playlist-scroll::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 10px; }
         .update-toast {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #1e293b;
-            border: 1px solid #3b82f6;
-            border-radius: 50px;
-            padding: 12px 24px;
-            display: flex;
-            gap: 16px;
-            align-items: center;
-            z-index: 9999;
-            backdrop-filter: blur(10px);
-            animation: slideUp 0.3s ease;
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+            background: #1e293b; border: 1px solid #3b82f6; border-radius: 50px;
+            padding: 12px 24px; display: flex; gap: 16px; align-items: center;
+            z-index: 9999; backdrop-filter: blur(10px); animation: slideUp 0.3s ease;
         }
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateX(-50%) translateY(20px); }
-            to { opacity: 1; transform: translateX(-50%) translateY(0); }
-        }
-        .loading-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(10, 15, 28, 0.95);
-            backdrop-filter: blur(4px);
-            z-index: 20000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-            gap: 20px;
-        }
-        .loading-spinner-large {
-            width: 60px;
-            height: 60px;
-            border: 4px solid #1e293b;
-            border-top: 4px solid #3b82f6;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @keyframes slideUp { from { opacity: 0; transform: translateX(-50%) translateY(20px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
         .flatpickr-calendar { background: #1e293b !important; border-color: #334155 !important; }
         .flatpickr-day { color: #cbd5e1 !important; }
-        .flatpickr-day.selected { background: #3b82f6 !important; border-color: #3b82f6 !important; }
+        .flatpickr-day.selected { background: #3b82f6 !important; }
         .flatpickr-day.today { border-color: #10b981 !important; }
-        .flatpickr-day:hover { background: #334155 !important; }
-        .flatpickr-months .flatpickr-month, .flatpickr-weekdays { color: #94a3b8 !important; }
-        .date-picker-btn {
-            background: #1e293b;
-            border: 1px solid #334155;
-            border-radius: 40px;
-            padding: 8px 20px;
-            font-size: 0.85rem;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .date-picker-btn:hover { background: #2d3a4e; border-color: #3b82f6; }
     </style>
 </head>
 <body class="font-sans antialiased text-gray-200">
 
-    <div id="loadingOverlay" class="loading-overlay" style="display: none;">
-        <div class="loading-spinner-large"></div>
-        <div class="text-center text-slate-200">📡 Fetching archive for selected date...</div>
-    </div>
     <div id="update-toast" style="display: none;" class="update-toast">
-        <span>🔄 Newer segments available!</span>
-        <button id="refresh-btn" class="bg-blue-600 px-4 py-1 rounded-full text-sm">Refresh</button>
+        <span>🔄 New dates available!</span>
+        <button id="refresh-cache-btn" class="bg-blue-600 px-4 py-1 rounded-full text-sm">Refresh</button>
     </div>
 
     <div class="max-w-7xl mx-auto px-4 py-5 md:py-7">
-        <!-- Header with Calendar Control -->
         <div class="flex flex-col md:flex-row justify-between items-center gap-4 border-b border-slate-800 pb-5 mb-6">
             <div>
                 <h1 class="text-3xl font-extrabold bg-gradient-to-r from-emerald-400 to-blue-500 bg-clip-text text-transparent">AJN Archive Player</h1>
                 <p class="text-sm text-slate-400">Select date → Alex Hr1→Hr4 → WarRoom Hr1→Hr4 · Auto-advance</p>
             </div>
             <div class="flex items-center gap-3">
-                <button id="openCalendarBtn" class="date-picker-btn flex items-center gap-2">
+                <button id="openCalendarBtn" class="bg-slate-800 border border-slate-700 rounded-full px-4 py-2 text-sm flex items-center gap-2 hover:bg-slate-700">
                     📅 <span id="selectedDateDisplay">Pick a date</span>
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V7a2 2 0 00-2-2H7a2 2 0 00-2 2v2"></path></svg>
                 </button>
-                <div class="text-xs bg-slate-800 px-3 py-1.5 rounded-full text-slate-300">
-                    <span id="feed-status">Ready</span>
+                <div class="text-xs bg-slate-800 px-3 py-1.5 rounded-full">
+                    <span id="feed-status">Loading cache...</span>
                 </div>
             </div>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <!-- Video Player -->
-            <div class="lg:col-span-2 space-y-4">
+            <div class="lg:col-span-2">
                 <div class="player-container bg-slate-900 border border-slate-700 rounded-2xl overflow-hidden">
                     <div class="bg-black aspect-video">
                         <video id="main-video" controls class="w-full h-full object-contain" poster="https://placehold.co/1280x720/0f172a/3b82f6?text=Select+Date"></video>
@@ -140,345 +83,295 @@
                 </div>
             </div>
 
-            <!-- Playlist Sidebar -->
             <div class="bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden flex flex-col h-[560px]">
-                <div class="bg-slate-950 px-4 py-3 border-b border-slate-800 flex justify-between items-center">
-                    <h3 class="font-bold text-white text-sm">📋 Playlist (Ordered)</h3>
+                <div class="bg-slate-950 px-4 py-3 border-b border-slate-800 flex justify-between">
+                    <h3 class="font-bold text-white text-sm">📋 Playlist</h3>
                     <span id="segment-count" class="text-[11px] text-slate-400">0 items</span>
                 </div>
                 <div id="playlist-container" class="playlist-scroll p-2 space-y-2 flex-1">
-                    <div class="text-center text-slate-500 text-sm py-10 italic">Select a date from calendar</div>
-                </div>
-                <div class="p-3 border-t border-slate-800 text-[10px] text-slate-500 text-center">
-                    Alex Hr1→Hr4 · WarRoom Hr1→Hr4 · auto-plays next
+                    <div class="text-center text-slate-500 text-sm py-10 italic">Select a date</div>
                 </div>
             </div>
         </div>
-        <footer class="mt-8 text-center text-xs text-slate-600 border-t border-slate-800 pt-4">
-            <p>AJN Archive · Calendar selects any available date · Continuous playback</p>
-        </footer>
     </div>
 
     <script>
         // ========== CONFIGURATION ==========
         const FEED_URL = 'https://rss.alexjones.media/AJNHourlyVideo.html';
-        const CORS_PROXY = 'https://api.allorigins.win/raw?url=';
+        const CACHE_KEY = 'ajn_archive_v2';
+        const CACHE_DATE_KEY = 'ajn_cache_timestamp';
         
-        // Global state
-        let masterArchive = {};       // { "20260522": [segments], "20260521": [...] }
-        let availableDates = [];      // sorted descending
-        let currentSegments = [];     // playlist for selected date
+        let masterArchive = {};
+        let availableDates = [];
+        let currentSegments = [];
         let currentIndex = 0;
         let videoPlayer = document.getElementById('main-video');
-        let currentTitleSpan = document.getElementById('current-title');
-        let positionBadge = document.getElementById('position-badge');
-        let progressFill = document.getElementById('progress-bar');
-        let feedStatusSpan = document.getElementById('feed-status');
-        let segmentCountSpan = document.getElementById('segment-count');
-        let playlistContainer = document.getElementById('playlist-container');
-        let loadingOverlay = document.getElementById('loadingOverlay');
-        let selectedDateDisplay = document.getElementById('selectedDateDisplay');
-        
         let flatpickrInstance = null;
         
-        // Helper: parse segment from link
-        function parseSegmentFromLink(linkElement) {
-            let url = linkElement.getAttribute('href');
-            if (!url || !url.includes('ajn.archives.pub')) return null;
-            let titleText = linkElement.textContent.trim();
-            let filename = url.split('/').pop() || '';
+        // DOM elements
+        const currentTitleSpan = document.getElementById('current-title');
+        const positionBadge = document.getElementById('position-badge');
+        const progressFill = document.getElementById('progress-bar');
+        const feedStatusSpan = document.getElementById('feed-status');
+        const segmentCountSpan = document.getElementById('segment-count');
+        const playlistContainer = document.getElementById('playlist-container');
+        const selectedDateDisplay = document.getElementById('selectedDateDisplay');
+        
+        // ========== PURE FUNCTION: Parse segments from HTML text (no DOM) ==========
+        function parseSegmentsFromHTML(html) {
+            const segments = [];
+            // Regex to extract href and link text for .m4v files
+            const linkRegex = /<a\s+[^>]*href="([^"]*\.m4v)"[^>]*>([^<]+)<\/a>/gi;
+            let match;
             
-            // Extract date YYYYMMDD
-            let dateMatch = filename.match(/(\d{8})/);
-            let dateStr = dateMatch ? dateMatch[1] : '';
-            if (!dateStr) {
-                dateMatch = titleText.match(/(\d{4})-(\d{2})-(\d{2})/);
-                if (dateMatch) dateStr = dateMatch[1] + dateMatch[2] + dateMatch[3];
+            while ((match = linkRegex.exec(html)) !== null) {
+                const url = match[1];
+                const titleText = match[2].trim();
+                if (!url.includes('ajn.archives.pub')) continue;
+                
+                const filename = url.split('/').pop() || '';
+                
+                // Extract date YYYYMMDD
+                let dateMatch = filename.match(/(\d{8})/);
+                let dateStr = dateMatch ? dateMatch[1] : '';
+                if (!dateStr) {
+                    dateMatch = titleText.match(/(\d{4})-(\d{2})-(\d{2})/);
+                    if (dateMatch) dateStr = dateMatch[1] + dateMatch[2] + dateMatch[3];
+                }
+                if (!dateStr || dateStr.length !== 8) continue;
+                
+                // Extract hour
+                let hourMatch = filename.match(/Hr(\d)/i);
+                let hour = hourMatch ? parseInt(hourMatch[1], 10) : 0;
+                if (hour === 0) {
+                    hourMatch = titleText.match(/Hr(\d)/i);
+                    hour = hourMatch ? parseInt(hourMatch[1], 10) : 0;
+                }
+                if (hour < 1 || hour > 4) continue;
+                
+                // Show type
+                const lower = titleText.toLowerCase();
+                const isAlex = lower.includes('alex') && !lower.includes('warroom');
+                const isWarRoom = lower.includes('warroom');
+                if (!isAlex && !isWarRoom) continue;
+                
+                const displayDate = `${dateStr.slice(0,4)}-${dateStr.slice(4,6)}-${dateStr.slice(6,8)}`;
+                segments.push({ url, title: titleText, filename, dateStr, hour, isAlex, isWarRoom, displayDate });
             }
-            if (!dateStr || dateStr.length !== 8) return null;
-            
-            // Extract hour
-            let hourMatch = filename.match(/Hr(\d)/i);
-            let hour = hourMatch ? parseInt(hourMatch[1], 10) : 0;
-            if (hour === 0) {
-                hourMatch = titleText.match(/Hr(\d)/i);
-                hour = hourMatch ? parseInt(hourMatch[1], 10) : 0;
-            }
-            if (hour < 1 || hour > 4) return null;
-            
-            // Show type
-            let lower = titleText.toLowerCase();
-            let isAlex = lower.includes('alex') && !lower.includes('warroom');
-            let isWarRoom = lower.includes('warroom');
-            if (!isAlex && !isWarRoom) return null;
-            
-            let displayDate = `${dateStr.slice(0,4)}-${dateStr.slice(4,6)}-${dateStr.slice(6,8)}`;
-            return { url, title: titleText, filename, dateStr, hour, isAlex, isWarRoom, displayDate };
+            return segments;
         }
         
-        // Fetch and build archive index
-        async function buildArchiveIndex() {
-            feedStatusSpan.innerHTML = '📡 Scanning archive...';
+        // ========== Build archive index from raw segments ==========
+        function buildArchiveIndex(segments) {
+            const archive = {};
+            for (const seg of segments) {
+                if (!archive[seg.dateStr]) archive[seg.dateStr] = [];
+                archive[seg.dateStr].push(seg);
+            }
+            // Sort each date: Alex Hr1-4 then WarRoom Hr1-4
+            for (const date in archive) {
+                const alex = archive[date].filter(s => s.isAlex).sort((a,b) => a.hour - b.hour);
+                const war = archive[date].filter(s => s.isWarRoom).sort((a,b) => a.hour - b.hour);
+                archive[date] = [...alex, ...war];
+            }
+            return archive;
+        }
+        
+        // ========== Fetch fresh data from network ==========
+        async function fetchFreshArchive() {
+            feedStatusSpan.innerHTML = '📡 Fetching fresh data...';
             try {
-                let response;
-                try {
-                    response = await fetch(FEED_URL, { cache: 'no-store' });
-                    if (!response.ok) throw new Error(`HTTP ${response.status}`);
-                } catch (e) {
-                    response = await fetch(CORS_PROXY + encodeURIComponent(FEED_URL), { cache: 'no-store' });
-                    if (!response.ok) throw new Error('Proxy failed');
-                }
+                const response = await fetch(FEED_URL, { cache: 'no-store' });
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
                 const html = await response.text();
-                const parser = new DOMParser();
-                const doc = parser.parseFromString(html, 'text/html');
-                const links = doc.querySelectorAll('a[href*=".m4v"]');
+                const segments = parseSegmentsFromHTML(html);
+                if (segments.length === 0) throw new Error('No segments found');
+                const archive = buildArchiveIndex(segments);
+                const dates = Object.keys(archive).sort().reverse();
                 
-                const archiveMap = new Map(); // dateStr -> array of segments
+                // Save to localStorage
+                localStorage.setItem(CACHE_KEY, JSON.stringify(archive));
+                localStorage.setItem(CACHE_DATE_KEY, new Date().toISOString());
                 
-                for (let link of links) {
-                    const seg = parseSegmentFromLink(link);
-                    if (!seg) continue;
-                    const dateKey = seg.dateStr;
-                    if (!archiveMap.has(dateKey)) archiveMap.set(dateKey, []);
-                    archiveMap.get(dateKey).push(seg);
-                }
-                
-                // For each date, sort segments: Alex Hr1-4 then WarRoom Hr1-4
-                for (let [dateKey, segs] of archiveMap.entries()) {
-                    const alex = segs.filter(s => s.isAlex).sort((a,b) => a.hour - b.hour);
-                    const war = segs.filter(s => s.isWarRoom).sort((a,b) => a.hour - b.hour);
-                    archiveMap.set(dateKey, [...alex, ...war]);
-                }
-                
-                // Convert to object and sort dates descending (newest first for calendar)
-                masterArchive = Object.fromEntries(archiveMap);
-                availableDates = Object.keys(masterArchive).sort().reverse(); // newest first
-                
-                if (availableDates.length === 0) throw new Error('No valid dates found');
-                
-                feedStatusSpan.innerHTML = `📅 ${availableDates.length} dates available`;
-                return true;
+                return { archive, dates };
             } catch (err) {
-                console.error(err);
-                feedStatusSpan.innerHTML = '⚠️ Failed to load archive';
-                return false;
+                console.error('Fetch failed:', err);
+                return null;
             }
         }
         
-        // Load playlist for a specific date (YYYYMMDD)
-        function loadPlaylistForDate(dateStr) {
-            if (!masterArchive[dateStr] || masterArchive[dateStr].length === 0) {
-                console.warn('No segments for date', dateStr);
-                return false;
+        // ========== Load from localStorage (instant) ==========
+        function loadFromLocalStorage() {
+            const cached = localStorage.getItem(CACHE_KEY);
+            if (!cached) return null;
+            try {
+                const archive = JSON.parse(cached);
+                const dates = Object.keys(archive).sort().reverse();
+                return { archive, dates };
+            } catch (e) { return null; }
+        }
+        
+        // ========== Background refresh (stale-while-revalidate) ==========
+        let backgroundRefreshInProgress = false;
+        async function backgroundRefresh() {
+            if (backgroundRefreshInProgress) return;
+            backgroundRefreshInProgress = true;
+            const fresh = await fetchFreshArchive();
+            if (fresh && fresh.dates.length > 0) {
+                const cachedDates = Object.keys(masterArchive).sort().reverse();
+                const hasNewDates = fresh.dates.some(d => !cachedDates.includes(d));
+                if (hasNewDates) {
+                    masterArchive = fresh.archive;
+                    availableDates = fresh.dates;
+                    updateCalendarDates();
+                    const toast = document.getElementById('update-toast');
+                    if (toast) toast.style.display = 'flex';
+                    feedStatusSpan.innerHTML = `✅ Updated (${availableDates.length} dates)`;
+                } else {
+                    feedStatusSpan.innerHTML = `📅 ${availableDates.length} dates (up to date)`;
+                }
             }
+            backgroundRefreshInProgress = false;
+        }
+        
+        // ========== Update flatpickr with available dates ==========
+        function updateCalendarDates() {
+            if (!flatpickrInstance) return;
+            const dateObjects = availableDates.map(d => {
+                const year = parseInt(d.slice(0,4), 10);
+                const month = parseInt(d.slice(4,6), 10) - 1;
+                const day = parseInt(d.slice(6,8), 10);
+                return new Date(year, month, day);
+            });
+            flatpickrInstance.set('enable', dateObjects);
+        }
+        
+        // ========== Load playlist for a specific date ==========
+        function loadPlaylistForDate(dateStr) {
+            if (!masterArchive[dateStr] || masterArchive[dateStr].length === 0) return false;
             currentSegments = masterArchive[dateStr];
             currentIndex = 0;
-            
-            // Render playlist sidebar
-            renderPlaylistSidebar(dateStr);
-            
-            // Load first video
-            if (currentSegments.length > 0) {
-                loadVideoByIndex(0);
-                enableButtons(true);
-            } else {
-                enableButtons(false);
-            }
+            renderPlaylistSidebar();
+            loadVideoByIndex(0);
             segmentCountSpan.innerText = `${currentSegments.length} videos`;
             return true;
         }
         
-        function renderPlaylistSidebar(dateStr) {
+        function renderPlaylistSidebar() {
             if (!playlistContainer) return;
             playlistContainer.innerHTML = '';
             if (!currentSegments.length) {
-                playlistContainer.innerHTML = '<div class="text-center text-slate-500 text-sm py-10">No segments for this date</div>';
+                playlistContainer.innerHTML = '<div class="text-center text-slate-500 text-sm py-10">No segments</div>';
                 return;
             }
-            
             currentSegments.forEach((seg, idx) => {
                 const isActive = (idx === currentIndex);
                 const showName = seg.isAlex ? 'Alex Jones' : 'War Room';
-                const hourLabel = `Hr${seg.hour}`;
-                let extraBadge = '';
-                if (idx === 0) extraBadge = '<span class="text-[9px] bg-emerald-800 text-emerald-200 px-1.5 py-0.5 rounded-full ml-1">START</span>';
-                if (idx === currentSegments.length - 1) extraBadge = '<span class="text-[9px] bg-amber-800 text-amber-200 px-1.5 py-0.5 rounded-full ml-1">LATEST</span>';
-                
-                let separator = '';
-                if (idx > 0 && seg.isWarRoom && currentSegments[idx-1].isAlex) {
-                    separator = '<div class="relative my-2"><div class="absolute inset-0 flex items-center"><div class="w-full border-t border-slate-700"></div></div><div class="relative flex justify-center text-xs"><span class="bg-slate-900 px-2 text-slate-400">⚔️ WAR ROOM SEGMENTS ⚔️</span></div></div>';
-                }
-                
+                const separator = (idx > 0 && seg.isWarRoom && currentSegments[idx-1].isAlex) 
+                    ? '<div class="relative my-2"><div class="border-t border-slate-700"></div><div class="text-center text-[10px] text-slate-500 -mt-3">WAR ROOM</div></div>' : '';
                 const div = document.createElement('div');
-                div.className = `segment-item p-3 rounded-xl border-l-4 ${isActive ? 'segment-active border-blue-500 bg-slate-800/60' : 'border-transparent bg-slate-800/30 hover:bg-slate-800/70'}`;
+                div.className = `segment-item p-3 rounded-xl border-l-4 ${isActive ? 'segment-active border-blue-500 bg-slate-800/60' : 'border-transparent bg-slate-800/30'}`;
                 div.setAttribute('data-index', idx);
-                div.innerHTML = `
-                    ${separator}
-                    <div class="flex justify-between items-start gap-2">
-                        <div class="flex-1 min-w-0">
-                            <div class="flex items-center gap-2 flex-wrap mb-1">
-                                <span class="text-xs font-semibold ${seg.isAlex ? 'text-blue-400' : 'text-purple-400'}">${showName}</span>
-                                <span class="text-xs font-mono text-slate-300">${hourLabel}</span>
-                                <span class="text-[10px] bg-slate-700 px-1.5 py-0.5 rounded-full">${seg.displayDate}</span>
-                                ${extraBadge}
-                            </div>
-                            <p class="text-sm font-medium text-white truncate" title="${escapeHtml(seg.title)}">${escapeHtml(seg.title.substring(0, 55))}</p>
-                        </div>
-                        ${isActive ? '<span class="text-green-400 text-xs flex-shrink-0">▶ PLAYING</span>' : '<span class="text-slate-500 text-xs flex-shrink-0">●</span>'}
-                    </div>
-                `;
-                div.addEventListener('click', () => {
-                    const newIdx = parseInt(div.dataset.index, 10);
-                    if (!isNaN(newIdx) && newIdx !== currentIndex) {
-                        currentIndex = newIdx;
-                        loadVideoByIndex(currentIndex);
-                        renderPlaylistSidebar(dateStr);
-                    }
-                });
+                div.innerHTML = `${separator}<div class="flex justify-between"><div><div class="flex gap-2 items-center"><span class="text-xs font-semibold ${seg.isAlex ? 'text-blue-400' : 'text-purple-400'}">${showName}</span><span class="text-xs font-mono">Hr${seg.hour}</span><span class="text-[10px] text-slate-500">${seg.displayDate}</span></div><p class="text-sm truncate w-48">${escapeHtml(seg.title.substring(0, 50))}</p></div>${isActive ? '<span class="text-green-400 text-xs">▶</span>' : '<span class="text-slate-500 text-xs">●</span>'}</div>`;
+                div.addEventListener('click', () => { currentIndex = parseInt(div.dataset.index, 10); loadVideoByIndex(currentIndex); renderPlaylistSidebar(); });
                 playlistContainer.appendChild(div);
             });
-            
-            const activeEl = playlistContainer.querySelector('.segment-active');
-            if (activeEl) activeEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            document.querySelector('.segment-active')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
         
         function loadVideoByIndex(index) {
-            if (!currentSegments.length || index < 0 || index >= currentSegments.length) return;
+            if (!currentSegments[index]) return;
             const seg = currentSegments[index];
-            if (!seg.url) return;
-            
             videoPlayer.pause();
             videoPlayer.src = seg.url;
             videoPlayer.load();
-            videoPlayer.play().catch(e => console.log('Autoplay blocked:', e));
+            videoPlayer.play().catch(e => console.log);
             currentTitleSpan.innerText = seg.title;
             positionBadge.innerText = `${index + 1} / ${currentSegments.length}`;
             progressFill.style.width = '0%';
         }
         
         function playNext() {
-            if (!currentSegments.length) return;
             if (currentIndex + 1 < currentSegments.length) {
                 currentIndex++;
                 loadVideoByIndex(currentIndex);
-                renderPlaylistSidebar(currentSegments[0]?.dateStr || '');
-            } else {
-                // End of playlist: optionally loop or stop
-                if (confirm('End of playlist. Start over from beginning?')) {
-                    currentIndex = 0;
-                    loadVideoByIndex(0);
-                    renderPlaylistSidebar(currentSegments[0]?.dateStr || '');
-                }
+                renderPlaylistSidebar();
             }
         }
-        
         function playPrev() {
-            if (!currentSegments.length) return;
             if (currentIndex - 1 >= 0) {
                 currentIndex--;
                 loadVideoByIndex(currentIndex);
-                renderPlaylistSidebar(currentSegments[0]?.dateStr || '');
+                renderPlaylistSidebar();
             }
-        }
-        
-        function enableButtons(enabled) {
-            const prevBtn = document.getElementById('prev-segment-btn');
-            const nextBtn = document.getElementById('next-segment-btn');
-            if (prevBtn) prevBtn.disabled = !enabled;
-            if (nextBtn) nextBtn.disabled = !enabled;
-        }
-        
-        function setupAutoNext() {
-            videoPlayer.removeEventListener('ended', onVideoEnd);
-            videoPlayer.addEventListener('ended', onVideoEnd);
-        }
-        function onVideoEnd() { playNext(); }
-        
-        // UI helpers
-        function escapeHtml(str) {
-            if (!str) return '';
-            return str.replace(/[&<>]/g, m => m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;');
         }
         
         videoPlayer.addEventListener('timeupdate', () => {
-            if (videoPlayer.duration && !isNaN(videoPlayer.duration)) {
-                const percent = (videoPlayer.currentTime / videoPlayer.duration) * 100;
-                progressFill.style.width = `${percent}%`;
-            }
+            if (videoPlayer.duration) progressFill.style.width = `${(videoPlayer.currentTime / videoPlayer.duration) * 100}%`;
         });
-        videoPlayer.addEventListener('error', () => { setTimeout(() => playNext(), 1500); });
+        videoPlayer.addEventListener('ended', () => playNext());
         
-        // Initialize Calendar with available dates
-        async function initCalendarAndApp() {
-            loadingOverlay.style.display = 'flex';
-            const success = await buildArchiveIndex();
-            loadingOverlay.style.display = 'none';
-            
-            if (!success || availableDates.length === 0) {
-                feedStatusSpan.innerHTML = '❌ No archive data';
-                return;
-            }
-            
-            // Configure flatpickr
-            const dateOptions = availableDates.map(d => {
-                const year = d.slice(0,4);
-                const month = parseInt(d.slice(4,6), 10);
-                const day = parseInt(d.slice(6,8), 10);
-                return new Date(year, month-1, day);
-            });
-            
-            flatpickrInstance = flatpickr("#openCalendarBtn", {
-                enable: dateOptions,
-                dateFormat: "Y-m-d",
-                onChange: function(selectedDates, dateStr, instance) {
-                    if (selectedDates.length === 0) return;
-                    const selected = selectedDates[0];
-                    const year = selected.getFullYear();
-                    const month = String(selected.getMonth() + 1).padStart(2,'0');
-                    const day = String(selected.getDate()).padStart(2,'0');
-                    const ymd = `${year}${month}${day}`;
-                    if (masterArchive[ymd]) {
-                        selectedDateDisplay.innerText = `${year}-${month}-${day}`;
-                        loadPlaylistForDate(ymd);
-                        setupAutoNext();
-                        feedStatusSpan.innerHTML = `📅 ${availableDates.length} dates · playing ${ymd}`;
-                    } else {
-                        alert('No segments for this date');
+        function escapeHtml(str) { return str.replace(/[&<>]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[m])); }
+        
+        // ========== Initialize App ==========
+        async function init() {
+            // Step 1: Load from localStorage (instant UI)
+            const cached = loadFromLocalStorage();
+            if (cached) {
+                masterArchive = cached.archive;
+                availableDates = cached.dates;
+                feedStatusSpan.innerHTML = `📅 ${availableDates.length} dates (cached)`;
+                updateCalendarDates();
+                if (availableDates.length) {
+                    const newest = availableDates[0];
+                    const disp = `${newest.slice(0,4)}-${newest.slice(4,6)}-${newest.slice(6,8)}`;
+                    selectedDateDisplay.innerText = disp;
+                    loadPlaylistForDate(newest);
+                }
+            } else {
+                feedStatusSpan.innerHTML = '📡 First load, fetching...';
+                const fresh = await fetchFreshArchive();
+                if (fresh) {
+                    masterArchive = fresh.archive;
+                    availableDates = fresh.dates;
+                    updateCalendarDates();
+                    if (availableDates.length) {
+                        const newest = availableDates[0];
+                        const disp = `${newest.slice(0,4)}-${newest.slice(4,6)}-${newest.slice(6,8)}`;
+                        selectedDateDisplay.innerText = disp;
+                        loadPlaylistForDate(newest);
                     }
-                },
-                placeholder: "Select date",
-                allowInput: false,
-                disableMobile: true,
-                position: "auto"
-            });
-            
-            // Default: load newest date
-            const newestDate = availableDates[0];
-            if (newestDate) {
-                const disp = `${newestDate.slice(0,4)}-${newestDate.slice(4,6)}-${newestDate.slice(6,8)}`;
-                selectedDateDisplay.innerText = disp;
-                loadPlaylistForDate(newestDate);
-                setupAutoNext();
-                feedStatusSpan.innerHTML = `✅ Loaded ${disp} · ${currentSegments.length} segments`;
+                    feedStatusSpan.innerHTML = `✅ ${availableDates.length} dates loaded`;
+                }
             }
-            enableButtons(true);
+            
+            // Step 2: Background refresh (stale-while-revalidate)
+            backgroundRefresh();
+            
+            // Step 3: Setup flatpickr calendar
+            flatpickrInstance = flatpickr("#openCalendarBtn", {
+                dateFormat: "Y-m-d",
+                onChange: (dates) => {
+                    if (dates.length) {
+                        const d = dates[0];
+                        const ymd = `${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}`;
+                        if (masterArchive[ymd]) {
+                            selectedDateDisplay.innerText = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+                            loadPlaylistForDate(ymd);
+                        }
+                    }
+                }
+            });
+            updateCalendarDates();
+            
+            document.getElementById('next-segment-btn')?.addEventListener('click', playNext);
+            document.getElementById('prev-segment-btn')?.addEventListener('click', playPrev);
+            document.getElementById('refresh-cache-btn')?.addEventListener('click', () => { window.location.reload(); });
+            document.getElementById('prev-segment-btn').disabled = false;
+            document.getElementById('next-segment-btn').disabled = false;
         }
         
-        // Button listeners
-        document.getElementById('next-segment-btn')?.addEventListener('click', playNext);
-        document.getElementById('prev-segment-btn')?.addEventListener('click', playPrev);
-        document.getElementById('refresh-btn')?.addEventListener('click', () => {
-            window.location.reload();
-        });
-        
-        // Keyboard arrows
-        window.addEventListener('keydown', (e) => {
-            if (e.key === 'ArrowLeft') { playPrev(); e.preventDefault(); }
-            if (e.key === 'ArrowRight') { playNext(); e.preventDefault(); }
-        });
-        
-        // Bootstrap
-        initCalendarAndApp();
+        init();
     </script>
 </body>
 </html>

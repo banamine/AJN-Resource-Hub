@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>AJN Archive Player · PWA · Sirius Loading Audio</title>
-    <meta name="description" content="AJN Hourly Video Archive - Select date, continuous playback with loading interlude">
+    <title>AJN Archive Player · Sirius Loading Audio</title>
+    <meta name="description" content="AJN Hourly Video Archive - Select date, continuous playback with Sirius interlude">
     <meta name="theme-color" content="#0a0f1c">
     <link rel="manifest" href="/manifest.json">
     <link rel="apple-touch-icon" href="/icon-192.png">
@@ -149,34 +149,46 @@
     </div>
 
     <script>
-        // ========== SIRIUS AUDIO INTERLUDE ==========
-        // Your provided link: Alan Parsons Project - Sirius (Official Audio)
-        const SIRIUS_AUDIO_URL = 'https://archive.org/download/a-132-5_20260424/1.%20The%20Alan%20Parsons%20Project%20-%20Sirius%20%28Official%20Audio%29.mp4';
+        // ========== SIRIUS AUDIO INTERLUDE (Primary + Fallback) ==========
+        // Primary: GitHub raw MP3 (your file)
+        const SIRIUS_PRIMARY = 'https://raw.githubusercontent.com/banamine/AJN-Resource-Hub/main/The%20Alan%20Parsons%20Project%20-%20Sirius%20(Official%20Audio).mp3';
+        // Fallback: Archive.org MP4 (if primary fails)
+        const SIRIUS_FALLBACK = 'https://archive.org/download/a-132-5_20260424/1.%20The%20Alan%20Parsons%20Project%20-%20Sirius%20%28Official%20Audio%29.mp4';
         
         let audioElement = null;
         let isLoadingActive = false;
         let loadingStarted = false;
+        let currentAudioSource = 0; // 0 = primary, 1 = fallback
         
         function initSiriusAudio() {
             audioElement = new Audio();
             audioElement.loop = true;
             audioElement.volume = 0.3;
-            audioElement.src = SIRIUS_AUDIO_URL;
+            
+            // Try primary source first
+            audioElement.src = SIRIUS_PRIMARY;
+            currentAudioSource = 0;
             audioElement.load();
             
-            // Handle load errors gracefully
+            // If primary fails, switch to fallback
             audioElement.addEventListener('error', (e) => {
-                console.warn('Sirius audio failed to load:', e);
-                const audioDiv = document.getElementById('audioInterlude');
-                if (audioDiv) {
-                    audioDiv.querySelector('.status-text').innerHTML = '🎵 Loading archive (no audio)';
-                    audioDiv.querySelector('.pulse-dot')?.remove();
+                console.warn('Primary audio source failed, trying fallback...');
+                if (currentAudioSource === 0) {
+                    currentAudioSource = 1;
+                    audioElement.src = SIRIUS_FALLBACK;
+                    audioElement.load();
+                    // Try to play after loading fallback
+                    audioElement.addEventListener('canplay', () => {
+                        if (isLoadingActive) audioElement.play().catch(e => console.log);
+                    }, { once: true });
+                } else {
+                    // Both failed - update UI to show no audio available
+                    const audioDiv = document.getElementById('audioInterlude');
+                    if (audioDiv) {
+                        audioDiv.querySelector('.status-text').innerHTML = '🎵 Loading archive (no audio)';
+                        audioDiv.querySelector('.pulse-dot')?.remove();
+                    }
                 }
-            });
-            
-            // Autoplay may be blocked by browser policies - we'll handle that
-            audioElement.addEventListener('play', () => {
-                console.log('Sirius interlude playing');
             });
         }
         
@@ -186,12 +198,10 @@
             if (audioDiv) audioDiv.style.display = 'flex';
             
             try {
-                // Attempt to play (may be blocked by browser autoplay policies)
                 await audioElement.play();
                 isLoadingActive = true;
             } catch (err) {
                 console.log('Autoplay blocked - user must interact first');
-                // Show a message that user needs to click something
                 if (audioDiv) {
                     audioDiv.querySelector('.status-text').innerHTML = '🔊 Click to hear Sirius';
                     const stopBtn = document.getElementById('stopAudioBtn');
@@ -229,7 +239,6 @@
             }
         }
         
-        // Stop button handler
         document.getElementById('stopAudioBtn')?.addEventListener('click', (e) => {
             e.stopPropagation();
             stopSiriusAudio();
@@ -238,7 +247,7 @@
         // ========== CONFIGURATION ==========
         const FEED_URL = 'https://rss.alexjones.media/AJNHourlyVideo.html';
         const CORS_PROXY = 'https://api.allorigins.win/raw?url=';
-        const CACHE_KEY = 'ajn_archive_v5';
+        const CACHE_KEY = 'ajn_archive_v6';
         
         let masterArchive = {};
         let availableDates = [];
@@ -247,7 +256,6 @@
         let videoPlayer = document.getElementById('main-video');
         let flatpickrInstance = null;
         
-        // DOM elements
         const currentTitleSpan = document.getElementById('current-title');
         const positionBadge = document.getElementById('position-badge');
         const progressFill = document.getElementById('progress-bar');
@@ -350,7 +358,7 @@
             } catch (e) { return null; }
         }
         
-        // ========== RENDER PLAYLIST (Optimized) ==========
+        // ========== RENDER PLAYLIST ==========
         function renderPlaylistSidebar() {
             if (!playlistContainer) return;
             if (!currentSegments.length) {
@@ -386,7 +394,6 @@
             loadVideoByIndex(0);
             segmentCountSpan.innerText = `${currentSegments.length} videos`;
             
-            // AUDIO FADE OUT: Videos are now loaded, stop the interlude
             if (loadingStarted) {
                 stopSiriusAudio();
                 loadingStarted = false;
@@ -444,10 +451,8 @@
                     selectedDateDisplay.innerText = disp;
                     loadPlaylistForDate(newest);
                 }
-                // If cache loads instantly, no audio needed
                 if (loadingStarted) { stopSiriusAudio(); loadingStarted = false; }
             } else {
-                // First load - need to fetch, so start Sirius
                 const fresh = await fetchFreshArchive();
                 if (fresh && fresh.dates.length > 0) {
                     masterArchive = fresh.archive;
@@ -462,7 +467,6 @@
                 }
             }
             
-            // Background refresh (checks for new dates without restarting audio)
             setTimeout(async () => {
                 const fresh = await fetchFreshArchive();
                 if (fresh && fresh.dates.length > 0 && fresh.dates[0] !== availableDates?.[0]) {
@@ -474,7 +478,6 @@
                 }
             }, 5000);
             
-            // Flatpickr calendar setup
             flatpickrInstance = flatpickr("#openCalendarBtn", {
                 dateFormat: "Y-m-d",
                 onChange: (dates) => {
@@ -496,7 +499,6 @@
             }
             updateCalendarDates();
             
-            // Button listeners
             document.getElementById('prev-segment-btn')?.addEventListener('click', playPrev);
             document.getElementById('next-segment-btn')?.addEventListener('click', playNext);
             document.getElementById('refresh-cache-btn')?.addEventListener('click', () => window.location.reload());

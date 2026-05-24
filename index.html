@@ -3,14 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>AJN Archive Player · Sirius Edition · Live Broadcast + Multi-Proxy PWA</title>
-    <meta name="description" content="AJN Hourly Video Archive - Sirius interlude with robust proxy fallback and integrated Live stream">
+    <title>AJN Archive Player · Sirius Edition · Live Twitter Embed + Multi-Proxy PWA</title>
+    <meta name="description" content="AJN Hourly Video Archive - Sirius interlude with robust proxy fallback and integrated Live stream (Twitter Embed)">
     <meta name="theme-color" content="#0a0f1c">
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon-192.png">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Twitter Widgets Script will be loaded dynamically when Live opens -->
     <style>
         body { background: #0a0f1c; }
         .player-container { background: #000; border-radius: 1.2rem; overflow: hidden; position: relative; }
@@ -162,14 +163,14 @@
             margin-top: 8px;
         }
         
-        /* Live overlay fly-out styles */
+        /* Live overlay fly-out styles - Twitter Embed friendly */
         .live-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.92);
+            background: rgba(0, 0, 0, 0.94);
             backdrop-filter: blur(16px);
             z-index: 10001;
             display: flex;
@@ -187,7 +188,7 @@
             background: #0f172a;
             border-radius: 2rem;
             width: 90%;
-            max-width: 1100px;
+            max-width: 700px;
             border: 1px solid #3b82f6;
             box-shadow: 0 25px 40px -12px black;
             overflow: hidden;
@@ -200,6 +201,8 @@
             justify-content: space-between;
             align-items: center;
             border-bottom: 1px solid #334155;
+            flex-wrap: wrap;
+            gap: 12px;
         }
         .live-header h3 {
             font-weight: bold;
@@ -207,6 +210,7 @@
             display: flex;
             align-items: center;
             gap: 8px;
+            font-size: 1rem;
         }
         .live-close {
             background: #334155;
@@ -216,21 +220,28 @@
             padding: 6px 16px;
             cursor: pointer;
             transition: 0.2s;
+            font-size: 13px;
         }
         .live-close:hover { background: #ef4444; }
-        .live-iframe-wrapper {
-            position: relative;
-            padding-bottom: 56.25%; /* 16:9 */
-            height: 0;
-            background: #000;
+        .live-embed-wrapper {
+            padding: 20px;
+            background: #030712;
+            min-height: 500px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
         }
-        .live-iframe-wrapper iframe {
-            position: absolute;
-            top: 0;
-            left: 0;
+        .live-embed-wrapper .twitter-tweet {
+            margin: 0 auto !important;
             width: 100%;
-            height: 100%;
-            border: none;
+            max-width: 550px;
+        }
+        .live-loading {
+            color: #94a3b8;
+            text-align: center;
+            padding: 40px;
+            font-size: 14px;
         }
         .live-badge {
             background: #ef4444;
@@ -247,6 +258,15 @@
             transition: 0.2s;
         }
         .live-button:hover { background: #ef4444; border-color: white; transform: scale(1.02); }
+        
+        /* Dark mode for any Tweet widget inside */
+        .live-embed-wrapper {
+            color-scheme: dark;
+        }
+        .twitter-tweet {
+            background: #0f172a !important;
+            border-radius: 24px !important;
+        }
     </style>
 </head>
 <body class="font-sans antialiased text-gray-200">
@@ -261,17 +281,22 @@
         <button id="refresh-cache-btn" class="bg-blue-600 px-4 py-1 rounded-full text-sm">Refresh</button>
     </div>
 
-    <!-- LIVE OVERLAY (fly-out) -->
+    <!-- LIVE OVERLAY (fly-out) with Twitter Embed -->
     <div id="liveOverlay" class="live-overlay">
         <div class="live-container">
             <div class="live-header">
-                <h3><span class="live-badge">● LIVE</span> AJN Broadcast</h3>
+                <h3><span class="live-badge">● LIVE</span> AJN Broadcast (Twitter Stream)</h3>
                 <button id="closeLiveBtn" class="live-close">✕ Close Stream</button>
             </div>
-            <div class="live-iframe-wrapper">
-                <iframe id="liveFrame" src="" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+            <div id="liveEmbedContainer" class="live-embed-wrapper">
+                <div class="live-loading">⏳ Loading live broadcast... Twitter widget will appear below.</div>
+                <!-- Twitter embed will be injected here dynamically -->
+                <blockquote id="twitterLiveBlockquote" class="twitter-tweet" data-media-max-width="560">
+                    <p lang="en" dir="ltr">ALEX JONES LIVE: Airspace Over Iran Cleared As Trump Prepares To Relaunch War, Turkey Claims Plot To Kill Ivanka Foiled, 47 Ordered Gabbard To Quit Plus, Israeli Spy Group Project 545 Has Been Caught Targeting Hundreds Of US Journalists Who Oppose War <a href="https://t.co/qj4mJX0dOC">https://t.co/qj4mJX0dOC</a></p>
+                    &mdash; INFOWARS (@infowars) <a href="https://twitter.com/infowars/status/2058235440046477568?ref_src=twsrc%5Etfw">May 23, 2026</a>
+                </blockquote>
             </div>
-            <div class="p-3 text-center text-xs text-slate-400 bg-slate-900">Live broadcast — independent from archive player</div>
+            <div class="p-3 text-center text-xs text-slate-400 bg-slate-900 border-t border-slate-800">Live broadcast powered by Twitter — independent from archive player</div>
         </div>
     </div>
 
@@ -367,10 +392,12 @@
         
         // LIVE state management
         let isLiveOpen = false;
+        let twitterWidgetLoaded = false;
         const liveOverlay = document.getElementById('liveOverlay');
-        const liveFrame = document.getElementById('liveFrame');
+        const liveEmbedContainer = document.getElementById('liveEmbedContainer');
         const openLiveBtn = document.getElementById('openLiveBtn');
         const closeLiveBtn = document.getElementById('closeLiveBtn');
+        const twitterBlockquote = document.getElementById('twitterLiveBlockquote');
         
         const musicOverlay = document.getElementById('musicOverlay');
         const overlayStatusMsg = document.getElementById('overlayStatusMsg');
@@ -389,8 +416,52 @@
         document.body.appendChild(ariaAnnouncer);
         function announce(msg) { ariaAnnouncer.textContent = msg; console.log('[ARIA]', msg); }
         
+        // Function to load Twitter Widgets script dynamically only once
+        function loadTwitterWidgets() {
+            if (window.twttr && window.twttr.widgets) {
+                // Already loaded, just re-render
+                if (window.twttr.widgets.load) window.twttr.widgets.load();
+                return Promise.resolve();
+            }
+            return new Promise((resolve, reject) => {
+                if (document.getElementById('twitter-wjs')) {
+                    if (window.twttr) resolve();
+                    else reject();
+                    return;
+                }
+                const script = document.createElement('script');
+                script.id = 'twitter-wjs';
+                script.src = 'https://platform.twitter.com/widgets.js';
+                script.charset = 'utf-8';
+                script.onload = () => {
+                    if (window.twttr) resolve();
+                    else reject();
+                };
+                script.onerror = reject;
+                document.head.appendChild(script);
+            });
+        }
+        
+        // Ensures embed inside overlay is rendered correctly
+        async function renderTwitterEmbed() {
+            if (!liveEmbedContainer) return;
+            // Show loading indicator
+            const loadingDiv = liveEmbedContainer.querySelector('.live-loading');
+            if (loadingDiv) loadingDiv.style.display = 'flex';
+            try {
+                await loadTwitterWidgets();
+                if (window.twttr && window.twttr.widgets) {
+                    await window.twttr.widgets.load();
+                }
+                if (loadingDiv) loadingDiv.style.display = 'none';
+            } catch (e) {
+                console.warn("Twitter widgets failed", e);
+                if (loadingDiv) loadingDiv.innerHTML = '⚠️ Live stream widget could not load. Please try again.';
+            }
+        }
+        
         // ---------- CORE TOGGLE LIVE with conflict resolution ----------
-        function toggleLive(show) {
+        async function toggleLive(show) {
             if (show && !isLiveOpen) {
                 // CLOSE any playing archive media BEFORE opening live
                 if (videoPlayer && !videoPlayer.paused) {
@@ -401,18 +472,37 @@
                     audioElement.pause();
                     announce("Background music paused because Live stream opened.");
                 }
-                // Set embed URL (robust stream source - replace with actual live URL if needed)
-                // Using a stable public live stream example, but you can replace with AJN official embed.
-                // For safety, using a placeholder that won't cause CORS issues; user can override.
-                liveFrame.src = "https://www.youtube.com/embed/live_stream?channel=UCc3-b7FzDXpBtDq9J1RNOYg&autoplay=1"; // replaceable
+                // Show overlay and render Twitter embed
                 liveOverlay.classList.add('active');
                 isLiveOpen = true;
+                // Ensure the container shows the blockquote and loads embed
+                await renderTwitterEmbed();
                 announce("Live broadcast started. Archive playback paused.");
             } else if (!show && isLiveOpen) {
-                // Clear src to stop background streaming & kill zombie audio
-                liveFrame.src = "";
+                // Remove overlay, but DO NOT destroy the embed src (since it's a twitter widget, just hide)
                 liveOverlay.classList.remove('active');
                 isLiveOpen = false;
+                // Force any potential background audio from embedded video to stop by clearing and re-inserting blockquote (clean slate)
+                // This prevents "zombie" audio from twitter's iframe players.
+                const container = liveEmbedContainer;
+                const oldBlockquote = document.getElementById('twitterLiveBlockquote');
+                if (oldBlockquote && container) {
+                    // Remove and re-insert the blockquote to stop any ongoing stream
+                    const newBlockquote = document.createElement('blockquote');
+                    newBlockquote.id = 'twitterLiveBlockquote';
+                    newBlockquote.className = 'twitter-tweet';
+                    newBlockquote.setAttribute('data-media-max-width', '560');
+                    newBlockquote.innerHTML = `<p lang="en" dir="ltr">ALEX JONES LIVE: Airspace Over Iran Cleared As Trump Prepares To Relaunch War, Turkey Claims Plot To Kill Ivanka Foiled, 47 Ordered Gabbard To Quit Plus, Israeli Spy Group Project 545 Has Been Caught Targeting Hundreds Of US Journalists Who Oppose War <a href="https://t.co/qj4mJX0dOC">https://t.co/qj4mJX0dOC</a></p>&mdash; INFOWARS (@infowars) <a href="https://twitter.com/infowars/status/2058235440046477568?ref_src=twsrc%5Etfw">May 23, 2026</a>`;
+                    oldBlockquote.remove();
+                    container.appendChild(newBlockquote);
+                    // Keep loading placeholder
+                    if (!container.querySelector('.live-loading')) {
+                        const loadingDiv = document.createElement('div');
+                        loadingDiv.className = 'live-loading';
+                        loadingDiv.innerText = '⏳ Live stream closed. Click LIVE again to restart.';
+                        container.insertBefore(loadingDiv, newBlockquote);
+                    }
+                }
                 announce("Live stream closed. You may resume archive playback.");
             }
         }
@@ -524,7 +614,7 @@
         stopMusicAndPlayBtn?.addEventListener('click', stopMusicAndPlayVideo);
         pillStopBtn?.addEventListener('click', stopMusicAndPlayVideo);
         
-        // ========== MULTI-PROXY CORS FALLBACK SYSTEM ==========
+        // ========== MULTI-PROXY CORS FALLBACK SYSTEM (unchanged) ==========
         const FEED_URL = 'https://rss.alexjones.media/AJNHourlyVideo.html';
         const PROXY_LIST = [
             'https://api.allorigins.win/raw?url=',

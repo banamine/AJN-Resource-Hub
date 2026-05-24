@@ -1,73 +1,39 @@
-// sw.js - Service Worker with version tracking
-const CACHE_NAME = 'ajn-shell-v5';
-const ASSETS_TO_CACHE = [
+const CACHE_NAME = 'ajn-archive-v3';
+const urlsToCache = [
   './',
   './index.html',
-  './manifest.json',
-  './icon-192.png',
-  './icon-512.png'
+  './manifest.json'
 ];
 
-// Install: cache app shell
-self.addEventListener('install', (event) => {
-  console.log('[SW] Installing version v5...');
+self.addEventListener('install', event => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(ASSETS_TO_CACHE);
-    }).catch(err => console.error('[SW] Cache open/add failed during install:', err))
+    caches.open(CACHE_NAME)
+      .then(cache => cache.addAll(urlsToCache))
+      .then(() => self.skipWaiting())
   );
-  self.skipWaiting();
 });
 
-// Activate: clean old caches
-self.addEventListener('activate', (event) => {
-  console.log('[SW] Activating v5...');
-  event.waitUntil(
-    caches.keys().then((keys) => Promise.all(
-      keys.map((key) => {
-        if (key !== CACHE_NAME && key.startsWith('ajn-shell')) {
-          console.log('[SW] Deleting old cache:', key);
-          return caches.delete(key);
-        }
-        return null;
-      }).filter(p => p !== null)
-    ))
-  );
-  self.clients.claim();
-});
-
-// Fetch: cache-first for assets, network-first for feed
-self.addEventListener('fetch', (event) => {
+self.addEventListener('fetch', event => {
   const url = event.request.url;
   
-  // Don't intercept or cache large video/audio streams
-  if (url.includes('.m4v') || url.includes('.mp4') || url.includes('.mp3')) {
+  // Don't cache videos
+  if (url.includes('.m4v') || url.includes('.mp4')) {
     event.respondWith(fetch(event.request));
     return;
   }
   
-  // Network-first for the feed URL to always get latest
-  if (url.includes('AJNHourlyVideo.html')) {
-    event.respondWith(
-      fetch(event.request, { cache: 'no-store' })
-        .catch(() => caches.match(event.request))
-    );
-    return;
-  }
-  
-  // Cache-first for everything else (UI layout, fonts, icons)
   event.respondWith(
-    caches.match(event.request).then((cached) => {
-      return cached || fetch(event.request).then((response) => {
-        // Cache valid responses
-        if (response && response.status === 200) {
-          const responseToCache = response.clone();
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put(event.request, responseToCache);
-          });
-        }
-        return response;
-      });
-    }).catch(() => fetch(event.request))
+    caches.match(event.request)
+      .then(response => response || fetch(event.request))
+  );
+});
+
+self.addEventListener('activate', event => {
+  event.waitUntil(
+    caches.keys().then(keys => {
+      return Promise.all(
+        keys.filter(key => key !== CACHE_NAME).map(key => caches.delete(key))
+      );
+    }).then(() => self.clients.claim())
   );
 });

@@ -2,672 +2,495 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>AJN Archive Player · Complete Archive</title>
-    <meta name="description" content="AJN Complete Video Archive - All days supported">
-    <meta name="theme-color" content="#0a0f1c">
-    <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-icon" href="icon-192.png">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=yes">
+    <title>AJN Live Audio Matrix · Stream Visualizer Suite</title>
+    <meta name="description" content="AJN live audio streams: Alex Jones, War Room, Network Feed. Fly-out player with 120-line spectrum visualizer per source.">
+    <meta name="theme-color" content="#050a12">
+    <link rel="shortcut icon" href="https://rss.alexjones.media/favicon.png">
+    <!-- Tailwind + Font Awesome + Wavesurfer (lightweight) -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://unpkg.com/wavesurfer.js@7.4.0/dist/wavesurfer.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { background: #0a0f1c; font-family: system-ui, -apple-system, sans-serif; }
-        
-        .player-container { background: #000; border-radius: 1.2rem; overflow: hidden; position: relative; }
-        .segment-item { transition: all 0.2s ease; cursor: pointer; }
-        .segment-item:hover { background: #1e293b; transform: translateX(4px); }
-        .segment-active { background: #0f2b3d; border-left: 3px solid #3b82f6; }
-        .playlist-scroll { max-height: 450px; overflow-y: auto; scrollbar-width: thin; }
-        .playlist-scroll::-webkit-scrollbar { width: 5px; }
-        .playlist-scroll::-webkit-scrollbar-track { background: #1e293b; }
-        .playlist-scroll::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 10px; }
-        
-        .update-toast {
-            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
-            background: #1e293b; border: 1px solid #10b981; border-radius: 50px;
-            padding: 12px 24px; display: flex; gap: 16px; align-items: center;
-            z-index: 9999; backdrop-filter: blur(10px); animation: slideUp 0.3s ease;
+        body {
+            background: radial-gradient(circle at 10% 20%, #0a0f1c, #03060c);
+            font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
         }
-        @keyframes slideUp { from { opacity: 0; transform: translateX(-50%) translateY(20px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
-        
-        .flatpickr-calendar { background: #1e293b !important; border-color: #334155 !important; }
-        .flatpickr-day { color: #cbd5e1 !important; }
-        .flatpickr-day.selected { background: #3b82f6 !important; }
-        .flatpickr-day.disabled { color: #475569 !important; }
-        
-        .music-overlay {
-            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(10, 15, 28, 0.95); backdrop-filter: blur(12px);
-            display: flex; align-items: center; justify-content: center; flex-direction: column;
-            z-index: 20; transition: opacity 0.6s ease;
+        /* glassmorphic flyout panel */
+        .flyout-panel {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(8, 14, 26, 0.96);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(59,130,246,0.5);
+            box-shadow: 0 -10px 40px rgba(0,0,0,0.6);
+            z-index: 1000;
+            transition: transform 0.4s cubic-bezier(0.2,0.9,0.4,1.1);
+            transform: translateY(100%);
+            border-radius: 24px 24px 0 0;
         }
-        .music-overlay-content {
-            text-align: center; padding: 2rem; background: rgba(30, 41, 59, 0.85);
-            border-radius: 2rem; border: 1px solid #3b82f6; max-width: 85%;
+        .flyout-panel.open {
+            transform: translateY(0);
         }
-        .vinyl-spinner {
-            width: 80px; height: 80px; border-radius: 50%;
-            background: radial-gradient(circle at 30% 30%, #1e293b, #0f172a);
-            box-shadow: 0 0 0 4px #334155, 0 0 0 8px #1e293b;
-            margin: 0 auto 20px auto; animation: spin 2s linear infinite; position: relative;
+        .visualizer-container {
+            background: #00000022;
+            border-radius: 20px;
+            padding: 12px 8px;
+            backdrop-filter: blur(4px);
         }
-        .vinyl-spinner::after {
-            content: ""; position: absolute; top: 50%; left: 50%;
-            width: 12px; height: 12px; background: #3b82f6; border-radius: 50%;
-            transform: translate(-50%, -50%);
+        canvas.spectrum-canvas {
+            width: 100%;
+            height: 120px;
+            display: block;
+            border-radius: 14px;
+            background: #03060c;
+            box-shadow: inset 0 0 10px #00000033, 0 2px 6px #3b82f620;
         }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        
-        .pulse-wave { display: flex; gap: 6px; justify-content: center; margin-top: 16px; }
-        .pulse-wave span {
-            width: 4px; height: 20px; background: #3b82f6; border-radius: 2px;
-            animation: wave 0.8s ease-in-out infinite;
+        .stream-btn {
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
-        .pulse-wave span:nth-child(2) { animation-delay: 0.1s; height: 30px; }
-        .pulse-wave span:nth-child(3) { animation-delay: 0.2s; height: 25px; }
-        .pulse-wave span:nth-child(4) { animation-delay: 0.3s; height: 35px; }
-        .pulse-wave span:nth-child(5) { animation-delay: 0.4s; height: 20px; }
-        @keyframes wave { 0%, 100% { transform: scaleY(0.5); } 50% { transform: scaleY(1); } }
-        
-        .stop-music-btn, .init-audio-btn {
-            border: none; border-radius: 40px; padding: 10px 24px;
-            font-weight: bold; cursor: pointer; transition: all 0.2s; margin: 4px;
+        .stream-btn.active-stream {
+            background: linear-gradient(135deg, #1e40af, #3b82f6);
+            border-color: #60a5fa;
+            box-shadow: 0 0 12px #3b82f6;
+            scale: 1.02;
         }
-        .stop-music-btn { background: #ef4444; color: white; }
-        .stop-music-btn:hover { background: #dc2626; transform: scale(1.02); }
-        .init-audio-btn { background: #10b981; color: white; }
-        .init-audio-btn:hover { background: #059669; transform: scale(1.02); }
-        .system-ready-btn { background: #22c55e; animation: pulse-green 1.2s infinite; }
-        @keyframes pulse-green { 0%, 100% { box-shadow: 0 0 5px #22c55e; } 50% { box-shadow: 0 0 20px #22c55e; } }
-        
-        .hidden-overlay { opacity: 0; pointer-events: none; }
-        .audio-pill {
-            position: fixed; bottom: 16px; right: 16px; z-index: 10000;
-            background: rgba(30, 41, 59, 0.95); backdrop-filter: blur(8px);
-            border-radius: 40px; padding: 6px 14px; display: flex;
-            align-items: center; gap: 10px; border: 1px solid #3b82f6; font-size: 11px;
+        .flyout-handle {
+            width: 48px;
+            height: 5px;
+            background: #3b82f6;
+            border-radius: 20px;
+            margin: 12px auto 8px;
+            cursor: pointer;
+            transition: 0.2s;
         }
-        .audio-pill button { background: #ef4444; border: none; border-radius: 30px; padding: 3px 12px; color: white; cursor: pointer; }
-        .fade-out { opacity: 0; pointer-events: none; transition: opacity 0.6s ease; }
-        
-        .special-badge { background: linear-gradient(135deg, #f59e0b, #d97706); color: white; font-size: 9px; padding: 2px 6px; border-radius: 12px; margin-left: 6px; }
-        .date-group { margin-bottom: 8px; }
-        .date-header { background: #1e293b; padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: bold; margin-top: 8px; cursor: pointer; }
-        .date-header:hover { background: #334155; }
-        
-        .loading-spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid #3b82f6; border-top-color: transparent; border-radius: 50%; animation: spin 0.6s linear infinite; }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        
-        button:disabled { opacity: 0.5; cursor: not-allowed; }
-        .proxy-status { font-size: 9px; color: #64748b; margin-top: 8px; text-align: center; }
+        .info-badge {
+            background: #0f172ad9;
+            border-left: 3px solid #3b82f6;
+        }
+        @keyframes pulse-glow {
+            0% { text-shadow: 0 0 0px #3b82f6; }
+            100% { text-shadow: 0 0 6px #3b82f6; }
+        }
+        .live-indicator {
+            animation: pulse-glow 1.2s infinite alternate;
+        }
+        .volume-slider {
+            accent-color: #3b82f6;
+        }
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: #0f172a; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 10px; }
+        .phone-number {
+            font-family: 'JetBrains Mono', monospace;
+            letter-spacing: 1px;
+        }
+        .grid-bg {
+            background-image: radial-gradient(#1e293b 0.6px, transparent 0.6px);
+            background-size: 20px 20px;
+        }
     </style>
 </head>
-<body>
+<body class="text-gray-200 font-sans antialiased">
 
-    <div id="audioPill" class="audio-pill" style="display: none;">
-        <span>🎵 Sirius</span>
-        <button id="pillStopBtn">Stop</button>
-    </div>
-
-    <div id="update-toast" style="display: none;" class="update-toast">
-        <span>🔄 New content available!</span>
-        <button id="refresh-cache-btn" class="bg-blue-600 px-4 py-1 rounded-full text-sm">Refresh</button>
-    </div>
-
-    <div class="max-w-7xl mx-auto px-4 py-5">
-        <div class="flex flex-col md:flex-row justify-between items-center gap-4 border-b border-slate-800 pb-5 mb-6">
+    <!-- MAIN UI: LIVE STREAM BUTTONS ROW (top) -->
+    <div class="max-w-6xl mx-auto px-5 pt-6 pb-4">
+        <div class="flex flex-wrap justify-between items-center gap-4 border-b border-blue-900/50 pb-4 mb-5">
             <div>
-                <h1 class="text-3xl font-extrabold bg-gradient-to-r from-emerald-400 to-blue-500 bg-clip-text text-transparent">AJN Complete Archive</h1>
-                <p class="text-sm text-slate-400">All shows · All days · Saturday Specials supported</p>
+                <h1 class="text-3xl font-black bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent flex items-center gap-2">
+                    <i class="fas fa-broadcast-tower text-blue-400"></i> AJN LIVE AUDIO MATRIX
+                </h1>
+                <p class="text-slate-400 text-xs mt-1">Alex Jones · War Room · Network Feed · Fly-out player with 120‑line realtime visualizer</p>
             </div>
-            <div class="flex items-center gap-3">
-                <button id="openCalendarBtn" class="bg-slate-800 border border-slate-700 rounded-full px-4 py-2 text-sm flex items-center gap-2 hover:bg-slate-700">
-                    📅 <span id="selectedDateDisplay">Select date</span>
-                </button>
-                <div class="text-xs bg-slate-800 px-3 py-1.5 rounded-full flex items-center gap-2">
-                    <span id="feed-status">Initializing...</span>
-                </div>
+            <div class="bg-black/40 rounded-full px-3 py-1.5 text-xs border border-slate-700">
+                <i class="fas fa-headphones text-emerald-400 mr-1"></i> <span id="active-stream-label">No active stream</span>
             </div>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div class="lg:col-span-2">
-                <div class="player-container bg-slate-900 border border-slate-700 rounded-2xl overflow-hidden relative">
-                    <div class="bg-black aspect-video relative">
-                        <video id="main-video" controls class="w-full h-full object-contain"></video>
-                        
-                        <div id="musicOverlay" class="music-overlay" style="display: none;">
-                            <div class="music-overlay-content">
-                                <div class="vinyl-spinner"></div>
-                                <div class="pulse-wave"><span></span><span></span><span></span><span></span><span></span></div>
-                                <div class="overlay-title" style="color:white; margin-top:16px;">🎵 The Alan Parsons Project · Sirius</div>
-                                <div class="overlay-sub" id="overlayStatusMsg" style="color:#94a3b8; font-size:12px; margin:8px 0;">Loading archive...</div>
-                                <button id="startAudioBtn" class="init-audio-btn hidden">🔊 Initialize Audio</button>
-                                <button id="stopMusicAndPlayBtn" class="stop-music-btn">⏹ Stop Music & Play</button>
-                                <div id="proxyStatusMsg" class="proxy-status"></div>
-                            </div>
-                        </div>
+        <!-- STREAM BUTTONS (top row, live audio links from the source) -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 mb-8">
+            <!-- ALEX JONES SHOW (AAC) primary -->
+            <button data-stream-url="https://stream.alexjones.media/alexjonesshow" data-stream-name="Alex Jones Show (AAC)" data-stream-type="aac" class="stream-btn bg-slate-800/70 border border-slate-700 hover:border-blue-500 rounded-2xl p-3 text-left transition flex items-center gap-3">
+                <i class="fas fa-microphone-alt text-2xl text-blue-400"></i>
+                <div><div class="font-bold">Alex Jones Show</div><div class="text-[11px] text-slate-400">AAC · 64kbps</div></div>
+            </button>
+            <!-- MP3 variant -->
+            <button data-stream-url="https://stream.alexjones.media/alexjonesshow.mp3" data-stream-name="Alex Jones Show (MP3)" data-stream-type="mp3" class="stream-btn bg-slate-800/70 border border-slate-700 hover:border-blue-500 rounded-2xl p-3 text-left flex items-center gap-3">
+                <i class="fas fa-music text-2xl text-sky-400"></i>
+                <div><div class="font-bold">Alex Jones MP3</div><div class="text-[11px] text-slate-400">MP3 · 128kbps</div></div>
+            </button>
+            <!-- OPUS high quality -->
+            <button data-stream-url="https://audio.alexjoneslive.com:8443/alexjonesshow.opus" data-stream-name="Alex Jones Show (OPUS)" data-stream-type="opus" class="stream-btn bg-slate-800/70 border border-slate-700 hover:border-blue-500 rounded-2xl p-3 text-left flex items-center gap-3">
+                <i class="fas fa-waveform text-2xl text-indigo-400"></i>
+                <div><div class="font-bold">Alex Jones OPUS</div><div class="text-[11px] text-slate-400">Opus · HQ</div></div>
+            </button>
+            <!-- Alternate AAC -->
+            <button data-stream-url="https://audio.alexjoneslive.com:8443/alexjonesshow.aac" data-stream-name="Alex Jones Show (alt AAC)" data-stream-type="aac" class="stream-btn bg-slate-800/70 border border-slate-700 hover:border-blue-500 rounded-2xl p-3 text-left flex items-center gap-3">
+                <i class="fas fa-head-side-headphones text-2xl text-cyan-400"></i>
+                <div><div class="font-bold">Alex Jones alt AAC</div><div class="text-[11px] text-slate-400">Alternate stream</div></div>
+            </button>
+            <!-- War Room -->
+            <button data-stream-url="https://stream.alexjones.media/warroom/" data-stream-name="War Room with Harrison Smith" data-stream-type="aac" class="stream-btn bg-slate-800/70 border border-slate-700 hover:border-purple-500 rounded-2xl p-3 text-left flex items-center gap-3">
+                <i class="fas fa-shield-alt text-2xl text-purple-400"></i>
+                <div><div class="font-bold">War Room</div><div class="text-[11px] text-slate-400">Harrison Smith · Live</div></div>
+            </button>
+            <!-- Network Feed (All Shows) -->
+            <button data-stream-url="https://stream.alexjones.media/stream/7/" data-stream-name="Network Feed (All Shows)" data-stream-type="aac" class="stream-btn bg-slate-800/70 border border-slate-700 hover:border-emerald-500 rounded-2xl p-3 text-left flex items-center gap-3">
+                <i class="fas fa-satellite-dish text-2xl text-emerald-400"></i>
+                <div><div class="font-bold">Network Feed</div><div class="text-[11px] text-slate-400">All live shows relay</div></div>
+            </button>
+            <!-- Bonus: Network MP3 fallback -->
+            <button data-stream-url="https://stream.alexjones.media/stream/8/" data-stream-name="Network Feed MP3" data-stream-type="mp3" class="stream-btn bg-slate-800/70 border border-slate-700 hover:border-emerald-500 rounded-2xl p-3 text-left flex items-center gap-3">
+                <i class="fas fa-rss text-2xl text-emerald-400"></i>
+                <div><div class="font-bold">Network Feed MP3</div><div class="text-[11px] text-slate-400">MP3 backup</div></div>
+            </button>
+            <!-- War Room alternate (AAC from index) -->
+            <button data-stream-url="https://stream.alexjones.media/stream/4/" data-stream-name="War Room (AAC Stream)" data-stream-type="aac" class="stream-btn bg-slate-800/70 border border-slate-700 hover:border-purple-500 rounded-2xl p-3 text-left flex items-center gap-3">
+                <i class="fas fa-radio text-2xl text-purple-300"></i>
+                <div><div class="font-bold">War Room AAC</div><div class="text-[11px] text-slate-400">Direct stream</div></div>
+            </button>
+        </div>
+
+        <!-- additional info row: phone numbers & affiliate clock context -->
+        <div class="grid md:grid-cols-2 gap-4 mt-2 mb-4">
+            <div class="bg-slate-900/60 rounded-xl border border-slate-800 p-3 info-badge">
+                <div class="flex items-center gap-2 text-amber-300 text-sm font-semibold"><i class="fas fa-phone-alt"></i> Listen-by-Phone (long distance rates apply)</div>
+                <div class="grid grid-cols-2 gap-2 text-xs mt-2">
+                    <div><span class="text-slate-400">Alex Jones:</span> <span class="phone-number text-blue-300">+1(605)475-5800</span></div>
+                    <div><span class="text-slate-400">War Room:</span> <span class="phone-number text-purple-300">+1(605)475-3291</span></div>
+                    <div><span class="text-slate-400">Network Feed:</span> <span class="phone-number text-emerald-300">+1(605)475-3292</span></div>
+                    <div><span class="text-slate-400">American Journal:</span> <span class="text-slate-500">+1(605)475-3290 (on break)</span></div>
+                </div>
+            </div>
+            <div class="bg-slate-900/60 rounded-xl border border-slate-800 p-3 info-badge">
+                <div class="flex items-center gap-2 text-cyan-300 text-sm"><i class="far fa-clock"></i> Programming Clock (Affiliate Format)</div>
+                <div class="text-[11px] text-slate-300 mt-1 leading-relaxed">
+                    Talk segments: 5min / 23min / 24:50min • Breaks: @05, @29, @57:50 after top of hour.<br>
+                    <span class="text-slate-400">Network break possible inside talk segment 2 & 3.</span> 
+                    <a href="https://rss.alexjones.media/Programming-Clock.png" target="_blank" class="text-blue-400 underline">📸 View full clock graphic</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FLYOUT AUDIO PLAYER with 120-line visualizer -->
+    <div id="flyoutPlayer" class="flyout-panel">
+        <div class="flyout-handle" id="flyoutHandle"></div>
+        <div class="px-5 pb-6 pt-1">
+            <div class="flex flex-wrap items-start justify-between gap-3 mb-3">
+                <div>
+                    <h3 class="text-xl font-bold flex items-center gap-2"><i class="fas fa-compact-disc text-blue-400"></i> <span id="flyoutTitle">No stream selected</span></h3>
+                    <p id="flyoutMeta" class="text-xs text-slate-400">Click any live button above → immersive player + visualizer</p>
+                </div>
+                <div class="flex gap-3 items-center">
+                    <button id="closeFlyoutBtn" class="bg-slate-700 hover:bg-slate-600 rounded-full px-4 py-1.5 text-sm"><i class="fas fa-chevron-down"></i> Close</button>
+                    <button id="stopStreamBtn" class="bg-red-800/80 hover:bg-red-700 rounded-full px-4 py-1.5 text-sm"><i class="fas fa-stop"></i> Stop</button>
+                </div>
+            </div>
+            <!-- canvas 120-line spectrum -->
+            <div class="visualizer-container mt-1">
+                <canvas id="spectrumCanvas" class="spectrum-canvas" width="1200" height="120" style="width:100%; height:120px"></canvas>
+                <div class="flex justify-between items-center mt-2 text-[11px] text-slate-400">
+                    <div class="flex gap-3">
+                        <span><i class="fas fa-waveform"></i> 120-band realtime FFT</span>
+                        <span id="bitrateInfo" class="text-emerald-300">—</span>
                     </div>
-                    <div class="p-4 bg-slate-800/80 border-t border-slate-700">
-                        <div class="flex justify-between items-center gap-3">
-                            <div class="flex-1">
-                                <h2 id="current-title" class="text-white font-bold text-lg truncate">Select a date</h2>
-                                <span id="position-badge" class="text-[10px] bg-slate-700 px-2 py-0.5 rounded-full">0/0</span>
-                            </div>
-                            <div class="flex gap-2">
-                                <button id="prev-segment-btn" class="bg-slate-700 hover:bg-slate-600 px-3 py-1.5 rounded-full text-sm">◀ Prev</button>
-                                <button id="next-segment-btn" class="bg-blue-700 hover:bg-blue-600 px-3 py-1.5 rounded-full text-sm">Next ▶</button>
-                            </div>
-                        </div>
-                        <div class="mt-3 w-full bg-slate-700 rounded-full h-1.5 overflow-hidden">
-                            <div id="progress-bar" class="bg-blue-500 h-full w-0 transition-all"></div>
-                        </div>
+                    <div class="flex gap-3">
+                        <i class="fas fa-volume-down"></i>
+                        <input type="range" id="volumeControl" min="0" max="1" step="0.01" value="0.75" class="volume-slider w-28">
+                        <i class="fas fa-volume-up"></i>
                     </div>
                 </div>
             </div>
-
-            <div class="bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden flex flex-col h-[560px]">
-                <div class="bg-slate-950 px-4 py-3 border-b border-slate-800 flex justify-between">
-                    <h3 class="font-bold text-white text-sm">📋 Playlist</h3>
-                    <span id="segment-count" class="text-[11px] text-slate-400">0 items</span>
-                </div>
-                <div id="playlist-container" class="playlist-scroll p-2 space-y-1 flex-1">
-                    <div class="text-center text-slate-500 text-sm py-10">Loading archive...</div>
-                </div>
+            <div class="flex justify-between mt-3 text-xs text-slate-400">
+                <div><i class="far fa-circle-play text-green-400"></i> Live stream · <span id="liveTimestamp">Waiting for connection</span></div>
+                <div><span id="connectionStatus" class="bg-slate-800 px-2 py-0.5 rounded-full">⚪ idle</span></div>
             </div>
         </div>
     </div>
 
     <script>
-        // ========== CONFIGURATION ==========
-        const VERSION = '3.0.0';
-        const CACHE_KEY = 'ajn_complete_archive_v3';
-        const FEED_URL = 'https://rss.alexjones.media/AJNHourlyVideo.html';
+        // ---- GLOBALS ----
+        let currentAudio = null;
+        let currentAnalyser = null;
+        let animationId = null;
+        let canvasCtx = null;
+        let canvasWidth = 1200;   // we'll set dynamic width from parent container
+        let canvasHeight = 120;
+        let activeButton = null;
         
-        const PROXY_LIST = [
-            'https://api.allorigins.win/raw?url=',
-            'https://corsproxy.io/?',
-            'https://thingproxy.freeboard.io/fetch/'
-        ];
+        const flyout = document.getElementById('flyoutPlayer');
+        const flyoutTitleSpan = document.getElementById('flyoutTitle');
+        const flyoutMetaSpan = document.getElementById('flyoutMeta');
+        const spectrumCanvas = document.getElementById('spectrumCanvas');
+        const volumeSlider = document.getElementById('volumeControl');
+        const stopBtn = document.getElementById('stopStreamBtn');
+        const closeFlyout = document.getElementById('closeFlyoutBtn');
+        const connectionStatusSpan = document.getElementById('connectionStatus');
+        const liveTimestampSpan = document.getElementById('liveTimestamp');
+        const bitrateInfoSpan = document.getElementById('bitrateInfo');
+        const activeStreamLabel = document.getElementById('active-stream-label');
         
-        // ========== GLOBAL STATE ==========
-        let masterArchive = {};
-        let availableDates = [];
-        let currentSegments = [];
-        let currentIndex = 0;
-        let audioElement = null;
-        let flatpickrInstance = null;
-        let isLoadingArchive = false;
-        
-        // ========== DOM ELEMENTS ==========
-        const videoPlayer = document.getElementById('main-video');
-        const musicOverlay = document.getElementById('musicOverlay');
-        const overlayStatusMsg = document.getElementById('overlayStatusMsg');
-        const stopMusicBtn = document.getElementById('stopMusicAndPlayBtn');
-        const startAudioBtn = document.getElementById('startAudioBtn');
-        const audioPill = document.getElementById('audioPill');
-        const pillStopBtn = document.getElementById('pillStopBtn');
-        const feedStatusSpan = document.getElementById('feed-status');
-        const playlistContainer = document.getElementById('playlist-container');
-        const segmentCountSpan = document.getElementById('segment-count');
-        const selectedDateDisplay = document.getElementById('selectedDateDisplay');
-        const currentTitleSpan = document.getElementById('current-title');
-        const positionBadge = document.getElementById('position-badge');
-        const progressFill = document.getElementById('progress-bar');
-        const proxyStatusSpan = document.getElementById('proxyStatusMsg');
-        
-        // ========== UTILITIES ==========
-        function escapeHtml(str) { 
-            if (!str) return '';
-            return str.replace(/[&<>]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[m])); 
+        // init canvas context
+        function initCanvas() {
+            const container = spectrumCanvas.parentElement;
+            const rect = container.getBoundingClientRect();
+            canvasWidth = Math.max(rect.width * window.devicePixelRatio, 800);
+            spectrumCanvas.width = canvasWidth;
+            spectrumCanvas.height = canvasHeight;
+            canvasCtx = spectrumCanvas.getContext('2d');
         }
         
-        function announce(msg) { console.log('[PLAYER]', msg); }
-        
-        // ========== AUDIO SYSTEM ==========
-        const SIRIUS_URLS = [
-            'https://raw.githubusercontent.com/banamine/AJN-Resource-Hub/main/The%20Alan%20Parsons%20Project%20-%20Sirius%20(Official%20Audio).mp3',
-            'https://archive.org/download/a-132-5_20260424/1.%20The%20Alan%20Parsons%20Project%20-%20Sirius%20%28Official%20Audio%29.mp4'
-        ];
-        
-        function initAudio() {
-            if (audioElement) return;
-            audioElement = new Audio();
-            audioElement.loop = true;
-            audioElement.volume = 0.3;
-            audioElement.src = SIRIUS_URLS[0];
-            audioElement.load();
-            
-            audioElement.addEventListener('error', () => {
-                if (audioElement.src === SIRIUS_URLS[0]) {
-                    audioElement.src = SIRIUS_URLS[1];
-                    audioElement.load();
+        // Draw 120 bars (exactly 120 lines)
+        function drawSpectrum(dataArray) {
+            if (!canvasCtx) return;
+            canvasCtx.clearRect(0, 0, canvasWidth, canvasHeight);
+            const barWidth = canvasWidth / 120;   // 120 lines
+            let x = 0;
+            // we expect dataArray of length >= 120 (frequencyBinCount)
+            const len = Math.min(dataArray.length, 120);
+            for (let i = 0; i < len; i++) {
+                let value = dataArray[i] / 255;  // 0-1 range typically
+                const barHeight = Math.max(2, value * canvasHeight);
+                // color gradient: cyan->blue->purple
+                const hue = 200 + (value * 80);  // 200 to 280
+                canvasCtx.fillStyle = `hsl(${hue}, 80%, 55%)`;
+                canvasCtx.fillRect(x, canvasHeight - barHeight, barWidth - 0.5, barHeight);
+                x += barWidth;
+            }
+            // if less than 120, fill remaining with silence bars
+            if (len < 120) {
+                for (let i = len; i < 120; i++) {
+                    canvasCtx.fillStyle = `rgba(30, 50, 80, 0.3)`;
+                    canvasCtx.fillRect(x, canvasHeight - 2, barWidth - 0.5, 2);
+                    x += barWidth;
                 }
-            });
-        }
-        
-        async function startOverlayMusic() {
-            if (!audioElement) initAudio();
-            musicOverlay.style.display = 'flex';
-            audioPill.style.display = 'flex';
-            
-            try {
-                await audioElement.play();
-                startAudioBtn.classList.add('hidden');
-                overlayStatusMsg.textContent = '🎙️ Loading archive...';
-            } catch(e) {
-                overlayStatusMsg.textContent = '🔇 Click to enable audio';
-                startAudioBtn.classList.remove('hidden');
             }
         }
         
-        function stopMusic() {
-            if (audioElement) {
-                audioElement.pause();
-                audioElement.currentTime = 0;
+        function stopVisualizerAndAudio(resetUI = true) {
+            if (animationId) {
+                cancelAnimationFrame(animationId);
+                animationId = null;
             }
-            musicOverlay.classList.add('hidden-overlay');
-            audioPill.classList.add('fade-out');
-            setTimeout(() => {
-                musicOverlay.style.display = 'none';
-                audioPill.style.display = 'none';
-                musicOverlay.classList.remove('hidden-overlay');
-                audioPill.classList.remove('fade-out');
-            }, 500);
-        }
-        
-        startAudioBtn?.addEventListener('click', async () => {
-            try {
-                await audioElement.play();
-                startAudioBtn.classList.add('hidden');
-                overlayStatusMsg.textContent = '🎙️ Loading archive...';
-            } catch(e) { console.error(e); }
-        });
-        
-        stopMusicBtn?.addEventListener('click', () => {
-            stopMusic();
-            if (currentSegments.length) loadVideo(currentIndex);
-        });
-        
-        pillStopBtn?.addEventListener('click', stopMusic);
-        
-        // ========== FEED PARSING ==========
-        async function fetchFeed() {
-            proxyStatusSpan.textContent = '🔄 Fetching archive...';
-            
-            // Try direct first
-            try {
-                const res = await fetch(FEED_URL, { cache: 'no-store' });
-                if (res.ok) {
-                    proxyStatusSpan.textContent = '✅ Connected';
-                    return await res.text();
-                }
-            } catch(e) { console.log('Direct fail:', e); }
-            
-            // Try proxies
-            for (let i = 0; i < PROXY_LIST.length; i++) {
-                proxyStatusSpan.textContent = `🔄 Proxy ${i+1}/${PROXY_LIST.length}...`;
+            if (currentAudio) {
                 try {
-                    const res = await fetch(PROXY_LIST[i] + encodeURIComponent(FEED_URL));
-                    if (res.ok) {
-                        proxyStatusSpan.textContent = `✅ Proxy ${i+1}`;
-                        return await res.text();
-                    }
+                    currentAudio.pause();
+                    currentAudio.src = '';
+                    currentAudio.disconnect?.();
                 } catch(e) {}
+                currentAudio = null;
             }
-            
-            proxyStatusSpan.textContent = '❌ All connections failed';
-            throw new Error('Cannot fetch feed');
-        }
-        
-        function parseAllSegments(html) {
-            const segments = [];
-            const linkRegex = /<a\s+[^>]*href=["']([^"']*\.m4v)["'][^>]*>([^<]*(?:<[^>]+>[^<]*)*?)<\/a>/gi;
-            let match;
-            
-            while ((match = linkRegex.exec(html)) !== null) {
-                let url = match[1];
-                let titleHtml = match[2];
-                let titleText = titleHtml.replace(/<[^>]+>/g, '').trim();
-                
-                if (!url.includes('ajn.archives.pub')) continue;
-                
-                // Extract date from URL or title
-                let dateStr = '';
-                let urlDateMatch = url.match(/(\d{8})/);
-                if (urlDateMatch) {
-                    dateStr = urlDateMatch[1];
-                } else {
-                    let titleDateMatch = titleText.match(/(\d{4})-(\d{2})-(\d{2})/);
-                    if (titleDateMatch) {
-                        dateStr = titleDateMatch[1] + titleDateMatch[2] + titleDateMatch[3];
-                    }
+            if (currentAnalyser && currentAnalyser.disconnect) {
+                try { currentAnalyser.disconnect(); } catch(e) {}
+                currentAnalyser = null;
+            }
+            if (resetUI) {
+                if (canvasCtx) canvasCtx.clearRect(0, 0, canvasWidth, canvasHeight);
+                connectionStatusSpan.innerHTML = '⚪ idle';
+                liveTimestampSpan.innerHTML = 'Stopped';
+                activeStreamLabel.innerHTML = 'No active stream';
+                bitrateInfoSpan.innerHTML = '—';
+                if (activeButton) {
+                    activeButton.classList.remove('active-stream', 'border-blue-400');
+                    activeButton = null;
                 }
-                
-                if (!dateStr || dateStr.length !== 8) continue;
-                
-                // Extract hour
-                let hour = 0;
-                let hourMatch = url.match(/Hr(\d)/i);
-                if (hourMatch) {
-                    hour = parseInt(hourMatch[1]);
-                } else {
-                    hourMatch = titleText.match(/Hr(\d)/i);
-                    if (hourMatch) hour = parseInt(hourMatch[1]);
-                }
-                
-                // Determine type
-                const lowerTitle = titleText.toLowerCase();
-                const isAlex = lowerTitle.includes('alex') && !lowerTitle.includes('warroom');
-                const isWarRoom = lowerTitle.includes('warroom');
-                const isSpecial = lowerTitle.includes('special') || lowerTitle.includes('sundaylive') || lowerTitle.includes('tnt');
-                
-                // Keep all valid segments (allow hour 0 for specials)
-                if (hour < 0 || hour > 4) continue;
-                if (!isAlex && !isWarRoom && !isSpecial) continue;
-                
-                segments.push({
-                    url: url,
-                    title: titleText,
-                    dateStr: dateStr,
-                    hour: hour,
-                    isAlex: isAlex,
-                    isWarRoom: isWarRoom,
-                    isSpecial: isSpecial,
-                    displayDate: `${dateStr.slice(0,4)}-${dateStr.slice(4,6)}-${dateStr.slice(6,8)}`
-                });
-            }
-            
-            console.log(`Parsed ${segments.length} total segments`);
-            return segments;
-        }
-        
-        function organizeArchive(segments) {
-            const archive = {};
-            
-            // Group by date
-            for (const seg of segments) {
-                if (!archive[seg.dateStr]) archive[seg.dateStr] = [];
-                archive[seg.dateStr].push(seg);
-            }
-            
-            // Sort each date's segments
-            for (const date in archive) {
-                const specials = archive[date].filter(s => s.isSpecial);
-                const alex = archive[date].filter(s => s.isAlex).sort((a,b) => a.hour - b.hour);
-                const warroom = archive[date].filter(s => s.isWarRoom).sort((a,b) => a.hour - b.hour);
-                
-                // Order: Specials first, then Alex, then WarRoom
-                archive[date] = [...specials, ...alex, ...warroom];
-            }
-            
-            return archive;
-        }
-        
-        // ========== PLAYLIST RENDERING ==========
-        function renderPlaylist() {
-            if (!playlistContainer) return;
-            
-            if (!currentSegments.length) {
-                playlistContainer.innerHTML = '<div class="text-center text-slate-500 text-sm py-10">No segments for this date</div>';
-                segmentCountSpan.textContent = '0 items';
-                return;
-            }
-            
-            const fragment = document.createDocumentFragment();
-            
-            for (let i = 0; i < currentSegments.length; i++) {
-                const seg = currentSegments[i];
-                const isActive = (i === currentIndex);
-                
-                let typeName = '';
-                let typeColor = '';
-                let hourDisplay = '';
-                
-                if (seg.isSpecial) {
-                    typeName = '⭐ SPECIAL';
-                    typeColor = 'text-amber-400';
-                    hourDisplay = '<span class="special-badge">⭐</span>';
-                } else if (seg.isAlex) {
-                    typeName = 'Alex Jones';
-                    typeColor = 'text-blue-400';
-                    hourDisplay = `Hr${seg.hour}`;
-                } else {
-                    typeName = 'War Room';
-                    typeColor = 'text-purple-400';
-                    hourDisplay = `Hr${seg.hour}`;
-                }
-                
-                const div = document.createElement('div');
-                div.className = `segment-item p-3 rounded-xl border-l-4 ${isActive ? 'segment-active border-blue-500 bg-slate-800/60' : 'border-transparent bg-slate-800/30'}`;
-                div.innerHTML = `
-                    <div class="flex justify-between items-start gap-2">
-                        <div class="flex-1 min-w-0">
-                            <div class="flex items-center gap-2 flex-wrap">
-                                <span class="text-xs font-semibold ${typeColor}">${typeName}</span>
-                                <span class="text-xs font-mono text-slate-300">${hourDisplay}</span>
-                                <span class="text-[10px] bg-slate-700 px-1.5 py-0.5 rounded-full">${seg.displayDate}</span>
-                            </div>
-                            <p class="text-sm text-white truncate mt-1">${escapeHtml(seg.title.substring(0, 60))}</p>
-                        </div>
-                        ${isActive ? '<span class="text-green-400 text-xs">▶ PLAYING</span>' : '<span class="text-slate-500 text-xs">●</span>'}
-                    </div>
-                `;
-                
-                div.addEventListener('click', (function(idx) {
-                    return function() { 
-                        currentIndex = idx; 
-                        loadVideo(currentIndex);
-                        renderPlaylist();
-                    };
-                })(i));
-                
-                fragment.appendChild(div);
-            }
-            
-            playlistContainer.replaceChildren(fragment);
-            segmentCountSpan.textContent = `${currentSegments.length} videos`;
-            
-            // Scroll to active
-            const activeEl = playlistContainer.querySelector('.segment-active');
-            if (activeEl) activeEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        }
-        
-        function loadVideo(index) {
-            if (!currentSegments[index]) return;
-            const seg = currentSegments[index];
-            videoPlayer.src = seg.url;
-            videoPlayer.load();
-            videoPlayer.play().catch(e => console.log('Play error:', e));
-            currentTitleSpan.textContent = seg.title;
-            positionBadge.textContent = `${index + 1}/${currentSegments.length}`;
-            announce(`Now playing: ${seg.title}`);
-        }
-        
-        function nextVideo() {
-            if (currentIndex + 1 < currentSegments.length) {
-                currentIndex++;
-                loadVideo(currentIndex);
-                renderPlaylist();
             }
         }
         
-        function prevVideo() {
-            if (currentIndex - 1 >= 0) {
-                currentIndex--;
-                loadVideo(currentIndex);
-                renderPlaylist();
-            }
-        }
-        
-        // ========== DATE SELECTION ==========
-        function loadDate(dateStr) {
-            if (!masterArchive[dateStr]) {
-                console.warn(`No data for date: ${dateStr}`);
-                return false;
-            }
+        // start audio stream + Web Audio API analyser
+        async function startStream(url, streamName, typeHint = 'aac') {
+            stopVisualizerAndAudio(true);
+            initCanvas();
             
-            currentSegments = masterArchive[dateStr];
-            currentIndex = 0;
-            renderPlaylist();
+            // create Audio element
+            const audio = new Audio();
+            audio.crossOrigin = "anonymous";   // required for CORS if stream supports
+            audio.src = url;
+            audio.preload = "auto";
+            audio.volume = volumeSlider.value;
             
-            if (currentSegments.length) {
-                loadVideo(0);
-            }
+            // try to get metadata for bitrate guess
+            const streamLabelShort = streamName.length > 35 ? streamName.slice(0,32)+'…' : streamName;
+            flyoutTitleSpan.innerHTML = `<i class="fas fa-bolt text-yellow-400 mr-1"></i> ${streamLabelShort}`;
+            flyoutMetaSpan.innerHTML = `🎧 Live stream · ${typeHint.toUpperCase()} · <span class="text-blue-300">Click stop or choose another stream</span>`;
+            activeStreamLabel.innerHTML = streamName;
+            connectionStatusSpan.innerHTML = '🟡 buffering...';
+            liveTimestampSpan.innerHTML = 'Connecting ...';
             
-            return true;
-        }
-        
-        // ========== MAIN INITIALIZATION ==========
-        async function loadArchive() {
-            if (isLoadingArchive) return;
-            isLoadingArchive = true;
-            feedStatusSpan.innerHTML = '<span class="loading-spinner"></span> Loading...';
-            
+            // add to DOM and play
             try {
-                const html = await fetchFeed();
-                const segments = parseAllSegments(html);
+                await audio.play();
+                connectionStatusSpan.innerHTML = '🟢 LIVE';
+                liveTimestampSpan.innerHTML = new Date().toLocaleTimeString() + ' (live)';
+                // simple bitrate display hint
+                if (url.includes('opus')) bitrateInfoSpan.innerHTML = 'Opus ~96kbps';
+                else if (url.includes('mp3')) bitrateInfoSpan.innerHTML = 'MP3 ~128kbps';
+                else bitrateInfoSpan.innerHTML = 'AAC ~64-128kbps';
                 
-                if (segments.length === 0) {
-                    throw new Error('No segments found in feed');
+                // setup Web Audio analyser
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                const audioCtx = new AudioContext();
+                const source = audioCtx.createMediaElementSource(audio);
+                const analyser = audioCtx.createAnalyser();
+                analyser.fftSize = 512;   // gives 256 bins, we'll use 120 bins.
+                const bufferLength = analyser.frequencyBinCount; // ~256
+                const dataArray = new Uint8Array(bufferLength);
+                
+                source.connect(analyser);
+                analyser.connect(audioCtx.destination);
+                // resume if suspended
+                if (audioCtx.state === 'suspended') {
+                    await audioCtx.resume();
                 }
                 
-                const archive = organizeArchive(segments);
-                const dates = Object.keys(archive).sort().reverse();
-                
-                // Save to localStorage
-                localStorage.setItem(CACHE_KEY, JSON.stringify({
-                    archive: archive,
-                    dates: dates,
-                    version: VERSION,
-                    timestamp: Date.now()
-                }));
-                
-                masterArchive = archive;
-                availableDates = dates;
-                
-                feedStatusSpan.innerHTML = `✅ ${dates.length} dates`;
-                proxyStatusSpan.textContent = '';
-                
-                // Update calendar
-                if (flatpickrInstance) {
-                    const enabledDates = dates.map(d => new Date(parseInt(d.slice(0,4)), parseInt(d.slice(4,6))-1, parseInt(d.slice(6,8))));
-                    flatpickrInstance.set('enable', enabledDates);
-                }
-                
-                // Load most recent date
-                if (dates.length && !currentSegments.length) {
-                    const newest = dates[0];
-                    selectedDateDisplay.textContent = `${newest.slice(0,4)}-${newest.slice(4,6)}-${newest.slice(6,8)}`;
-                    loadDate(newest);
-                }
-                
-                // Hide overlay if music is playing and we have content
-                if (currentSegments.length && musicOverlay.style.display === 'flex') {
-                    setTimeout(() => {
-                        if (stopMusicBtn && !stopMusicBtn.classList.contains('system-ready-btn')) {
-                            stopMusicBtn.textContent = '▶ READY - Play Video';
-                            stopMusicBtn.classList.add('system-ready-btn');
-                            overlayStatusMsg.textContent = 'Archive ready! Click to start.';
+                currentAudio = audio;
+                currentAnalyser = analyser;
+                // store audioContext for safety but not needed globally
+                const drawLoop = () => {
+                    if (!currentAnalyser || !currentAudio || currentAudio.paused) {
+                        if (animationId) cancelAnimationFrame(animationId);
+                        return;
+                    }
+                    if (currentAnalyser) {
+                        currentAnalyser.getByteFrequencyData(dataArray);
+                        // we need to map the bins to 120 lines: average or downsample
+                        const downsampled = new Uint8Array(120);
+                        const step = bufferLength / 120;
+                        for (let i = 0; i < 120; i++) {
+                            const index = Math.floor(i * step);
+                            if (index < bufferLength) downsampled[i] = dataArray[index];
+                            else downsampled[i] = 0;
                         }
-                    }, 500);
-                }
+                        drawSpectrum(downsampled);
+                    } else {
+                        // fallback clear
+                        if (canvasCtx) canvasCtx.clearRect(0,0,canvasWidth,canvasHeight);
+                    }
+                    animationId = requestAnimationFrame(drawLoop);
+                };
+                if (animationId) cancelAnimationFrame(animationId);
+                drawLoop();
+                
+                // handle audio errors
+                audio.onerror = (e) => {
+                    console.warn("Stream error", e);
+                    connectionStatusSpan.innerHTML = '🔴 stream error';
+                    liveTimestampSpan.innerHTML = 'Check source or CORS';
+                    stopVisualizerAndAudio(true);
+                };
+                audio.onended = () => {
+                    if (currentAudio === audio && !audio.paused) {
+                        // if ended accidentally, maybe live stream reconnect not needed, but just mark
+                        connectionStatusSpan.innerHTML = '⚠️ stream ended';
+                    }
+                };
                 
             } catch (err) {
-                console.error('Archive load failed:', err);
-                feedStatusSpan.innerHTML = '⚠️ Connection error';
-                proxyStatusSpan.textContent = 'Failed to load archive. Check connection.';
-            } finally {
-                isLoadingArchive = false;
+                console.error('Playback failed:', err);
+                connectionStatusSpan.innerHTML = '❌ play error (CORS / network)';
+                liveTimestampSpan.innerHTML = 'Retry or select another stream';
+                flyoutMetaSpan.innerHTML = '⚠️ Unable to play. Stream may require CORS proxy or different format. Try MP3 fallback.';
+                stopVisualizerAndAudio(true);
             }
         }
         
-        function loadCachedArchive() {
-            const cached = localStorage.getItem(CACHE_KEY);
-            if (!cached) return false;
-            
-            try {
-                const data = JSON.parse(cached);
-                if (data.archive && Object.keys(data.archive).length > 0) {
-                    masterArchive = data.archive;
-                    availableDates = data.dates || Object.keys(data.archive).sort().reverse();
-                    feedStatusSpan.innerHTML = `📅 ${availableDates.length} dates (cached)`;
-                    
-                    if (availableDates.length) {
-                        const newest = availableDates[0];
-                        selectedDateDisplay.textContent = `${newest.slice(0,4)}-${newest.slice(4,6)}-${newest.slice(6,8)}`;
-                        loadDate(newest);
-                    }
-                    
-                    return true;
-                }
-            } catch(e) {}
-            return false;
+        // ---- UI HANDLERS ----
+        function openFlyout() {
+            flyout.classList.add('open');
         }
         
-        // ========== EVENT LISTENERS ==========
-        videoPlayer.addEventListener('timeupdate', () => {
-            if (videoPlayer.duration) {
-                progressFill.style.width = `${(videoPlayer.currentTime / videoPlayer.duration) * 100}%`;
-            }
-        });
+        function closeFlyoutPanel() {
+            flyout.classList.remove('open');
+        }
         
-        videoPlayer.addEventListener('ended', () => nextVideo());
-        videoPlayer.addEventListener('error', () => {
-            console.log('Video error, skipping...');
-            setTimeout(() => nextVideo(), 1000);
-        });
-        
-        document.getElementById('prev-segment-btn')?.addEventListener('click', prevVideo);
-        document.getElementById('next-segment-btn')?.addEventListener('click', nextVideo);
-        document.getElementById('refresh-cache-btn')?.addEventListener('click', () => {
-            localStorage.removeItem(CACHE_KEY);
-            window.location.reload();
-        });
-        
-        // ========== INIT ==========
-        async function init() {
-            initAudio();
-            
-            // Try cached first
-            const hasCache = loadCachedArchive();
-            
-            if (!hasCache) {
-                await startOverlayMusic();
-                await loadArchive();
-            } else {
-                await startOverlayMusic();
-                // Background refresh
-                loadArchive().catch(console.error);
-            }
-            
-            // Setup date picker
-            flatpickrInstance = flatpickr("#openCalendarBtn", {
-                dateFormat: "Y-m-d",
-                onChange: (dates) => {
-                    if (dates.length) {
-                        const d = dates[0];
-                        const ymd = `${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}`;
-                        if (masterArchive[ymd]) {
-                            selectedDateDisplay.textContent = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-                            loadDate(ymd);
-                        } else {
-                            selectedDateDisplay.textContent = 'No data for this date';
-                        }
-                    }
-                }
+        // attach event listeners to all stream buttons
+        const streamBtns = document.querySelectorAll('.stream-btn');
+        streamBtns.forEach(btn => {
+            btn.addEventListener('click', async (e) => {
+                e.preventDefault();
+                const streamUrl = btn.getAttribute('data-stream-url');
+                const streamName = btn.getAttribute('data-stream-name') || 'AJN Stream';
+                const streamType = btn.getAttribute('data-stream-type') || 'audio';
+                if (!streamUrl) return;
+                
+                // stop current playback & remove active style
+                stopVisualizerAndAudio(true);
+                if (activeButton) activeButton.classList.remove('active-stream');
+                btn.classList.add('active-stream');
+                activeButton = btn;
+                
+                // open flyout if closed
+                if (!flyout.classList.contains('open')) openFlyout();
+                
+                // start new stream
+                await startStream(streamUrl, streamName, streamType);
             });
-            
-            // Enable dates if we have them
-            if (availableDates.length) {
-                const enabledDates = availableDates.map(d => new Date(parseInt(d.slice(0,4)), parseInt(d.slice(4,6))-1, parseInt(d.slice(6,8))));
-                flatpickrInstance.set('enable', enabledDates);
-            }
-        }
+        });
         
-        init();
+        // stop button on flyout
+        stopBtn.addEventListener('click', () => {
+            stopVisualizerAndAudio(true);
+            flyoutTitleSpan.innerHTML = 'No stream selected';
+            flyoutMetaSpan.innerHTML = 'Click any live button above → immersive player + visualizer';
+            activeStreamLabel.innerHTML = 'No active stream';
+            connectionStatusSpan.innerHTML = '⚪ idle';
+            if (canvasCtx) canvasCtx.clearRect(0, 0, canvasWidth, canvasHeight);
+        });
+        
+        // close flyout
+        closeFlyout.addEventListener('click', () => {
+            closeFlyoutPanel();
+        });
+        document.getElementById('flyoutHandle')?.addEventListener('click', () => {
+            flyout.classList.toggle('open');
+        });
+        
+        // volume control
+        volumeSlider.addEventListener('input', (e) => {
+            if (currentAudio) currentAudio.volume = parseFloat(e.target.value);
+        });
+        
+        // responsive canvas redraw on resize
+        let resizeTimeout;
+        window.addEventListener('resize', () => {
+            if (resizeTimeout) clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                if (flyout.classList.contains('open') && currentAnalyser) {
+                    initCanvas();
+                    // redraw next frame will handle
+                } else if (canvasCtx) {
+                    initCanvas();
+                }
+            }, 150);
+        });
+        
+        // initial canvas size
+        initCanvas();
+        
+        // extra: tiny connection monitor
+        setInterval(() => {
+            if (currentAudio && !currentAudio.paused && currentAudio.readyState > 2) {
+                // good
+                if (connectionStatusSpan.innerHTML !== '🟢 LIVE') connectionStatusSpan.innerHTML = '🟢 LIVE';
+                liveTimestampSpan.innerHTML = new Date().toLocaleTimeString();
+            } else if (currentAudio && !currentAudio.paused && currentAudio.readyState <= 2) {
+                connectionStatusSpan.innerHTML = '🔵 buffering...';
+            }
+        }, 2000);
+        
+        // showcase metadata of selected programming (Affiliate clock)
+        const clockLink = document.createElement('div');
+        // pretty tooltip not needed but inline works
+        console.log('AJN Audio Matrix ready with 120-line visualizer');
     </script>
+    <!-- small floating note about CORS: some streams may need CORS enabled; user is aware -->
+    <div class="text-center text-[10px] text-slate-500 pb-4 mt-2">
+        <i class="fas fa-shield-alt"></i> Streams are provided from official AJN infrastructure. Some external streams require CORS; if a stream fails, try alternate AAC/MP3 variant. Visualizer uses Web Audio API.
+    </div>
 </body>
 </html>

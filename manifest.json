@@ -1,7 +1,7 @@
 {
   "name": "AJN Hourly Segments",
   "short_name": "AJN Hub",
-  "description": "Hourly video archive for AJN - Progressive Web App",
+  "description": "Hourly  AJN - ",
   "start_url": ".",
   "display": "standalone",
   "background_color": "#0a0f1c",

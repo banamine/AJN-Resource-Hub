@@ -3,11 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>AJN Glass Suite · Live Audio + Video Archive</title>
-    <meta name="description" content="AJN complete media suite with glass morphism UI">
+    <title>AJN Archive · CORS-Free Player · Multi-Proxy</title>
+    <meta name="description" content="AJN video archive with multiple CORS bypass proxies">
     <meta name="theme-color" content="#0a0f1c">
     
-    <!-- Fonts & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,100;14..32,400;14..32,600;14..32,800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
@@ -24,7 +23,6 @@
             overflow-x: hidden;
         }
         
-        /* Animated Background */
         .orb-bg {
             position: fixed;
             top: 0;
@@ -77,7 +75,6 @@
             pointer-events: none;
         }
         
-        /* Glass Navigation */
         .glass-nav {
             position: sticky;
             top: 0;
@@ -136,38 +133,20 @@
             -webkit-background-clip: text; background-clip: text; color: transparent;
             display: inline-flex; align-items: center; gap: 0.75rem;
         }
-        .section-header p { color: #94a3b8; margin-top: 0.5rem; }
         
         .glass-card {
             background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(12px);
             border: 1px solid rgba(59, 130, 246, 0.2); border-radius: 1.5rem;
             padding: 1.5rem; transition: all 0.3s ease;
         }
-        .glass-card:hover { border-color: rgba(59, 130, 246, 0.5); box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
         
-        .stream-grid {
+        .vault-layout {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 1rem;
-            margin-bottom: 2rem;
+            grid-template-columns: 320px 1fr;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
         }
         
-        .stream-btn {
-            background: linear-gradient(135deg, rgba(30,41,59,0.8), rgba(15,23,42,0.8));
-            border: 1px solid rgba(59,130,246,0.3); border-radius: 1rem; padding: 1rem;
-            display: flex; align-items: center; gap: 1rem; cursor: pointer;
-            transition: all 0.2s ease; text-align: left;
-        }
-        .stream-btn:hover { transform: translateY(-2px); border-color: #3b82f6; box-shadow: 0 4px 20px rgba(59,130,246,0.2); }
-        .stream-btn.active-stream { background: linear-gradient(135deg, #1e3a8a, #1e40af); border-color: #60a5fa; box-shadow: 0 0 15px #3b82f6; }
-        .stream-icon { font-size: 2rem; }
-        .stream-info h4 { font-weight: 700; margin-bottom: 0.2rem; }
-        .stream-info small { font-size: 0.7rem; color: #94a3b8; }
-        
-        .info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-top: 1rem; }
-        .card-header { font-weight: 700; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; color: #3b82f6; }
-        
-        .vault-layout { display: grid; grid-template-columns: 300px 1fr; gap: 1.5rem; margin-bottom: 1.5rem; }
         @media (max-width: 768px) { .vault-layout { grid-template-columns: 1fr; } }
         
         .date-picker-wrapper { margin-bottom: 1.5rem; }
@@ -175,6 +154,7 @@
         #datePicker {
             width: 100%; background: rgba(0,0,0,0.5); border: 1px solid rgba(59,130,246,0.3);
             border-radius: 0.75rem; padding: 0.75rem; color: white; font-family: inherit;
+            cursor: pointer;
         }
         
         .archive-stats { display: flex; gap: 1rem; margin-bottom: 1.5rem; }
@@ -185,30 +165,31 @@
         .glass-btn {
             background: linear-gradient(135deg, #3b82f6, #2563eb); border: none;
             padding: 0.75rem 1.5rem; border-radius: 2rem; color: white; font-weight: 600;
-            cursor: pointer; transition: all 0.2s; width: 100%; display: flex;
-            align-items: center; justify-content: center; gap: 0.5rem;
+            cursor: pointer; transition: all 0.2s; width: 100%;
+            display: flex; align-items: center; justify-content: center; gap: 0.5rem;
         }
         .glass-btn:hover { transform: scale(1.02); box-shadow: 0 4px 15px rgba(59,130,246,0.4); }
         
-        .video-wrapper { position: relative; border-radius: 1rem; overflow: hidden; }
-        #archiveVideo { width: 100%; border-radius: 1rem; background: black; }
+        .video-wrapper { position: relative; border-radius: 1rem; overflow: hidden; background: black; }
+        #archiveVideo { width: 100%; border-radius: 1rem; background: black; max-height: 400px; }
         .video-info { margin-top: 1rem; }
-        #videoTitle { font-size: 1rem; margin-bottom: 0.5rem; }
+        #videoTitle { font-size: 1rem; margin-bottom: 0.5rem; color: white; }
         
         .video-controls { display: flex; justify-content: center; gap: 1rem; align-items: center; margin: 0.75rem 0; }
         .icon-btn {
             background: rgba(59,130,246,0.2); border: 1px solid rgba(59,130,246,0.4);
             padding: 0.5rem 1rem; border-radius: 2rem; color: white; cursor: pointer;
-            display: inline-flex; align-items: center; gap: 0.5rem;
+            display: inline-flex; align-items: center; gap: 0.5rem; transition: all 0.2s;
         }
-        .icon-btn:hover { background: rgba(59,130,246,0.4); }
+        .icon-btn:hover { background: rgba(59,130,246,0.4); transform: scale(1.05); }
         
         .progress-container { background: rgba(255,255,255,0.1); border-radius: 0.5rem; height: 4px; overflow: hidden; }
         .progress-bar { background: linear-gradient(90deg, #3b82f6, #8b5cf6); width: 0%; height: 100%; transition: width 0.2s; }
         
         .playlist-section { margin-top: 1.5rem; }
-        .playlist-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; cursor: pointer; }
-        .playlist-container { max-height: 300px; overflow-y: auto; transition: all 0.3s; }
+        .playlist-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; cursor: pointer; padding: 0.5rem; }
+        .playlist-header:hover { background: rgba(59,130,246,0.1); border-radius: 0.75rem; }
+        .playlist-container { max-height: 350px; overflow-y: auto; transition: all 0.3s; }
         .playlist-container.collapsed { max-height: 0; overflow: hidden; }
         
         .playlist-item {
@@ -217,38 +198,39 @@
             border-left: 3px solid transparent;
         }
         .playlist-item:hover { background: rgba(59,130,246,0.2); transform: translateX(4px); }
-        .playlist-item.active { border-left-color: #3b82f6; background: rgba(59,130,246,0.15); }
+        .playlist-item.active { border-left-color: #3b82f6; background: rgba(59,130,246,0.2); }
         
-        /* Flyout Glass Player */
-        .flyout-glass {
-            position: fixed; bottom: 0; left: 0; right: 0;
-            background: rgba(10, 15, 28, 0.98); backdrop-filter: blur(24px);
-            border-top: 1px solid rgba(59,130,246,0.5); border-radius: 1.5rem 1.5rem 0 0;
-            transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
-            z-index: 1000; box-shadow: 0 -10px 40px rgba(0,0,0,0.5);
+        .proxy-status {
+            margin-top: 1rem;
+            font-size: 0.7rem;
+            color: #94a3b8;
+            text-align: center;
+            word-break: break-word;
         }
-        .flyout-glass.open { transform: translateY(0); }
-        .flyout-handle { display: flex; justify-content: center; padding: 0.75rem; cursor: pointer; }
-        .handle-bar { width: 60px; height: 4px; background: #3b82f6; border-radius: 4px; }
-        .flyout-content { padding: 0 1.5rem 1.5rem; }
-        .flyout-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; }
         
-        .visualizer-stage { background: rgba(0,0,0,0.4); border-radius: 1rem; padding: 1rem; margin-bottom: 1rem; }
-        .spectrum-canvas { width: 100%; height: 120px; border-radius: 0.5rem; background: #03060c; }
+        .loading-spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #3b82f6;
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+        }
         
-        .volume-control { display: flex; align-items: center; gap: 0.5rem; }
-        #flyoutVolume { width: 100px; }
+        @keyframes spin { to { transform: rotate(360deg); } }
         
-        .flyout-footer { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; padding-top: 0.5rem; border-top: 1px solid rgba(255,255,255,0.1); }
-        
-        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: #1e293b; border-radius: 10px; }
         ::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 10px; }
         
         .flatpickr-calendar { background: #1e293b !important; border-color: #3b82f6 !important; }
-        .hidden { display: none !important; }
-        .empty-playlist { text-align: center; color: #64748b; padding: 2rem; }
-        .proxy-status { margin-top: 1rem; font-size: 0.75rem; color: #94a3b8; text-align: center; }
+        .flatpickr-day { color: #cbd5e1 !important; }
+        .flatpickr-day.selected { background: #3b82f6 !important; }
+        
+        .badge-special { background: linear-gradient(135deg, #f59e0b, #d97706); padding: 2px 8px; border-radius: 12px; font-size: 10px; }
+        .badge-alex { background: #3b82f6; padding: 2px 8px; border-radius: 12px; font-size: 10px; }
+        .badge-warroom { background: #8b5cf6; padding: 2px 8px; border-radius: 12px; font-size: 10px; }
     </style>
 </head>
 <body>
@@ -259,58 +241,41 @@
         <div class="nav-container">
             <div class="logo"><i class="fas fa-broadcast-tower"></i><span>AJN<span class="gradient-text">Archive</span></span></div>
             <div class="nav-links">
-                <button class="nav-btn active" data-tab="live"><i class="fas fa-headphones"></i> Live Audio</button>
-                <button class="nav-btn" data-tab="vault"><i class="fas fa-video"></i> Video Vault</button>
+                <button class="nav-btn active" data-tab="vault"><i class="fas fa-video"></i> Video Vault</button>
                 <button class="nav-btn" data-tab="info"><i class="fas fa-info-circle"></i> Info</button>
             </div>
-            <div class="status-pill"><i class="fas fa-circle" id="statusIndicator"></i><span id="statusText">System Ready</span></div>
+            <div class="status-pill"><i class="fas fa-circle" style="color: #10b981;"></i><span id="statusText">Ready</span></div>
         </div>
     </nav>
 
     <main class="main-container">
-        <!-- LIVE AUDIO TAB -->
-        <div id="liveTab" class="tab-content active">
-            <div class="section-header">
-                <h1><i class="fas fa-microphone-alt"></i> Live Audio Matrix</h1>
-                <p>Real-time streams · Glass flyout player with visualizer</p>
-            </div>
-            <div class="stream-grid" id="streamGrid"></div>
-            <div class="info-grid">
-                <div class="glass-card">
-                    <div class="card-header"><i class="fas fa-phone-alt"></i> Listen by Phone</div>
-                    <div><strong>Alex Jones:</strong> +1(605)475-5800</div>
-                    <div><strong>War Room:</strong> +1(605)475-3291</div>
-                    <div><strong>Network Feed:</strong> +1(605)475-3292</div>
-                </div>
-                <div class="glass-card">
-                    <div class="card-header"><i class="far fa-clock"></i> Programming Clock</div>
-                    <div>Talk segments: 5min / 23min / 24:50min</div>
-                    <div>Breaks: @05, @29, @57:50 after top of hour</div>
-                </div>
-            </div>
-        </div>
-
         <!-- VIDEO VAULT TAB -->
-        <div id="vaultTab" class="tab-content">
+        <div id="vaultTab" class="tab-content active">
             <div class="section-header">
-                <h1><i class="fas fa-video"></i> Video Archive Vault</h1>
-                <p>Hourly segments · Full episodes · Saturday specials</p>
+                <h1><i class="fas fa-video"></i> AJN Video Archive</h1>
+                <p>Full episodes · Hourly segments · Saturday specials · Multi-proxy CORS bypass</p>
             </div>
             <div class="vault-layout">
                 <div class="glass-card">
                     <div class="date-picker-wrapper">
                         <label><i class="fas fa-calendar-day"></i> Select Date</label>
-                        <input type="text" id="datePicker" placeholder="Choose date">
+                        <input type="text" id="datePicker" placeholder="Choose a date">
                     </div>
                     <div class="archive-stats">
-                        <div class="stat-item"><span class="stat-value" id="totalDates">0</span><span class="stat-label">Available Dates</span></div>
-                        <div class="stat-item"><span class="stat-value" id="totalVideos">0</span><span class="stat-label">Total Videos</span></div>
+                        <div class="stat-item"><span class="stat-value" id="totalDates">0</span><span class="stat-label">Dates</span></div>
+                        <div class="stat-item"><span class="stat-value" id="totalVideos">0</span><span class="stat-label">Segments</span></div>
                     </div>
                     <button id="refreshArchiveBtn" class="glass-btn"><i class="fas fa-sync-alt"></i> Refresh Archive</button>
-                    <div class="proxy-status" id="proxyStatus"><i class="fas fa-globe"></i> <span>Demo mode - sample data loaded</span></div>
+                    <div class="proxy-status" id="proxyStatus">
+                        <i class="fas fa-globe"></i> <span id="proxyMsg">Initializing...</span>
+                    </div>
                 </div>
                 <div class="glass-card">
-                    <div class="video-wrapper"><video id="archiveVideo" controls poster="https://placehold.co/1280x720/1e293b/3b82f6?text=AJN+Vault"></video></div>
+                    <div class="video-wrapper">
+                        <video id="archiveVideo" controls preload="metadata">
+                            <source src="" type="video/mp4">
+                        </video>
+                    </div>
                     <div class="video-info">
                         <h3 id="videoTitle">Select a date to begin</h3>
                         <div class="video-controls">
@@ -326,9 +291,11 @@
                 <div class="playlist-header" id="playlistHeader">
                     <h4><i class="fas fa-list-ul"></i> Playlist</h4>
                     <span id="playlistCount">0 items</span>
-                    <button id="togglePlaylist" class="icon-btn-sm"><i class="fas fa-chevron-down"></i></button>
+                    <button id="togglePlaylist" class="icon-btn-sm" style="background: transparent; border: none; cursor: pointer;"><i class="fas fa-chevron-down"></i></button>
                 </div>
-                <div id="playlistContainer" class="playlist-container"><div class="empty-playlist">Select a date to load segments</div></div>
+                <div id="playlistContainer" class="playlist-container">
+                    <div class="empty-playlist" style="text-align: center; padding: 2rem; color: #64748b;">Select a date to load segments</div>
+                </div>
             </div>
         </div>
 
@@ -336,274 +303,395 @@
         <div id="infoTab" class="tab-content">
             <div class="glass-card">
                 <h2><i class="fas fa-info-circle"></i> About AJN Archive Suite</h2>
-                <p><strong>Live Audio:</strong> Direct streams from AJN infrastructure. Click any button to open the glass flyout player with real-time spectrum visualizer.</p>
-                <p><strong>Video Archive:</strong> Due to CORS restrictions, sample data is shown. For full functionality, use a CORS proxy or browser extension.</p>
-                <p><strong>Visualizer:</strong> 120‑line FFT analysis using Web Audio API.</p>
+                <div style="margin-top: 1rem; line-height: 1.6;">
+                    <p><strong>Multi-Proxy CORS Bypass:</strong> Uses 5 different public CORS proxies to fetch the archive feed.</p>
+                    <p><strong>Video Playback:</strong> Direct video URLs from ajn.archives.pub - plays natively in your browser.</p>
+                    <p><strong>Supported Content:</strong> Alex Jones Show (Hr1-Hr4), War Room (Hr1-Hr3), Saturday Specials.</p>
+                    <p><strong>Proxies Used:</strong> allorigins.win, corsproxy.io, thingproxy, cors-anywhere, codetabs.</p>
+                </div>
             </div>
         </div>
     </main>
 
-    <!-- FLYOUT PLAYER -->
-    <div id="flyoutPlayer" class="flyout-glass">
-        <div class="flyout-handle" id="flyoutHandle"><div class="handle-bar"></div></div>
-        <div class="flyout-content">
-            <div class="flyout-header">
-                <div><h3 id="flyoutTitle"><i class="fas fa-compact-disc"></i> No Stream Active</h3><p id="flyoutMeta">Select a live stream above</p></div>
-                <div class="flyout-actions"><button id="closeFlyoutBtn" class="glass-icon"><i class="fas fa-times"></i></button></div>
-            </div>
-            <div class="visualizer-stage">
-                <canvas id="spectrumCanvas" class="spectrum-canvas" width="1200" height="120"></canvas>
-                <div class="volume-control" style="margin-top: 10px; justify-content: center;">
-                    <i class="fas fa-volume-down"></i>
-                    <input type="range" id="flyoutVolume" min="0" max="1" step="0.01" value="0.75">
-                    <i class="fas fa-volume-up"></i>
-                </div>
-            </div>
-            <div class="flyout-footer">
-                <span id="streamStatus"><i class="fas fa-circle text-gray-400"></i> Stopped</span>
-                <span id="streamBitrate">—</span>
-                <button id="stopStreamBtn" class="glass-btn danger" style="background: linear-gradient(135deg, #dc2626, #b91c1c); padding: 0.5rem 1rem;"><i class="fas fa-stop"></i> Stop Stream</button>
-            </div>
-        </div>
-    </div>
-
     <script>
-        // ==================== COMPLETE FIXED APPLICATION ====================
+        // ==================== MULTI-PROXY CORS BYPASS SYSTEM ====================
         
-        // --- SAMPLE ARCHIVE DATA (Fallback for CORS issues) ---
-        const SAMPLE_ARCHIVE = {
-            "20260523": [
-                { url: "#", title: "2026-May-23 Saturday Alex-Special", dateStr: "20260523", hour: 0, type: "special", displayDate: "2026-05-23" }
-            ],
-            "20260522": [
-                { url: "#", title: "2026-May-22 Friday Alex-Hr1", dateStr: "20260522", hour: 1, type: "alex", displayDate: "2026-05-22" },
-                { url: "#", title: "2026-May-22 Friday Alex-Hr2", dateStr: "20260522", hour: 2, type: "alex", displayDate: "2026-05-22" },
-                { url: "#", title: "2026-May-22 Friday Alex-Hr3", dateStr: "20260522", hour: 3, type: "alex", displayDate: "2026-05-22" },
-                { url: "#", title: "2026-May-22 Friday Alex-Hr4", dateStr: "20260522", hour: 4, type: "alex", displayDate: "2026-05-22" },
-                { url: "#", title: "2026-May-22 Friday WarRoom-Hr1", dateStr: "20260522", hour: 1, type: "warroom", displayDate: "2026-05-22" },
-                { url: "#", title: "2026-May-22 Friday WarRoom-Hr2", dateStr: "20260522", hour: 2, type: "warroom", displayDate: "2026-05-22" },
-                { url: "#", title: "2026-May-22 Friday WarRoom-Hr3", dateStr: "20260522", hour: 3, type: "warroom", displayDate: "2026-05-22" }
-            ],
-            "20260521": [
-                { url: "#", title: "2026-May-21 Thursday Alex-Hr1", dateStr: "20260521", hour: 1, type: "alex", displayDate: "2026-05-21" },
-                { url: "#", title: "2026-May-21 Thursday Alex-Hr2", dateStr: "20260521", hour: 2, type: "alex", displayDate: "2026-05-21" },
-                { url: "#", title: "2026-May-21 Thursday Alex-Hr3", dateStr: "20260521", hour: 3, type: "alex", displayDate: "2026-05-21" },
-                { url: "#", title: "2026-May-21 Thursday Alex-Hr4", dateStr: "20260521", hour: 4, type: "alex", displayDate: "2026-05-21" },
-                { url: "#", title: "2026-May-21 Thursday WarRoom-Hr1", dateStr: "20260521", hour: 1, type: "warroom", displayDate: "2026-05-21" },
-                { url: "#", title: "2026-May-21 Thursday WarRoom-Hr2", dateStr: "20260521", hour: 2, type: "warroom", displayDate: "2026-05-21" },
-                { url: "#", title: "2026-May-21 Thursday WarRoom-Hr3", dateStr: "20260521", hour: 3, type: "warroom", displayDate: "2026-05-21" }
-            ]
-        };
+        const FEED_URL = 'https://rss.alexjones.media/AJNHourlyVideo.html';
         
-        // --- STREAMS DATA ---
-        const streams = [
-            { name: "Alex Jones Show (AAC)", url: "https://stream.alexjones.media/alexjonesshow", icon: "fa-microphone-alt", type: "AAC 64kbps" },
-            { name: "Alex Jones Show (MP3)", url: "https://stream.alexjones.media/alexjonesshow.mp3", icon: "fa-music", type: "MP3 128kbps" },
-            { name: "Alex Jones (OPUS)", url: "https://audio.alexjoneslive.com:8443/alexjonesshow.opus", icon: "fa-waveform", type: "Opus HQ" },
-            { name: "War Room", url: "https://stream.alexjones.media/warroom/", icon: "fa-shield-alt", type: "AAC Live" },
-            { name: "Network Feed (All Shows)", url: "https://stream.alexjones.media/stream/7/", icon: "fa-satellite-dish", type: "AAC Relay" }
+        // Extensive proxy list with multiple fallbacks
+        const PROXY_LIST = [
+            { name: 'AllOrigins', url: 'https://api.allorigins.win/raw?url=' },
+            { name: 'CORS Proxy', url: 'https://corsproxy.io/?' },
+            { name: 'ThingProxy', url: 'https://thingproxy.freeboard.io/fetch/' },
+            { name: 'CORS Anywhere', url: 'https://cors-anywhere.herokuapp.com/' },
+            { name: 'CodeTabs', url: 'https://api.codetabs.com/v1/proxy/?quest=' }
         ];
         
-        // --- GLOBAL STATE ---
-        let currentAudio = null;
-        let audioContext = null;
-        let sourceNode = null;
-        let analyserNode = null;
-        let animationId = null;
-        let canvasCtx = null;
-        let canvasWidth = 1200;
-        let canvasHeight = 120;
+        const CACHE_KEY = 'ajn_archive_complete';
         
-        // Video vault state
-        let currentArchive = SAMPLE_ARCHIVE;
-        let availableDates = Object.keys(SAMPLE_ARCHIVE).sort().reverse();
+        // State
+        let masterArchive = {};
+        let availableDates = [];
         let currentSegments = [];
         let currentIndex = 0;
+        let flatpickrInstance = null;
+        let isRefreshing = false;
         
         // DOM Elements
-        const flyout = document.getElementById('flyoutPlayer');
-        const spectrumCanvas = document.getElementById('spectrumCanvas');
-        const flyoutVolume = document.getElementById('flyoutVolume');
-        const stopStreamBtn = document.getElementById('stopStreamBtn');
-        const closeFlyoutBtn = document.getElementById('closeFlyoutBtn');
-        const flyoutHandle = document.getElementById('flyoutHandle');
-        const flyoutTitle = document.getElementById('flyoutTitle');
-        const flyoutMeta = document.getElementById('flyoutMeta');
-        const streamStatus = document.getElementById('streamStatus');
-        const streamBitrate = document.getElementById('streamBitrate');
+        const videoPlayer = document.getElementById('archiveVideo');
+        const videoTitle = document.getElementById('videoTitle');
+        const videoCounter = document.getElementById('videoCounter');
+        const videoProgress = document.getElementById('videoProgress');
+        const prevBtn = document.getElementById('prevVideoBtn');
+        const nextBtn = document.getElementById('nextVideoBtn');
+        const playlistContainer = document.getElementById('playlistContainer');
+        const playlistCount = document.getElementById('playlistCount');
+        const totalDatesSpan = document.getElementById('totalDates');
+        const totalVideosSpan = document.getElementById('totalVideos');
+        const refreshBtn = document.getElementById('refreshArchiveBtn');
+        const proxyMsgSpan = document.getElementById('proxyMsg');
+        const statusTextSpan = document.getElementById('statusText');
         
-        // --- VISUALIZER FUNCTIONS ---
-        function initCanvas() {
-            if (!spectrumCanvas) return;
-            const rect = spectrumCanvas.parentElement?.getBoundingClientRect();
-            canvasWidth = rect?.width || 1200;
-            spectrumCanvas.width = canvasWidth;
-            spectrumCanvas.height = canvasHeight;
-            canvasCtx = spectrumCanvas.getContext('2d');
-        }
-        
-        function drawSpectrum(dataArray) {
-            if (!canvasCtx || !dataArray) return;
-            canvasCtx.clearRect(0, 0, canvasWidth, canvasHeight);
-            const barCount = 120;
-            const barWidth = canvasWidth / barCount;
-            const step = dataArray.length / barCount;
-            
-            for (let i = 0; i < barCount; i++) {
-                const index = Math.floor(i * step);
-                let value = (dataArray[index] || 0) / 255;
-                value = Math.pow(value, 1.2);
-                const barHeight = Math.max(2, value * canvasHeight);
-                const x = i * barWidth;
-                const hue = 200 + (value * 80);
-                canvasCtx.fillStyle = `hsl(${hue}, 80%, 55%)`;
-                canvasCtx.fillRect(x, canvasHeight - barHeight, barWidth - 1, barHeight);
-            }
-        }
-        
-        function startVisualizerLoop() {
-            if (animationId) cancelAnimationFrame(animationId);
-            
-            function draw() {
-                if (!analyserNode) {
-                    animationId = requestAnimationFrame(draw);
-                    return;
+        // Helper: Update proxy status message
+        function updateProxyStatus(msg, isError = false) {
+            if (proxyMsgSpan) {
+                proxyMsgSpan.innerHTML = msg;
+                if (isError) {
+                    proxyMsgSpan.style.color = '#ef4444';
+                } else {
+                    proxyMsgSpan.style.color = '#94a3b8';
                 }
-                const dataArray = new Uint8Array(analyserNode.frequencyBinCount);
-                analyserNode.getByteFrequencyData(dataArray);
-                drawSpectrum(dataArray);
-                animationId = requestAnimationFrame(draw);
             }
-            draw();
+            console.log('[Proxy]', msg);
         }
         
-        function stopVisualizer() {
-            if (animationId) {
-                cancelAnimationFrame(animationId);
-                animationId = null;
+        // Fetch with multiple proxy fallbacks
+        async function fetchWithCorsBypass() {
+            // Try direct first (won't work but attempt anyway)
+            updateProxyStatus('🔄 Trying direct connection...');
+            try {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 5000);
+                const res = await fetch(FEED_URL, { 
+                    mode: 'cors',
+                    signal: controller.signal,
+                    cache: 'no-store' 
+                });
+                clearTimeout(timeoutId);
+                if (res.ok) {
+                    updateProxyStatus('✅ Direct connection successful!');
+                    return await res.text();
+                }
+            } catch(e) {
+                console.log('Direct fetch failed:', e.message);
             }
-            if (canvasCtx) canvasCtx.clearRect(0, 0, canvasWidth, canvasHeight);
-        }
-        
-        // --- AUDIO PLAYBACK ---
-        async function playStream(url, streamName, type) {
-            stopStream();
             
-            flyoutTitle.innerHTML = `<i class="fas fa-compact-disc"></i> ${streamName}`;
-            flyoutMeta.innerHTML = `Stream: ${type} · Live`;
-            streamBitrate.innerHTML = type;
-            streamStatus.innerHTML = '<i class="fas fa-circle text-yellow-400"></i> Connecting...';
+            // Try each proxy
+            for (let i = 0; i < PROXY_LIST.length; i++) {
+                const proxy = PROXY_LIST[i];
+                updateProxyStatus(`🔄 Trying ${proxy.name} (${i+1}/${PROXY_LIST.length})...`);
+                
+                try {
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => controller.abort(), 10000);
+                    const proxyUrl = proxy.url + encodeURIComponent(FEED_URL);
+                    const res = await fetch(proxyUrl, {
+                        signal: controller.signal,
+                        cache: 'no-store'
+                    });
+                    clearTimeout(timeoutId);
+                    
+                    if (res.ok) {
+                        const text = await res.text();
+                        updateProxyStatus(`✅ Connected via ${proxy.name}`);
+                        return text;
+                    }
+                } catch(e) {
+                    console.log(`${proxy.name} failed:`, e.message);
+                }
+            }
+            
+            throw new Error('All proxies failed to fetch the archive');
+        }
+        
+        // Parse segments from HTML
+        function parseSegmentsFromHTML(html) {
+            const segments = [];
+            
+            // Match all .m4v links
+            const linkRegex = /<a\s+[^>]*href=["']([^"']*\.m4v)["'][^>]*>([^<]*(?:<[^>]+>[^<]*)*?)<\/a>/gi;
+            let match;
+            
+            while ((match = linkRegex.exec(html)) !== null) {
+                let url = match[1];
+                let titleHtml = match[2];
+                let titleText = titleHtml.replace(/<[^>]+>/g, '').trim();
+                
+                // Only keep ajn.archives.pub URLs
+                if (!url.includes('ajn.archives.pub')) continue;
+                
+                // Extract date (YYYYMMDD)
+                let dateStr = '';
+                let urlDateMatch = url.match(/(\d{8})/);
+                if (urlDateMatch) {
+                    dateStr = urlDateMatch[1];
+                } else {
+                    let titleDateMatch = titleText.match(/(\d{4})-(\d{2})-(\d{2})/);
+                    if (titleDateMatch) {
+                        dateStr = titleDateMatch[1] + titleDateMatch[2] + titleDateMatch[3];
+                    }
+                }
+                
+                if (!dateStr || dateStr.length !== 8) continue;
+                
+                // Extract hour
+                let hour = 0;
+                let hourMatch = url.match(/Hr(\d)/i);
+                if (hourMatch) {
+                    hour = parseInt(hourMatch[1]);
+                } else {
+                    hourMatch = titleText.match(/Hr(\d)/i);
+                    if (hourMatch) hour = parseInt(hourMatch[1]);
+                }
+                
+                // Determine type
+                const lowerTitle = titleText.toLowerCase();
+                const isAlex = lowerTitle.includes('alex') && !lowerTitle.includes('warroom');
+                const isWarRoom = lowerTitle.includes('warroom');
+                const isSpecial = lowerTitle.includes('special') || lowerTitle.includes('saturday') || lowerTitle.includes('sundaylive');
+                
+                // Skip invalid hours (allow 0 for specials)
+                if (hour < 0 || hour > 4) continue;
+                if (!isAlex && !isWarRoom && !isSpecial) continue;
+                
+                segments.push({
+                    url: url,
+                    title: titleText,
+                    dateStr: dateStr,
+                    hour: hour,
+                    type: isSpecial ? 'special' : (isAlex ? 'alex' : 'warroom'),
+                    displayDate: `${dateStr.slice(0,4)}-${dateStr.slice(4,6)}-${dateStr.slice(6,8)}`
+                });
+            }
+            
+            console.log(`Parsed ${segments.length} segments`);
+            return segments;
+        }
+        
+        // Organize archive by date
+        function organizeArchive(segments) {
+            const archive = {};
+            
+            for (const seg of segments) {
+                if (!archive[seg.dateStr]) archive[seg.dateStr] = [];
+                archive[seg.dateStr].push(seg);
+            }
+            
+            // Sort each date's segments
+            for (const date in archive) {
+                const specials = archive[date].filter(s => s.type === 'special');
+                const alex = archive[date].filter(s => s.type === 'alex').sort((a,b) => a.hour - b.hour);
+                const warroom = archive[date].filter(s => s.type === 'warroom').sort((a,b) => a.hour - b.hour);
+                archive[date] = [...specials, ...alex, ...warroom];
+            }
+            
+            return archive;
+        }
+        
+        // Fetch and load archive
+        async function loadArchive(forceRefresh = false) {
+            if (isRefreshing) return;
+            isRefreshing = true;
+            
+            // Check cache first
+            if (!forceRefresh) {
+                const cached = localStorage.getItem(CACHE_KEY);
+                if (cached) {
+                    try {
+                        const data = JSON.parse(cached);
+                        if (data.archive && Object.keys(data.archive).length > 0) {
+                            masterArchive = data.archive;
+                            availableDates = data.dates || Object.keys(masterArchive).sort().reverse();
+                            updateProxyStatus(`📦 Loaded from cache: ${availableDates.length} dates`);
+                            updateUIWithArchive();
+                            isRefreshing = false;
+                            
+                            // Still refresh in background
+                            setTimeout(() => loadArchive(true), 100);
+                            return;
+                        }
+                    } catch(e) {}
+                }
+            }
+            
+            updateProxyStatus('🔄 Fetching archive from AJN...');
+            statusTextSpan.innerHTML = '<span class="loading-spinner"></span> Loading';
             
             try {
-                const audio = new Audio();
-                audio.crossOrigin = "anonymous";
-                audio.src = url;
-                audio.volume = flyoutVolume.value;
+                const html = await fetchWithCorsBypass();
+                updateProxyStatus('📝 Parsing segments...');
                 
-                await audio.play();
+                const segments = parseSegmentsFromHTML(html);
+                if (segments.length === 0) throw new Error('No segments found');
                 
-                const AudioCtx = window.AudioContext || window.webkitAudioContext;
-                const ctx = new AudioCtx();
-                const source = ctx.createMediaElementSource(audio);
-                const analyser = ctx.createAnalyser();
-                analyser.fftSize = 512;
+                updateProxyStatus(`📊 Organizing ${segments.length} segments...`);
+                const archive = organizeArchive(segments);
+                const dates = Object.keys(archive).sort().reverse();
                 
-                source.connect(analyser);
-                analyser.connect(ctx.destination);
+                // Save to cache
+                localStorage.setItem(CACHE_KEY, JSON.stringify({
+                    archive: archive,
+                    dates: dates,
+                    timestamp: Date.now()
+                }));
                 
-                if (ctx.state === 'suspended') await ctx.resume();
+                masterArchive = archive;
+                availableDates = dates;
                 
-                currentAudio = audio;
-                audioContext = ctx;
-                sourceNode = source;
-                analyserNode = analyser;
+                updateProxyStatus(`✅ Loaded ${dates.length} dates, ${segments.length} total videos`);
+                statusTextSpan.innerHTML = `${dates.length} dates ready`;
+                updateUIWithArchive();
                 
-                initCanvas();
-                startVisualizerLoop();
+            } catch (err) {
+                console.error('Archive load failed:', err);
+                updateProxyStatus(`❌ Error: ${err.message}`, true);
+                statusTextSpan.innerHTML = 'Connection error';
                 
-                streamStatus.innerHTML = '<i class="fas fa-circle text-green-400"></i> Live';
-                
-                audio.onerror = () => {
-                    streamStatus.innerHTML = '<i class="fas fa-circle text-red-400"></i> Error';
-                };
-                
-            } catch(e) {
-                console.error('Playback error:', e);
-                streamStatus.innerHTML = '<i class="fas fa-circle text-red-400"></i> Failed - CORS blocked';
-                flyoutMeta.innerHTML = `Error: ${e.message.substring(0, 50)}`;
+                // Try to load from cache as fallback
+                const cached = localStorage.getItem(CACHE_KEY);
+                if (cached) {
+                    try {
+                        const data = JSON.parse(cached);
+                        masterArchive = data.archive;
+                        availableDates = data.dates || Object.keys(masterArchive).sort().reverse();
+                        updateProxyStatus(`⚠️ Using cached data (${availableDates.length} dates)`, true);
+                        updateUIWithArchive();
+                    } catch(e) {}
+                }
+            } finally {
+                isRefreshing = false;
             }
         }
         
-        function stopStream() {
-            if (currentAudio) {
-                currentAudio.pause();
-                currentAudio.src = '';
-                currentAudio = null;
-            }
-            if (audioContext) {
-                audioContext.close().catch(console.log);
-                audioContext = null;
-            }
-            sourceNode = null;
-            analyserNode = null;
-            stopVisualizer();
-            streamStatus.innerHTML = '<i class="fas fa-circle text-gray-400"></i> Stopped';
-        }
-        
-        function setVolume(vol) {
-            if (currentAudio) currentAudio.volume = vol;
-        }
-        
-        // --- RENDER STREAM BUTTONS ---
-        function renderStreamButtons() {
-            const grid = document.getElementById('streamGrid');
-            if (!grid) return;
+        // Update UI with archive data
+        function updateUIWithArchive() {
+            if (totalDatesSpan) totalDatesSpan.textContent = availableDates.length;
             
-            grid.innerHTML = streams.map(stream => `
-                <button class="stream-btn" data-url="${stream.url}" data-name="${stream.name}" data-type="${stream.type}">
-                    <div class="stream-icon"><i class="fas ${stream.icon}"></i></div>
-                    <div class="stream-info">
-                        <h4>${stream.name}</h4>
-                        <small>${stream.type}</small>
-                    </div>
-                </button>
-            `).join('');
+            // Setup date picker
+            if (flatpickrInstance) {
+                flatpickrInstance.destroy();
+            }
             
-            document.querySelectorAll('.stream-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    document.querySelectorAll('.stream-btn').forEach(b => b.classList.remove('active-stream'));
-                    btn.classList.add('active-stream');
-                    flyout.classList.add('open');
-                    playStream(btn.dataset.url, btn.dataset.name, btn.dataset.type);
+            const datePicker = document.getElementById('datePicker');
+            if (datePicker && availableDates.length) {
+                const dateObjects = availableDates.map(d => {
+                    return new Date(parseInt(d.slice(0,4)), parseInt(d.slice(4,6))-1, parseInt(d.slice(6,8)));
                 });
-            });
+                
+                flatpickrInstance = flatpickr(datePicker, {
+                    dateFormat: "Y-m-d",
+                    enable: dateObjects,
+                    maxDate: dateObjects[0],
+                    onChange: (selectedDates) => {
+                        if (selectedDates.length) {
+                            const d = selectedDates[0];
+                            const ymd = `${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}`;
+                            if (masterArchive[ymd]) {
+                                loadDateSegments(ymd);
+                            }
+                        }
+                    }
+                });
+                
+                // Load most recent date
+                const newest = availableDates[0];
+                loadDateSegments(newest);
+            }
         }
         
-        // --- VIDEO VAULT FUNCTIONS ---
-        function renderPlaylist() {
-            const container = document.getElementById('playlistContainer');
-            const countSpan = document.getElementById('playlistCount');
-            
-            if (!currentSegments || currentSegments.length === 0) {
-                if (container) container.innerHTML = '<div class="empty-playlist">No segments for this date</div>';
-                if (countSpan) countSpan.textContent = '0 items';
+        // Load segments for a specific date
+        function loadDateSegments(dateStr) {
+            if (!masterArchive[dateStr]) {
+                console.warn(`No data for date: ${dateStr}`);
                 return;
             }
             
-            const html = currentSegments.map((seg, idx) => `
-                <div class="playlist-item ${idx === currentIndex ? 'active' : ''}" data-index="${idx}">
-                    <div style="display: flex; justify-content: space-between;">
-                        <div><strong>${seg.type === 'special' ? '⭐' : (seg.type === 'alex' ? '🎙️' : '⚔️')} ${seg.type === 'special' ? 'SPECIAL' : (seg.type === 'alex' ? 'Alex Jones' : 'War Room')}</strong>
-                        <span style="font-size: 0.7rem;">${seg.hour ? `Hr${seg.hour}` : ''}</span></div>
-                        <span style="font-size: 0.7rem;">${seg.displayDate}</span>
+            currentSegments = masterArchive[dateStr];
+            currentIndex = 0;
+            
+            if (totalVideosSpan) totalVideosSpan.textContent = currentSegments.length;
+            renderPlaylist();
+            
+            if (currentSegments.length > 0) {
+                loadVideo(0);
+            }
+        }
+        
+        // Load video by index
+        function loadVideo(index) {
+            if (!currentSegments[index]) return;
+            
+            const seg = currentSegments[index];
+            currentIndex = index;
+            
+            // Set video source directly (no proxy needed for video playback)
+            videoPlayer.src = seg.url;
+            videoPlayer.load();
+            videoPlayer.play().catch(e => console.log('Auto-play prevented:', e));
+            
+            videoTitle.textContent = seg.title;
+            videoCounter.textContent = `${index + 1}/${currentSegments.length}`;
+            
+            renderPlaylist();
+        }
+        
+        // Render playlist
+        function renderPlaylist() {
+            if (!playlistContainer) return;
+            
+            if (!currentSegments.length) {
+                playlistContainer.innerHTML = '<div class="empty-playlist" style="text-align: center; padding: 2rem; color: #64748b;">No segments for this date</div>';
+                playlistCount.textContent = '0 items';
+                return;
+            }
+            
+            const html = currentSegments.map((seg, idx) => {
+                let typeBadge = '';
+                let typeIcon = '';
+                if (seg.type === 'special') {
+                    typeBadge = '<span class="badge-special">⭐ SPECIAL</span>';
+                    typeIcon = '⭐';
+                } else if (seg.type === 'alex') {
+                    typeBadge = '<span class="badge-alex">🎙️ ALEX</span>';
+                    typeIcon = '🎙️';
+                } else {
+                    typeBadge = '<span class="badge-warroom">⚔️ WAR ROOM</span>';
+                    typeIcon = '⚔️';
+                }
+                
+                const hourDisplay = seg.hour ? `Hr${seg.hour}` : '';
+                
+                return `
+                    <div class="playlist-item ${idx === currentIndex ? 'active' : ''}" data-index="${idx}">
+                        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+                            <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
+                                ${typeBadge}
+                                ${hourDisplay ? `<span style="font-size: 0.7rem; color: #94a3b8;">${hourDisplay}</span>` : ''}
+                                <span style="font-size: 0.65rem; color: #64748b;">${seg.displayDate}</span>
+                            </div>
+                            ${idx === currentIndex ? '<span style="color: #10b981; font-size: 0.7rem;">▶ PLAYING</span>' : ''}
+                        </div>
+                        <div style="font-size: 0.75rem; color: #cbd5e1; margin-top: 0.25rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                            ${escapeHtml(seg.title.substring(0, 70))}
+                        </div>
                     </div>
-                    <div style="font-size: 0.75rem; color: #94a3b8; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${seg.title.substring(0, 60)}</div>
-                </div>
-            `).join('');
+                `;
+            }).join('');
             
-            if (container) container.innerHTML = html;
-            if (countSpan) countSpan.textContent = `${currentSegments.length} items`;
+            playlistContainer.innerHTML = html;
+            playlistCount.textContent = `${currentSegments.length} items`;
             
+            // Add click handlers
             document.querySelectorAll('.playlist-item').forEach(item => {
                 item.addEventListener('click', () => {
                     const idx = parseInt(item.dataset.index);
@@ -612,99 +700,68 @@
             });
         }
         
-        function loadVideo(index) {
-            if (!currentSegments || !currentSegments[index]) return;
-            const seg = currentSegments[index];
-            currentIndex = index;
-            
-            const videoPlayer = document.getElementById('archiveVideo');
-            const videoTitle = document.getElementById('videoTitle');
-            const videoCounter = document.getElementById('videoCounter');
-            
-            if (videoPlayer) {
-                videoPlayer.src = seg.url;
-                videoPlayer.load();
-                videoPlayer.play().catch(e => console.log('Play error:', e));
+        // Navigation
+        function nextVideo() {
+            if (currentIndex + 1 < currentSegments.length) {
+                loadVideo(currentIndex + 1);
             }
-            if (videoTitle) videoTitle.textContent = seg.title;
-            if (videoCounter) videoCounter.textContent = `${index + 1}/${currentSegments.length}`;
-            
-            renderPlaylist();
         }
         
-        function loadDateSegments(dateStr) {
-            if (!currentArchive || !currentArchive[dateStr]) return;
-            currentSegments = currentArchive[dateStr];
-            currentIndex = 0;
-            
-            const totalVideosSpan = document.getElementById('totalVideos');
-            if (totalVideosSpan) totalVideosSpan.textContent = currentSegments.length;
-            
-            renderPlaylist();
-            if (currentSegments.length) loadVideo(0);
+        function prevVideo() {
+            if (currentIndex - 1 >= 0) {
+                loadVideo(currentIndex - 1);
+            }
         }
         
-        function initVideoVault() {
-            const totalDatesSpan = document.getElementById('totalDates');
-            if (totalDatesSpan) totalDatesSpan.textContent = availableDates.length;
-            
-            const datePicker = document.getElementById('datePicker');
-            if (datePicker) {
-                flatpickr(datePicker, {
-                    dateFormat: "Y-m-d",
-                    enable: availableDates.map(d => new Date(parseInt(d.slice(0,4)), parseInt(d.slice(4,6))-1, parseInt(d.slice(6,8)))),
-                    onChange: (selectedDates) => {
-                        if (selectedDates.length) {
-                            const d = selectedDates[0];
-                            const ymd = `${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}`;
-                            loadDateSegments(ymd);
-                        }
-                    }
-                });
-            }
-            
-            if (availableDates.length) loadDateSegments(availableDates[0]);
-            
-            const prevBtn = document.getElementById('prevVideoBtn');
-            const nextBtn = document.getElementById('nextVideoBtn');
-            const refreshBtn = document.getElementById('refreshArchiveBtn');
-            const videoPlayer = document.getElementById('archiveVideo');
-            const progressBar = document.getElementById('videoProgress');
-            
-            if (prevBtn) prevBtn.addEventListener('click', () => {
-                if (currentIndex - 1 >= 0) loadVideo(currentIndex - 1);
+        // Escape HTML
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str.replace(/[&<>]/g, m => ({
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;'
+            })[m]);
+        }
+        
+        // Video event listeners
+        function initVideoEvents() {
+            videoPlayer.addEventListener('timeupdate', () => {
+                if (videoPlayer.duration) {
+                    const percent = (videoPlayer.currentTime / videoPlayer.duration) * 100;
+                    videoProgress.style.width = `${percent}%`;
+                }
             });
-            if (nextBtn) nextBtn.addEventListener('click', () => {
-                if (currentIndex + 1 < currentSegments.length) loadVideo(currentIndex + 1);
-            });
-            if (refreshBtn) refreshBtn.addEventListener('click', () => {
-                alert('CORS restricted. Using sample data. For full archive, use a CORS proxy extension.');
-            });
-            if (videoPlayer) {
-                videoPlayer.addEventListener('timeupdate', () => {
-                    if (videoPlayer.duration && progressBar) {
-                        progressBar.style.width = `${(videoPlayer.currentTime / videoPlayer.duration) * 100}%`;
-                    }
-                });
-                videoPlayer.addEventListener('ended', () => {
-                    if (currentIndex + 1 < currentSegments.length) loadVideo(currentIndex + 1);
-                });
-            }
             
-            const playlistHeader = document.getElementById('playlistHeader');
-            const playlistContainerDiv = document.getElementById('playlistContainer');
-            const togglePlaylist = document.getElementById('togglePlaylist');
+            videoPlayer.addEventListener('ended', () => {
+                nextVideo();
+            });
+            
+            videoPlayer.addEventListener('error', (e) => {
+                console.error('Video error:', e);
+                // Try next video after error
+                setTimeout(() => nextVideo(), 2000);
+            });
+        }
+        
+        // Playlist collapsible
+        function initPlaylistToggle() {
+            const header = document.getElementById('playlistHeader');
+            const container = document.getElementById('playlistContainer');
+            const toggleBtn = document.getElementById('togglePlaylist');
             let collapsed = false;
-            if (playlistHeader) {
-                playlistHeader.addEventListener('click', () => {
+            
+            if (header) {
+                header.addEventListener('click', () => {
                     collapsed = !collapsed;
-                    if (playlistContainerDiv) playlistContainerDiv.classList.toggle('collapsed', collapsed);
-                    if (togglePlaylist) togglePlaylist.querySelector('i').className = collapsed ? 'fas fa-chevron-up' : 'fas fa-chevron-down';
+                    if (container) container.classList.toggle('collapsed', collapsed);
+                    if (toggleBtn) {
+                        toggleBtn.querySelector('i').className = collapsed ? 'fas fa-chevron-up' : 'fas fa-chevron-down';
+                    }
                 });
             }
         }
         
-        // --- TAB SWITCHING ---
+        // Tab switching
         function initTabs() {
             const tabs = document.querySelectorAll('.nav-btn');
             const contents = document.querySelectorAll('.tab-content');
@@ -715,44 +772,27 @@
                     tabs.forEach(t => t.classList.remove('active'));
                     tab.classList.add('active');
                     contents.forEach(c => c.classList.remove('active'));
-                    document.getElementById(`${target}Tab`)?.classList.add('active');
-                    
-                    if (target === 'live') {
-                        setTimeout(() => initCanvas(), 100);
-                    }
+                    document.getElementById(`${target}Tab`).classList.add('active');
                 });
             });
         }
         
-        // --- FLYOUT CONTROLS ---
-        function initFlyout() {
-            flyoutHandle?.addEventListener('click', () => flyout.classList.toggle('open'));
-            closeFlyoutBtn?.addEventListener('click', () => flyout.classList.remove('open'));
-            stopStreamBtn?.addEventListener('click', stopStream);
-            flyoutVolume?.addEventListener('input', (e) => setVolume(parseFloat(e.target.value)));
-        }
-        
-        // --- INITIALIZATION ---
-        function init() {
-            renderStreamButtons();
-            initFlyout();
+        // Initialize everything
+        async function init() {
             initTabs();
-            initVideoVault();
-            initCanvas();
+            initVideoEvents();
+            initPlaylistToggle();
             
-            // Handle window resize
-            window.addEventListener('resize', () => {
-                initCanvas();
-                if (analyserNode) startVisualizerLoop();
-            });
+            prevBtn.addEventListener('click', prevVideo);
+            nextBtn.addEventListener('click', nextVideo);
+            refreshBtn.addEventListener('click', () => loadArchive(true));
+            
+            // Load archive
+            await loadArchive(false);
         }
         
-        // Start everything when DOM is ready
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', init);
-        } else {
-            init();
-        }
+        // Start
+        init();
     </script>
 </body>
 </html>

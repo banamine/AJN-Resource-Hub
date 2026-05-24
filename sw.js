@@ -1,8 +1,8 @@
-// sw.js - Proper Service Worker with NO DOM manipulation
-const CACHE_NAME = 'ajn-shell-v4';
+// sw.js - Service Worker with version tracking
+const CACHE_NAME = 'ajn-shell-v5';
 const ASSETS_TO_CACHE = [
   './',
-  './new ajn music.html',
+  './index.html',
   './manifest.json',
   './icon-192.png',
   './icon-512.png'
@@ -10,7 +10,7 @@ const ASSETS_TO_CACHE = [
 
 // Install: cache app shell
 self.addEventListener('install', (event) => {
-  console.log('[SW] Installing...');
+  console.log('[SW] Installing version v5...');
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
       return cache.addAll(ASSETS_TO_CACHE);
@@ -21,10 +21,16 @@ self.addEventListener('install', (event) => {
 
 // Activate: clean old caches
 self.addEventListener('activate', (event) => {
-  console.log('[SW] Activating...');
+  console.log('[SW] Activating v5...');
   event.waitUntil(
     caches.keys().then((keys) => Promise.all(
-      keys.map((key) => key !== CACHE_NAME && caches.delete(key))
+      keys.map((key) => {
+        if (key !== CACHE_NAME && key.startsWith('ajn-shell')) {
+          console.log('[SW] Deleting old cache:', key);
+          return caches.delete(key);
+        }
+        return null;
+      }).filter(p => p !== null)
     ))
   );
   self.clients.claim();
@@ -40,11 +46,26 @@ self.addEventListener('fetch', (event) => {
     return;
   }
   
+  // Network-first for the feed URL to always get latest
+  if (url.includes('AJNHourlyVideo.html')) {
+    event.respondWith(
+      fetch(event.request, { cache: 'no-store' })
+        .catch(() => caches.match(event.request))
+    );
+    return;
+  }
+  
   // Cache-first for everything else (UI layout, fonts, icons)
   event.respondWith(
     caches.match(event.request).then((cached) => {
       return cached || fetch(event.request).then((response) => {
-        // Cache newly discovered assets dynamically if needed
+        // Cache valid responses
+        if (response && response.status === 200) {
+          const responseToCache = response.clone();
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put(event.request, responseToCache);
+          });
+        }
         return response;
       });
     }).catch(() => fetch(event.request))

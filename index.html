@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>AJN Player Sirius Edition </title>
-    <meta name="description" content="AJN Hourly Video Archive - Sirius interlude with robust proxy fallback and integrated Live stream (Twitter Embed)">
+    <title>AJN Archive Player · Sirius Edition · Multi-Proxy PWA</title>
+    <meta name="description" content="AJN Hourly Video Archive - Sirius interlude with robust proxy fallback">
     <meta name="theme-color" content="#0a0f1c">
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon-192.png">
@@ -161,110 +161,13 @@
             color: #64748b;
             margin-top: 8px;
         }
-        
-        /* Live overlay fly-out styles - Twitter Embed friendly */
-        .live-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.94);
-            backdrop-filter: blur(16px);
-            z-index: 10001;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.3s ease, visibility 0.3s;
-        }
-        .live-overlay.active {
-            opacity: 1;
-            visibility: visible;
-        }
-        .live-container {
-            background: #0f172a;
-            border-radius: 2rem;
-            width: 90%;
-            max-width: 700px;
-            border: 1px solid #3b82f6;
-            box-shadow: 0 25px 40px -12px black;
-            overflow: hidden;
-            position: relative;
-        }
-        .live-header {
-            background: #0a0f1c;
-            padding: 1rem 1.5rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #334155;
-            flex-wrap: wrap;
-            gap: 12px;
-        }
-        .live-header h3 {
-            font-weight: bold;
-            color: #ef4444;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 1rem;
-        }
-        .live-close {
-            background: #334155;
-            border: none;
+        .special-badge {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
             color: white;
-            border-radius: 40px;
-            padding: 6px 16px;
-            cursor: pointer;
-            transition: 0.2s;
-            font-size: 13px;
-        }
-        .live-close:hover { background: #ef4444; }
-        .live-embed-wrapper {
-            padding: 20px;
-            background: #030712;
-            min-height: 500px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-        }
-        .live-embed-wrapper .twitter-tweet {
-            margin: 0 auto !important;
-            width: 100%;
-            max-width: 550px;
-        }
-        .live-loading {
-            color: #94a3b8;
-            text-align: center;
-            padding: 40px;
-            font-size: 14px;
-        }
-        .live-badge {
-            background: #ef4444;
-            border-radius: 30px;
-            padding: 4px 12px;
-            font-size: 12px;
-            font-weight: bold;
-            animation: pulse-red 1.2s infinite;
-        }
-        @keyframes pulse-red { 0% { opacity: 0.7; } 50% { opacity: 1; box-shadow: 0 0 6px red; } 100% { opacity: 0.7; } }
-        .live-button {
-            background: #1e293b;
-            border: 1px solid #ef4444;
-            transition: 0.2s;
-        }
-        .live-button:hover { background: #ef4444; border-color: white; transform: scale(1.02); }
-        
-        /* Dark mode for any Tweet widget inside */
-        .live-embed-wrapper {
-            color-scheme: dark;
-        }
-        .twitter-tweet {
-            background: #0f172a !important;
-            border-radius: 24px !important;
+            font-size: 9px;
+            padding: 2px 6px;
+            border-radius: 12px;
+            margin-left: 6px;
         }
     </style>
 </head>
@@ -276,39 +179,17 @@
     </div>
 
     <div id="update-toast" style="display: none;" class="update-toast">
-        <span>🔄 New dates available!</span>
-        <button id="refresh-cache-btn" class="bg-blue-600 px-4 py-1 rounded-full text-sm">Refresh</button>
-    </div>
-
-    <!-- LIVE OVERLAY (fly-out) with Twitter Embed -->
-    <div id="liveOverlay" class="live-overlay">
-        <div class="live-container">
-            <div class="live-header">
-                <h3><span class="live-badge">● LIVE</span> AJN Broadcast (Twitter Stream)</h3>
-                <button id="closeLiveBtn" class="live-close">✕ Close Stream</button>
-            </div>
-            <div id="liveEmbedContainer" class="live-embed-wrapper">
-                <div class="live-loading">⏳ Loading live broadcast... Twitter widget will appear below.</div>
-                <!-- Twitter embed will be injected here dynamically via JavaScript -->
-            </div>
-            <div class="p-3 text-center text-xs text-slate-400 bg-slate-900 border-t border-slate-800">Live broadcast powered by Twitter — independent from archive player</div>
-        </div>
+        <span>🔄 New content available!</span>
+        <button id="refresh-cache-btn" class="bg-blue-600 px-4 py-1 rounded-full text-sm">Refresh Now</button>
     </div>
 
     <div class="max-w-7xl mx-auto px-4 py-5 md:py-7">
         <div class="flex flex-col md:flex-row justify-between items-center gap-4 border-b border-slate-800 pb-5 mb-6">
             <div>
                 <h1 class="text-3xl font-extrabold bg-gradient-to-r from-emerald-400 to-blue-500 bg-clip-text text-transparent">AJN Archive Player</h1>
-                <p class="text-sm text-slate-400">Select date → Alex Hr1→Hr4 → WarRoom Hr1→Hr4 · Auto-advance</p>
+                <p class="text-sm text-slate-400">Select date → Alex Hr1→Hr4 → WarRoom Hr1→Hr4 · Saturday Specials supported</p>
             </div>
             <div class="flex items-center gap-3">
-                <button id="openLiveBtn" class="bg-slate-800 border border-red-600 rounded-full px-5 py-2 text-sm flex items-center gap-2 hover:bg-red-700 transition live-button">
-                    <span class="relative flex h-3 w-3">
-                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                        <span class="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
-                    </span>
-                    LIVE
-                </button>
                 <button id="openCalendarBtn" class="bg-slate-800 border border-slate-700 rounded-full px-4 py-2 text-sm flex items-center gap-2 hover:bg-slate-700">
                     📅 <span id="selectedDateDisplay">Pick a date</span>
                 </button>
@@ -330,11 +211,11 @@
                                 <div class="pulse-wave">
                                     <span></span><span></span><span></span><span></span><span></span>
                                 </div>
-                                <div class="overlay-title">🎵 </div>
-                                <div class="overlay-sub" id="overlayStatusMsg">Loading AJN LIBRARY — please wait (INFO WARRIOR)</div>
+                                <div class="overlay-title">🎵 The Alan Parsons Project · Sirius</div>
+                                <div class="overlay-sub" id="overlayStatusMsg">Loading AJN archive — please wait</div>
                                 <div class="flex flex-col gap-2 max-w-xs mx-auto">
-                                    <button id="startAudioBtn" class="init-audio-btn hidden">🔊 Initialize /button>
-                                    <button id="stopMusicAndPlayBtn" class="stop-music-btn">⏹ Ready Play </button>
+                                    <button id="startAudioBtn" class="init-audio-btn hidden">🔊 Initialize Audio Stream</button>
+                                    <button id="stopMusicAndPlayBtn" class="stop-music-btn">⏹ Stop Music & Play Video</button>
                                 </div>
                                 <div id="proxyStatusMsg" class="proxy-status"></div>
                             </div>
@@ -373,7 +254,11 @@
     </div>
 
     <script>
-        // ========== AUDIO SETUP (Sirius with 25s seek) ==========
+        // ========== VERSION TRACKING ==========
+        const VERSION_KEY = 'ajn_version';
+        const CURRENT_VERSION = '2.0.0';
+        
+        // ========== AUDIO SETUP ==========
         const SIRIUS_PRIMARY = 'https://raw.githubusercontent.com/banamine/AJN-Resource-Hub/main/The%20Alan%20Parsons%20Project%20-%20Sirius%20(Official%20Audio).mp3';
         const SIRIUS_FALLBACK = 'https://archive.org/download/a-132-5_20260424/1.%20The%20Alan%20Parsons%20Project%20-%20Sirius%20%28Official%20Audio%29.mp4';
         const SEEK_TO_SECONDS = 25;
@@ -384,13 +269,6 @@
         let currentAudioSource = 0;
         let videoReadyToPlay = false;
         let backgroundFetchComplete = false;
-        
-        // LIVE state management
-        let isLiveOpen = false;
-        const liveOverlay = document.getElementById('liveOverlay');
-        const liveEmbedContainer = document.getElementById('liveEmbedContainer');
-        const openLiveBtn = document.getElementById('openLiveBtn');
-        const closeLiveBtn = document.getElementById('closeLiveBtn');
         
         const musicOverlay = document.getElementById('musicOverlay');
         const overlayStatusMsg = document.getElementById('overlayStatusMsg');
@@ -408,145 +286,6 @@
         ariaAnnouncer.style.cssText = 'position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0';
         document.body.appendChild(ariaAnnouncer);
         function announce(msg) { ariaAnnouncer.textContent = msg; console.log('[ARIA]', msg); }
-        
-        // Function to load Twitter Widgets script dynamically only once
-        function loadTwitterWidgets() {
-            if (window.twttr && window.twttr.widgets) {
-                return Promise.resolve();
-            }
-            return new Promise((resolve, reject) => {
-                if (document.getElementById('twitter-wjs')) {
-                    if (window.twttr) resolve();
-                    else reject();
-                    return;
-                }
-                const script = document.createElement('script');
-                script.id = 'twitter-wjs';
-                script.src = 'https://platform.twitter.com/widgets.js';
-                script.charset = 'utf-8';
-                script.onload = () => {
-                    if (window.twttr) resolve();
-                    else reject();
-                };
-                script.onerror = reject;
-                document.head.appendChild(script);
-            });
-        }
-        
-        // Create fresh Twitter embed HTML block
-        function getTwitterEmbedHTML() {
-            return `<blockquote class="twitter-tweet" data-media-max-width="560">
-                        <p lang="en" dir="ltr">ALEX JONES LIVE: Airspace Over Iran Cleared As Trump Prepares To Relaunch War, Turkey Claims Plot To Kill Ivanka Foiled, 47 Ordered Gabbard To Quit Plus, Israeli Spy Group Project 545 Has Been Caught Targeting Hundreds Of US Journalists Who Oppose War <a href="https://t.co/qj4mJX0dOC">https://t.co/qj4mJX0dOC</a></p>
-                        &mdash; INFOWARS (@infowars) <a href="https://twitter.com/infowars/status/2058235440046477568?ref_src=twsrc%5Etfw">May 23, 2026</a>
-                    </blockquote>`;
-        }
-        
-        // Completely destroy and recreate the embed container to stop ALL audio
-        function destroyAndRebuildEmbedContainer() {
-            if (!liveEmbedContainer) return;
-            // Save the parent
-            const parent = liveEmbedContainer.parentNode;
-            const newContainer = document.createElement('div');
-            newContainer.id = 'liveEmbedContainer';
-            newContainer.className = 'live-embed-wrapper';
-            newContainer.innerHTML = '<div class="live-loading">⏳ Live stream closed. Click LIVE again to restart broadcast.</div>';
-            // Replace the old container with new empty one
-            parent.replaceChild(newContainer, liveEmbedContainer);
-            // Update reference
-            window.liveEmbedContainer = newContainer;
-            return newContainer;
-        }
-        
-        // Function to inject embed and render Twitter widget
-        async function injectAndRenderLiveEmbed() {
-            // Get fresh container reference
-            let container = document.getElementById('liveEmbedContainer');
-            if (!container) {
-                // Recreate if missing
-                const wrapper = document.querySelector('.live-container .live-embed-wrapper');
-                if (wrapper) {
-                    container = wrapper;
-                } else {
-                    return;
-                }
-            }
-            // Clear container and add loading indicator + embed HTML
-            container.innerHTML = '<div class="live-loading">⏳ Loading live broadcast... Twitter widget will appear below.</div>';
-            // Append the blockquote HTML
-            const tempDiv = document.createElement('div');
-            tempDiv.innerHTML = getTwitterEmbedHTML();
-            const blockquote = tempDiv.firstChild;
-            container.appendChild(blockquote);
-            
-            try {
-                await loadTwitterWidgets();
-                if (window.twttr && window.twttr.widgets) {
-                    await window.twttr.widgets.load();
-                }
-                // Remove loading indicator after load
-                const loadingEl = container.querySelector('.live-loading');
-                if (loadingEl) loadingEl.style.display = 'none';
-            } catch (e) {
-                console.warn("Twitter widgets failed", e);
-                const loadingEl = container.querySelector('.live-loading');
-                if (loadingEl) loadingEl.innerHTML = '⚠️ Live stream widget could not load. Please try again.';
-            }
-        }
-        
-        // ---------- CORE TOGGLE LIVE with conflict resolution ----------
-        async function toggleLive(show) {
-            if (show && !isLiveOpen) {
-                // CLOSE any playing archive media BEFORE opening live
-                if (videoPlayer && !videoPlayer.paused) {
-                    videoPlayer.pause();
-                    announce("Archive video paused because Live stream opened.");
-                }
-                if (audioElement && !audioElement.paused) {
-                    audioElement.pause();
-                    announce("Background music paused because Live stream opened.");
-                }
-                // Show overlay
-                liveOverlay.classList.add('active');
-                isLiveOpen = true;
-                // Inject fresh embed (clean slate)
-                await injectAndRenderLiveEmbed();
-                announce("Live broadcast started. Archive playback paused.");
-            } else if (!show && isLiveOpen) {
-                // CRITICAL: Destroy the entire embed container to stop ALL zombie audio
-                // This removes any iframes or media elements that Twitter injected
-                const oldContainer = document.getElementById('liveEmbedContainer');
-                if (oldContainer) {
-                    // Clear innerHTML completely first to stop any playing media
-                    oldContainer.innerHTML = '';
-                    // Then destroy and recreate the container
-                    const newContainer = destroyAndRebuildEmbedContainer();
-                    // Add fresh loading state
-                    if (newContainer) {
-                        newContainer.innerHTML = '<div class="live-loading">✅ Live stream stopped. Click LIVE to watch again.</div>';
-                    }
-                }
-                // Hide overlay
-                liveOverlay.classList.remove('active');
-                isLiveOpen = false;
-                announce("Live stream closed. All audio from the stream has been stopped. You may resume archive playback.");
-            }
-        }
-        
-        // Event listeners for Live buttons
-        openLiveBtn?.addEventListener('click', () => {
-            toggleLive(true);
-        });
-        closeLiveBtn?.addEventListener('click', () => {
-            toggleLive(false);
-        });
-        
-        // Ensure that any manual click on playlist segment closes Live and loads segment
-        function closeLiveIfOpen() {
-            if (isLiveOpen) {
-                toggleLive(false);
-                announce("Live stream closed automatically to play selected archive segment.");
-            }
-        }
         
         function initSiriusAudio() {
             if (audioElement) return;
@@ -595,11 +334,6 @@
         }
         
         function stopMusicAndPlayVideo() {
-            // CRITICAL: If Live is open, do NOT resume archive playback (avoid conflict)
-            if (isLiveOpen) {
-                announce("Live stream is active. Please close Live before playing archive.");
-                return;
-            }
             if (audioElement) {
                 audioElement.pause();
                 audioElement.currentTime = 0;
@@ -646,7 +380,7 @@
             'https://corsproxy.io/?',
             'https://thingproxy.freeboard.io/fetch/'
         ];
-        const CACHE_KEY = 'ajn_archive_v10';
+        const CACHE_KEY = 'ajn_archive_v11';
         
         let masterArchive = {};
         let availableDates = [];
@@ -663,6 +397,20 @@
         const selectedDateDisplay = document.getElementById('selectedDateDisplay');
         
         function updateProxyStatus(msg) { if (proxyStatusSpan) proxyStatusSpan.textContent = msg; }
+        
+        function checkForVersionUpdate() {
+            const storedVersion = localStorage.getItem(VERSION_KEY);
+            if (storedVersion !== CURRENT_VERSION) {
+                localStorage.setItem(VERSION_KEY, CURRENT_VERSION);
+                const oldCache = localStorage.getItem(CACHE_KEY);
+                if (oldCache) {
+                    console.log('[Version Update] Clearing old cache');
+                    localStorage.removeItem(CACHE_KEY);
+                }
+                return true;
+            }
+            return false;
+        }
         
         async function fetchWithMultiProxy() {
             updateProxyStatus('🔄 Trying direct connection...');
@@ -705,19 +453,38 @@
                     if (dateMatch) dateStr = dateMatch[1] + dateMatch[2] + dateMatch[3];
                 }
                 if (!dateStr || dateStr.length !== 8) continue;
+                
+                // Parse hour - allow 0 for specials
                 let hourMatch = filename.match(/Hr(\d)/i);
                 let hour = hourMatch ? parseInt(hourMatch[1], 10) : 0;
                 if (hour === 0) {
                     hourMatch = titleText.match(/Hr(\d)/i);
                     hour = hourMatch ? parseInt(hourMatch[1], 10) : 0;
                 }
-                if (hour < 1 || hour > 4) continue;
+                
+                // Allow ALL hours including 0 (specials)
+                if (isNaN(hour) || hour < 0 || hour > 4) continue;
+                
                 const lower = titleText.toLowerCase();
                 const isAlex = lower.includes('alex') && !lower.includes('warroom');
                 const isWarRoom = lower.includes('warroom');
-                if (!isAlex && !isWarRoom) continue;
+                const isSpecial = lower.includes('special') || lower.includes('saturday') || lower.includes('sundaylive');
+                
+                // Keep if it's Alex, WarRoom, OR a special
+                if (!isAlex && !isWarRoom && !isSpecial) continue;
+                
                 const displayDate = `${dateStr.slice(0,4)}-${dateStr.slice(4,6)}-${dateStr.slice(6,8)}`;
-                segments.push({ url, title: titleText, filename, dateStr, hour, isAlex, isWarRoom, displayDate });
+                segments.push({ 
+                    url, 
+                    title: titleText, 
+                    filename, 
+                    dateStr, 
+                    hour, 
+                    isAlex, 
+                    isWarRoom, 
+                    isSpecial,
+                    displayDate 
+                });
             }
             return segments;
         }
@@ -728,10 +495,15 @@
                 if (!archive[seg.dateStr]) archive[seg.dateStr] = [];
                 archive[seg.dateStr].push(seg);
             }
+            
             for (const date in archive) {
+                // Separate by type
+                const specials = archive[date].filter(s => s.isSpecial && !s.isAlex && !s.isWarRoom);
                 const alex = archive[date].filter(s => s.isAlex).sort((a,b) => a.hour - b.hour);
                 const war = archive[date].filter(s => s.isWarRoom).sort((a,b) => a.hour - b.hour);
-                archive[date] = [...alex, ...war];
+                
+                // Order: Specials first, then Alex hours, then WarRoom hours
+                archive[date] = [...specials, ...alex, ...war];
             }
             return archive;
         }
@@ -744,18 +516,46 @@
                 if (segments.length === 0) throw new Error('No segments found');
                 const archive = buildArchiveIndex(segments);
                 const dates = Object.keys(archive).sort().reverse();
+                
+                // Compare with cached version to show update toast
+                const cached = localStorage.getItem(CACHE_KEY);
+                let hasNewContent = false;
+                if (cached) {
+                    try {
+                        const cachedArchive = JSON.parse(cached);
+                        const cachedDates = Object.keys(cachedArchive);
+                        if (dates.length !== cachedDates.length || dates[0] !== cachedDates[0]) {
+                            hasNewContent = true;
+                        }
+                    } catch(e) {}
+                } else {
+                    hasNewContent = true;
+                }
+                
                 localStorage.setItem(CACHE_KEY, JSON.stringify(archive));
                 backgroundFetchComplete = true;
                 masterArchive = archive;
                 availableDates = dates;
                 feedStatusSpan.innerHTML = `✅ ${availableDates.length} dates loaded`;
                 updateCalendarDates();
+                
+                if (hasNewContent) {
+                    const toast = document.getElementById('update-toast');
+                    if (toast) {
+                        toast.style.display = 'flex';
+                        setTimeout(() => {
+                            if (toast) toast.style.display = 'none';
+                        }, 8000);
+                    }
+                }
+                
                 if (availableDates.length && !currentSegments.length) {
                     const newest = availableDates[0];
                     const disp = `${newest.slice(0,4)}-${newest.slice(4,6)}-${newest.slice(6,8)}`;
                     selectedDateDisplay.innerText = disp;
                     loadPlaylistForDate(newest);
                 }
+                
                 if (musicOverlay && musicOverlay.style.display === 'flex') {
                     const stopBtn = document.getElementById('stopMusicAndPlayBtn');
                     if (stopBtn && !stopBtn.classList.contains('system-ready-btn')) {
@@ -793,23 +593,34 @@
             for (let idx = 0; idx < currentSegments.length; idx++) {
                 const seg = currentSegments[idx];
                 const isActive = (idx === currentIndex);
-                const showName = seg.isAlex ? 'Alex Jones' : 'War Room';
+                
+                let showName = '';
+                let badgeColor = '';
+                if (seg.isSpecial) {
+                    showName = '⭐ Saturday Special';
+                    badgeColor = 'text-amber-400';
+                } else if (seg.isAlex) {
+                    showName = 'Alex Jones';
+                    badgeColor = 'text-blue-400';
+                } else if (seg.isWarRoom) {
+                    showName = 'War Room';
+                    badgeColor = 'text-purple-400';
+                }
+                
                 let separatorHtml = '';
                 if (idx > 0 && seg.isWarRoom && currentSegments[idx-1].isAlex) {
                     separatorHtml = '<div class="relative my-2"><div class="border-t border-slate-700"></div><div class="text-center text-[10px] text-slate-500 -mt-3">⚔️ WAR ROOM ⚔️</div></div>';
                 }
+                
                 const div = document.createElement('div');
                 div.className = `segment-item p-3 rounded-xl border-l-4 ${isActive ? 'segment-active border-blue-500 bg-slate-800/60' : 'border-transparent bg-slate-800/30 hover:bg-slate-800/70'}`;
                 div.setAttribute('data-index', idx);
-                div.innerHTML = `${separatorHtml}<div class="flex justify-between items-center gap-2"><div class="flex-1 min-w-0"><div class="flex items-center gap-2 flex-wrap"><span class="text-xs font-semibold ${seg.isAlex ? 'text-blue-400' : 'text-purple-400'}">${escapeHtml(showName)}</span><span class="text-xs font-mono text-slate-300">Hr${seg.hour}</span><span class="text-[10px] bg-slate-700 px-1.5 py-0.5 rounded-full">${seg.displayDate}</span></div><p class="text-sm font-medium text-white truncate mt-1">${escapeHtml(seg.title.substring(0, 55))}</p></div>${isActive ? '<span class="text-green-400 text-xs">▶</span>' : '<span class="text-slate-500 text-xs">●</span>'}</div>`;
-                div.addEventListener('click', (function(idx) { 
-                    return function() { 
-                        closeLiveIfOpen();    // CRITICAL: closes live if open before loading segment
-                        currentIndex = idx; 
-                        loadVideoByIndex(currentIndex); 
-                        renderPlaylistSidebar(); 
-                    }; 
-                })(idx));
+                
+                const hourDisplay = seg.isSpecial ? '🎯 SPECIAL' : `Hr${seg.hour}`;
+                const specialBadge = seg.isSpecial ? '<span class="special-badge">⭐</span>' : '';
+                
+                div.innerHTML = `${separatorHtml}<div class="flex justify-between items-center gap-2"><div class="flex-1 min-w-0"><div class="flex items-center gap-2 flex-wrap"><span class="text-xs font-semibold ${badgeColor}">${escapeHtml(showName)}</span><span class="text-xs font-mono text-slate-300">${hourDisplay}</span>${specialBadge}<span class="text-[10px] bg-slate-700 px-1.5 py-0.5 rounded-full">${seg.displayDate}</span></div><p class="text-sm font-medium text-white truncate mt-1">${escapeHtml(seg.title.substring(0, 55))}</p></div>${isActive ? '<span class="text-green-400 text-xs">▶</span>' : '<span class="text-slate-500 text-xs">●</span>'}</div>`;
+                div.addEventListener('click', (function(idx) { return function() { currentIndex = idx; loadVideoByIndex(currentIndex); renderPlaylistSidebar(); }; })(idx));
                 fragment.appendChild(div);
             }
             playlistContainer.replaceChildren(fragment);
@@ -845,25 +656,25 @@
         }
         
         function playNext() {
-            if (currentIndex + 1 < currentSegments.length && !isLiveOpen) {
+            if (currentIndex + 1 < currentSegments.length) {
                 currentIndex++;
                 loadVideoByIndex(currentIndex);
                 renderPlaylistSidebar();
-            } else if (isLiveOpen) announce("Please close Live stream before changing archive segments.");
+            }
         }
         function playPrev() {
-            if (currentIndex - 1 >= 0 && !isLiveOpen) {
+            if (currentIndex - 1 >= 0) {
                 currentIndex--;
                 loadVideoByIndex(currentIndex);
                 renderPlaylistSidebar();
-            } else if (isLiveOpen) announce("Live stream is active; close it to navigate archive.");
+            }
         }
         
         videoPlayer.addEventListener('timeupdate', () => {
             if (videoPlayer.duration) progressFill.style.width = `${(videoPlayer.currentTime / videoPlayer.duration) * 100}%`;
         });
-        videoPlayer.addEventListener('ended', () => { if (!isLiveOpen) playNext(); });
-        videoPlayer.addEventListener('error', () => { if (!isLiveOpen) setTimeout(() => playNext(), 1500); });
+        videoPlayer.addEventListener('ended', () => playNext());
+        videoPlayer.addEventListener('error', () => setTimeout(() => playNext(), 1500));
         
         function escapeHtml(str) { return str.replace(/[&<>]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[m])); }
         
@@ -874,9 +685,15 @@
         }
         
         async function init() {
+            const wasUpdated = checkForVersionUpdate();
+            if (wasUpdated) {
+                console.log('Version updated - fetching fresh data');
+                feedStatusSpan.innerHTML = '🔄 Version update - refreshing...';
+            }
+            
             initSiriusAudio();
             const cached = loadFromLocalStorage();
-            if (cached && Object.keys(cached.archive).length > 0) {
+            if (cached && Object.keys(cached.archive).length > 0 && !wasUpdated) {
                 masterArchive = cached.archive;
                 availableDates = cached.dates;
                 feedStatusSpan.innerHTML = `📅 ${availableDates.length} dates (cached)`;
@@ -897,7 +714,6 @@
                 dateFormat: "Y-m-d",
                 onChange: (dates) => {
                     if (dates.length) {
-                        closeLiveIfOpen();
                         const d = dates[0];
                         const ymd = `${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}`;
                         if (masterArchive[ymd]) {

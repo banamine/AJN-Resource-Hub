@@ -1,7 +1,7 @@
 {
-  "name": "AJN Complete Archive",
-  "short_name": "AJN Archive",
-  "description": "Complete AJN video archive - All shows, all days",
+  "name": "AJN Glass Archive Suite",
+  "short_name": "AJN Suite",
+  "description": "Live audio streams + video archive with glass morphism UI",
   "start_url": ".",
   "display": "standalone",
   "background_color": "#0a0f1c",

@@ -1,7 +1,12 @@
-const CACHE_NAME = 'ajn-archive-v3';
+const CACHE_NAME = 'ajn-glass-v1';
 const urlsToCache = [
   './',
   './index.html',
+  './css/styles.css',
+  './js/scraper.js',
+  './js/visualizer.js',
+  './js/player.js',
+  './js/app.js',
   './manifest.json'
 ];
 
@@ -15,9 +20,7 @@ self.addEventListener('install', event => {
 
 self.addEventListener('fetch', event => {
   const url = event.request.url;
-  
-  // Don't cache videos
-  if (url.includes('.m4v') || url.includes('.mp4')) {
+  if (url.includes('.m4v') || url.includes('.mp4') || url.includes('stream.alexjones.media')) {
     event.respondWith(fetch(event.request));
     return;
   }

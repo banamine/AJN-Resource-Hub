@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>AJN Archive Player · Sirius Edition · Multi-Proxy PWA</title>
-    <meta name="description" content="AJN Hourly Video Archive - Sirius interlude with robust proxy fallback">
+    <title>AJN Archive Player · Sirius Edition · Live Broadcast + Multi-Proxy PWA</title>
+    <meta name="description" content="AJN Hourly Video Archive - Sirius interlude with robust proxy fallback and integrated Live stream">
     <meta name="theme-color" content="#0a0f1c">
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon-192.png">
@@ -161,6 +161,92 @@
             color: #64748b;
             margin-top: 8px;
         }
+        
+        /* Live overlay fly-out styles */
+        .live-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.92);
+            backdrop-filter: blur(16px);
+            z-index: 10001;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s;
+        }
+        .live-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        .live-container {
+            background: #0f172a;
+            border-radius: 2rem;
+            width: 90%;
+            max-width: 1100px;
+            border: 1px solid #3b82f6;
+            box-shadow: 0 25px 40px -12px black;
+            overflow: hidden;
+            position: relative;
+        }
+        .live-header {
+            background: #0a0f1c;
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #334155;
+        }
+        .live-header h3 {
+            font-weight: bold;
+            color: #ef4444;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .live-close {
+            background: #334155;
+            border: none;
+            color: white;
+            border-radius: 40px;
+            padding: 6px 16px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .live-close:hover { background: #ef4444; }
+        .live-iframe-wrapper {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 */
+            height: 0;
+            background: #000;
+        }
+        .live-iframe-wrapper iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        .live-badge {
+            background: #ef4444;
+            border-radius: 30px;
+            padding: 4px 12px;
+            font-size: 12px;
+            font-weight: bold;
+            animation: pulse-red 1.2s infinite;
+        }
+        @keyframes pulse-red { 0% { opacity: 0.7; } 50% { opacity: 1; box-shadow: 0 0 6px red; } 100% { opacity: 0.7; } }
+        .live-button {
+            background: #1e293b;
+            border: 1px solid #ef4444;
+            transition: 0.2s;
+        }
+        .live-button:hover { background: #ef4444; border-color: white; transform: scale(1.02); }
     </style>
 </head>
 <body class="font-sans antialiased text-gray-200">
@@ -175,6 +261,20 @@
         <button id="refresh-cache-btn" class="bg-blue-600 px-4 py-1 rounded-full text-sm">Refresh</button>
     </div>
 
+    <!-- LIVE OVERLAY (fly-out) -->
+    <div id="liveOverlay" class="live-overlay">
+        <div class="live-container">
+            <div class="live-header">
+                <h3><span class="live-badge">● LIVE</span> AJN Broadcast</h3>
+                <button id="closeLiveBtn" class="live-close">✕ Close Stream</button>
+            </div>
+            <div class="live-iframe-wrapper">
+                <iframe id="liveFrame" src="" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+            </div>
+            <div class="p-3 text-center text-xs text-slate-400 bg-slate-900">Live broadcast — independent from archive player</div>
+        </div>
+    </div>
+
     <div class="max-w-7xl mx-auto px-4 py-5 md:py-7">
         <div class="flex flex-col md:flex-row justify-between items-center gap-4 border-b border-slate-800 pb-5 mb-6">
             <div>
@@ -182,6 +282,13 @@
                 <p class="text-sm text-slate-400">Select date → Alex Hr1→Hr4 → WarRoom Hr1→Hr4 · Auto-advance</p>
             </div>
             <div class="flex items-center gap-3">
+                <button id="openLiveBtn" class="bg-slate-800 border border-red-600 rounded-full px-5 py-2 text-sm flex items-center gap-2 hover:bg-red-700 transition live-button">
+                    <span class="relative flex h-3 w-3">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
+                    </span>
+                    LIVE
+                </button>
                 <button id="openCalendarBtn" class="bg-slate-800 border border-slate-700 rounded-full px-4 py-2 text-sm flex items-center gap-2 hover:bg-slate-700">
                     📅 <span id="selectedDateDisplay">Pick a date</span>
                 </button>
@@ -258,6 +365,13 @@
         let videoReadyToPlay = false;
         let backgroundFetchComplete = false;
         
+        // LIVE state management
+        let isLiveOpen = false;
+        const liveOverlay = document.getElementById('liveOverlay');
+        const liveFrame = document.getElementById('liveFrame');
+        const openLiveBtn = document.getElementById('openLiveBtn');
+        const closeLiveBtn = document.getElementById('closeLiveBtn');
+        
         const musicOverlay = document.getElementById('musicOverlay');
         const overlayStatusMsg = document.getElementById('overlayStatusMsg');
         const stopMusicAndPlayBtn = document.getElementById('stopMusicAndPlayBtn');
@@ -274,6 +388,50 @@
         ariaAnnouncer.style.cssText = 'position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0';
         document.body.appendChild(ariaAnnouncer);
         function announce(msg) { ariaAnnouncer.textContent = msg; console.log('[ARIA]', msg); }
+        
+        // ---------- CORE TOGGLE LIVE with conflict resolution ----------
+        function toggleLive(show) {
+            if (show && !isLiveOpen) {
+                // CLOSE any playing archive media BEFORE opening live
+                if (videoPlayer && !videoPlayer.paused) {
+                    videoPlayer.pause();
+                    announce("Archive video paused because Live stream opened.");
+                }
+                if (audioElement && !audioElement.paused) {
+                    audioElement.pause();
+                    announce("Background music paused because Live stream opened.");
+                }
+                // Set embed URL (robust stream source - replace with actual live URL if needed)
+                // Using a stable public live stream example, but you can replace with AJN official embed.
+                // For safety, using a placeholder that won't cause CORS issues; user can override.
+                liveFrame.src = "https://www.youtube.com/embed/live_stream?channel=UCc3-b7FzDXpBtDq9J1RNOYg&autoplay=1"; // replaceable
+                liveOverlay.classList.add('active');
+                isLiveOpen = true;
+                announce("Live broadcast started. Archive playback paused.");
+            } else if (!show && isLiveOpen) {
+                // Clear src to stop background streaming & kill zombie audio
+                liveFrame.src = "";
+                liveOverlay.classList.remove('active');
+                isLiveOpen = false;
+                announce("Live stream closed. You may resume archive playback.");
+            }
+        }
+        
+        // Event listeners for Live buttons
+        openLiveBtn?.addEventListener('click', () => {
+            toggleLive(true);
+        });
+        closeLiveBtn?.addEventListener('click', () => {
+            toggleLive(false);
+        });
+        
+        // Ensure that any manual click on playlist segment closes Live and loads segment
+        function closeLiveIfOpen() {
+            if (isLiveOpen) {
+                toggleLive(false);
+                announce("Live stream closed automatically to play selected archive segment.");
+            }
+        }
         
         function initSiriusAudio() {
             if (audioElement) return;
@@ -322,6 +480,11 @@
         }
         
         function stopMusicAndPlayVideo() {
+            // CRITICAL: If Live is open, do NOT resume archive playback (avoid conflict)
+            if (isLiveOpen) {
+                announce("Live stream is active. Please close Live before playing archive.");
+                return;
+            }
             if (audioElement) {
                 audioElement.pause();
                 audioElement.currentTime = 0;
@@ -524,7 +687,14 @@
                 div.className = `segment-item p-3 rounded-xl border-l-4 ${isActive ? 'segment-active border-blue-500 bg-slate-800/60' : 'border-transparent bg-slate-800/30 hover:bg-slate-800/70'}`;
                 div.setAttribute('data-index', idx);
                 div.innerHTML = `${separatorHtml}<div class="flex justify-between items-center gap-2"><div class="flex-1 min-w-0"><div class="flex items-center gap-2 flex-wrap"><span class="text-xs font-semibold ${seg.isAlex ? 'text-blue-400' : 'text-purple-400'}">${escapeHtml(showName)}</span><span class="text-xs font-mono text-slate-300">Hr${seg.hour}</span><span class="text-[10px] bg-slate-700 px-1.5 py-0.5 rounded-full">${seg.displayDate}</span></div><p class="text-sm font-medium text-white truncate mt-1">${escapeHtml(seg.title.substring(0, 55))}</p></div>${isActive ? '<span class="text-green-400 text-xs">▶</span>' : '<span class="text-slate-500 text-xs">●</span>'}</div>`;
-                div.addEventListener('click', (function(idx) { return function() { currentIndex = idx; loadVideoByIndex(currentIndex); renderPlaylistSidebar(); }; })(idx));
+                div.addEventListener('click', (function(idx) { 
+                    return function() { 
+                        closeLiveIfOpen();    // CRITICAL: closes live if open before loading segment
+                        currentIndex = idx; 
+                        loadVideoByIndex(currentIndex); 
+                        renderPlaylistSidebar(); 
+                    }; 
+                })(idx));
                 fragment.appendChild(div);
             }
             playlistContainer.replaceChildren(fragment);
@@ -560,25 +730,25 @@
         }
         
         function playNext() {
-            if (currentIndex + 1 < currentSegments.length) {
+            if (currentIndex + 1 < currentSegments.length && !isLiveOpen) {
                 currentIndex++;
                 loadVideoByIndex(currentIndex);
                 renderPlaylistSidebar();
-            }
+            } else if (isLiveOpen) announce("Please close Live stream before changing archive segments.");
         }
         function playPrev() {
-            if (currentIndex - 1 >= 0) {
+            if (currentIndex - 1 >= 0 && !isLiveOpen) {
                 currentIndex--;
                 loadVideoByIndex(currentIndex);
                 renderPlaylistSidebar();
-            }
+            } else if (isLiveOpen) announce("Live stream is active; close it to navigate archive.");
         }
         
         videoPlayer.addEventListener('timeupdate', () => {
             if (videoPlayer.duration) progressFill.style.width = `${(videoPlayer.currentTime / videoPlayer.duration) * 100}%`;
         });
-        videoPlayer.addEventListener('ended', () => playNext());
-        videoPlayer.addEventListener('error', () => setTimeout(() => playNext(), 1500));
+        videoPlayer.addEventListener('ended', () => { if (!isLiveOpen) playNext(); });
+        videoPlayer.addEventListener('error', () => { if (!isLiveOpen) setTimeout(() => playNext(), 1500); });
         
         function escapeHtml(str) { return str.replace(/[&<>]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[m])); }
         
@@ -612,6 +782,7 @@
                 dateFormat: "Y-m-d",
                 onChange: (dates) => {
                     if (dates.length) {
+                        closeLiveIfOpen();
                         const d = dates[0];
                         const ymd = `${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}`;
                         if (masterArchive[ymd]) {

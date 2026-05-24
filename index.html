@@ -2,495 +2,222 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=yes">
-    <title>AJN Live </title>
-    <meta name="description" content="AJN live audio streams: Alex Jones, War Room, Network Feed. Fly-out player with 120-line spectrum visualizer per source.">
-    <meta name="theme-color" content="#050a12">
-    <link rel="shortcut icon" href="https://rss.alexjones.media/favicon.png">
-    <!-- Tailwind + Font Awesome + Wavesurfer (lightweight) -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>AJN Archive · Glass Suite | Live Streams + Video Vault</title>
+    <meta name="description" content="AJN complete media suite: live audio streams, video archive, spectrum visualizers, glassmorphic UI">
+    <meta name="theme-color" content="#0a0f1c">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,100;14..32,400;14..32,600;14..32,800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <script src="https://unpkg.com/wavesurfer.js@7.4.0/dist/wavesurfer.min.js"></script>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            background: radial-gradient(circle at 10% 20%, #0a0f1c, #03060c);
-            font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
-        }
-        /* glassmorphic flyout panel */
-        .flyout-panel {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: rgba(8, 14, 26, 0.96);
-            backdrop-filter: blur(20px);
-            border-top: 1px solid rgba(59,130,246,0.5);
-            box-shadow: 0 -10px 40px rgba(0,0,0,0.6);
-            z-index: 1000;
-            transition: transform 0.4s cubic-bezier(0.2,0.9,0.4,1.1);
-            transform: translateY(100%);
-            border-radius: 24px 24px 0 0;
-        }
-        .flyout-panel.open {
-            transform: translateY(0);
-        }
-        .visualizer-container {
-            background: #00000022;
-            border-radius: 20px;
-            padding: 12px 8px;
-            backdrop-filter: blur(4px);
-        }
-        canvas.spectrum-canvas {
-            width: 100%;
-            height: 120px;
-            display: block;
-            border-radius: 14px;
-            background: #03060c;
-            box-shadow: inset 0 0 10px #00000033, 0 2px 6px #3b82f620;
-        }
-        .stream-btn {
-            transition: all 0.2s ease;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        }
-        .stream-btn.active-stream {
-            background: linear-gradient(135deg, #1e40af, #3b82f6);
-            border-color: #60a5fa;
-            box-shadow: 0 0 12px #3b82f6;
-            scale: 1.02;
-        }
-        .flyout-handle {
-            width: 48px;
-            height: 5px;
-            background: #3b82f6;
-            border-radius: 20px;
-            margin: 12px auto 8px;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-        .info-badge {
-            background: #0f172ad9;
-            border-left: 3px solid #3b82f6;
-        }
-        @keyframes pulse-glow {
-            0% { text-shadow: 0 0 0px #3b82f6; }
-            100% { text-shadow: 0 0 6px #3b82f6; }
-        }
-        .live-indicator {
-            animation: pulse-glow 1.2s infinite alternate;
-        }
-        .volume-slider {
-            accent-color: #3b82f6;
-        }
-        ::-webkit-scrollbar { width: 5px; }
-        ::-webkit-scrollbar-track { background: #0f172a; border-radius: 10px; }
-        ::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 10px; }
-        .phone-number {
-            font-family: 'JetBrains Mono', monospace;
-            letter-spacing: 1px;
-        }
-        .grid-bg {
-            background-image: radial-gradient(#1e293b 0.6px, transparent 0.6px);
-            background-size: 20px 20px;
-        }
-    </style>
+    <!-- Flatpickr for date picking -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <!-- Main Styles -->
+    <link rel="stylesheet" href="css/styles.css">
 </head>
-<body class="text-gray-200 font-sans antialiased">
+<body>
+    <!-- Animated Background -->
+    <div class="orb-bg"></div>
+    <div class="grid-overlay"></div>
 
-    <!-- MAIN UI: LIVE STREAM BUTTONS ROW (top) -->
-    <div class="max-w-6xl mx-auto px-5 pt-6 pb-4">
-        <div class="flex flex-wrap justify-between items-center gap-4 border-b border-blue-900/50 pb-4 mb-5">
-            <div>
-                <h1 class="text-3xl font-black bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent flex items-center gap-2">
-                    <i class="fas fa-broadcast-tower text-blue-400"></i> AJN LIVE AUDIO MATRIX
-                </h1>
-                <p class="text-slate-400 text-xs mt-1">Alex Jones · War Room · Network Feed · Fly-out player with 120‑line realtime visualizer</p>
+    <!-- Glass Navigation -->
+    <nav class="glass-nav">
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fas fa-broadcast-tower"></i>
+                <span>AJN<span class="gradient-text">Archive</span></span>
             </div>
-            <div class="bg-black/40 rounded-full px-3 py-1.5 text-xs border border-slate-700">
-                <i class="fas fa-headphones text-emerald-400 mr-1"></i> <span id="active-stream-label">No active stream</span>
+            <div class="nav-links">
+                <button class="nav-btn active" data-tab="live">
+                    <i class="fas fa-headphones"></i> Live Audio
+                </button>
+                <button class="nav-btn" data-tab="vault">
+                    <i class="fas fa-video"></i> Video Vault
+                </button>
+                <button class="nav-btn" data-tab="info">
+                    <i class="fas fa-info-circle"></i> Info
+                </button>
+            </div>
+            <div class="status-pill">
+                <i class="fas fa-circle" id="statusIndicator"></i>
+                <span id="statusText">System Ready</span>
             </div>
         </div>
+    </nav>
 
-        <!-- STREAM BUTTONS (top row, live audio links from the source) -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 mb-8">
-            <!-- ALEX JONES SHOW (AAC) primary -->
-            <button data-stream-url="https://stream.alexjones.media/alexjonesshow" data-stream-name="Alex Jones Show (AAC)" data-stream-type="aac" class="stream-btn bg-slate-800/70 border border-slate-700 hover:border-blue-500 rounded-2xl p-3 text-left transition flex items-center gap-3">
-                <i class="fas fa-microphone-alt text-2xl text-blue-400"></i>
-                <div><div class="font-bold">Alex Jones Show</div><div class="text-[11px] text-slate-400">AAC · 64kbps</div></div>
-            </button>
-            <!-- MP3 variant -->
-            <button data-stream-url="https://stream.alexjones.media/alexjonesshow.mp3" data-stream-name="Alex Jones Show (MP3)" data-stream-type="mp3" class="stream-btn bg-slate-800/70 border border-slate-700 hover:border-blue-500 rounded-2xl p-3 text-left flex items-center gap-3">
-                <i class="fas fa-music text-2xl text-sky-400"></i>
-                <div><div class="font-bold">Alex Jones MP3</div><div class="text-[11px] text-slate-400">MP3 · 128kbps</div></div>
-            </button>
-            <!-- OPUS high quality -->
-            <button data-stream-url="https://audio.alexjoneslive.com:8443/alexjonesshow.opus" data-stream-name="Alex Jones Show (OPUS)" data-stream-type="opus" class="stream-btn bg-slate-800/70 border border-slate-700 hover:border-blue-500 rounded-2xl p-3 text-left flex items-center gap-3">
-                <i class="fas fa-waveform text-2xl text-indigo-400"></i>
-                <div><div class="font-bold">Alex Jones OPUS</div><div class="text-[11px] text-slate-400">Opus · HQ</div></div>
-            </button>
-            <!-- Alternate AAC -->
-            <button data-stream-url="https://audio.alexjoneslive.com:8443/alexjonesshow.aac" data-stream-name="Alex Jones Show (alt AAC)" data-stream-type="aac" class="stream-btn bg-slate-800/70 border border-slate-700 hover:border-blue-500 rounded-2xl p-3 text-left flex items-center gap-3">
-                <i class="fas fa-head-side-headphones text-2xl text-cyan-400"></i>
-                <div><div class="font-bold">Alex Jones alt AAC</div><div class="text-[11px] text-slate-400">Alternate stream</div></div>
-            </button>
-            <!-- War Room -->
-            <button data-stream-url="https://stream.alexjones.media/warroom/" data-stream-name="War Room with Harrison Smith" data-stream-type="aac" class="stream-btn bg-slate-800/70 border border-slate-700 hover:border-purple-500 rounded-2xl p-3 text-left flex items-center gap-3">
-                <i class="fas fa-shield-alt text-2xl text-purple-400"></i>
-                <div><div class="font-bold">War Room</div><div class="text-[11px] text-slate-400">Harrison Smith · Live</div></div>
-            </button>
-            <!-- Network Feed (All Shows) -->
-            <button data-stream-url="https://stream.alexjones.media/stream/7/" data-stream-name="Network Feed (All Shows)" data-stream-type="aac" class="stream-btn bg-slate-800/70 border border-slate-700 hover:border-emerald-500 rounded-2xl p-3 text-left flex items-center gap-3">
-                <i class="fas fa-satellite-dish text-2xl text-emerald-400"></i>
-                <div><div class="font-bold">Network Feed</div><div class="text-[11px] text-slate-400">All live shows relay</div></div>
-            </button>
-            <!-- Bonus: Network MP3 fallback -->
-            <button data-stream-url="https://stream.alexjones.media/stream/8/" data-stream-name="Network Feed MP3" data-stream-type="mp3" class="stream-btn bg-slate-800/70 border border-slate-700 hover:border-emerald-500 rounded-2xl p-3 text-left flex items-center gap-3">
-                <i class="fas fa-rss text-2xl text-emerald-400"></i>
-                <div><div class="font-bold">Network Feed MP3</div><div class="text-[11px] text-slate-400">MP3 backup</div></div>
-            </button>
-            <!-- War Room alternate (AAC from index) -->
-            <button data-stream-url="https://stream.alexjones.media/stream/4/" data-stream-name="War Room (AAC Stream)" data-stream-type="aac" class="stream-btn bg-slate-800/70 border border-slate-700 hover:border-purple-500 rounded-2xl p-3 text-left flex items-center gap-3">
-                <i class="fas fa-radio text-2xl text-purple-300"></i>
-                <div><div class="font-bold">War Room AAC</div><div class="text-[11px] text-slate-400">Direct stream</div></div>
-            </button>
-        </div>
+    <!-- Main Container -->
+    <main class="main-container">
+        <!-- TAB 1: LIVE AUDIO STREAMS -->
+        <div id="liveTab" class="tab-content active">
+            <div class="section-header">
+                <h1><i class="fas fa-microphone-alt"></i> Live Audio Matrix</h1>
+                <p>Real-time streams · 120‑band spectral visualizer · Glass flyout player</p>
+            </div>
+            
+            <!-- Stream Grid -->
+            <div class="stream-grid" id="streamGrid">
+                <!-- Buttons populated by JS -->
+            </div>
 
-        <!-- additional info row: phone numbers & affiliate clock context -->
-        <div class="grid md:grid-cols-2 gap-4 mt-2 mb-4">
-            <div class="bg-slate-900/60 rounded-xl border border-slate-800 p-3 info-badge">
-                <div class="flex items-center gap-2 text-amber-300 text-sm font-semibold"><i class="fas fa-phone-alt"></i> Listen-by-Phone (long distance rates apply)</div>
-                <div class="grid grid-cols-2 gap-2 text-xs mt-2">
-                    <div><span class="text-slate-400">Alex Jones:</span> <span class="phone-number text-blue-300">+1(605)475-5800</span></div>
-                    <div><span class="text-slate-400">War Room:</span> <span class="phone-number text-purple-300">+1(605)475-3291</span></div>
-                    <div><span class="text-slate-400">Network Feed:</span> <span class="phone-number text-emerald-300">+1(605)475-3292</span></div>
-                    <div><span class="text-slate-400">American Journal:</span> <span class="text-slate-500">+1(605)475-3290 (on break)</span></div>
-                </div>
-            </div>
-            <div class="bg-slate-900/60 rounded-xl border border-slate-800 p-3 info-badge">
-                <div class="flex items-center gap-2 text-cyan-300 text-sm"><i class="far fa-clock"></i> Programming Clock (Affiliate Format)</div>
-                <div class="text-[11px] text-slate-300 mt-1 leading-relaxed">
-                    Talk segments: 5min / 23min / 24:50min • Breaks: @05, @29, @57:50 after top of hour.<br>
-                    <span class="text-slate-400">Network break possible inside talk segment 2 & 3.</span> 
-                    <a href="https://rss.alexjones.media/Programming-Clock.png" target="_blank" class="text-blue-400 underline">📸 View full clock graphic</a>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- FLYOUT AUDIO PLAYER with 120-line visualizer -->
-    <div id="flyoutPlayer" class="flyout-panel">
-        <div class="flyout-handle" id="flyoutHandle"></div>
-        <div class="px-5 pb-6 pt-1">
-            <div class="flex flex-wrap items-start justify-between gap-3 mb-3">
-                <div>
-                    <h3 class="text-xl font-bold flex items-center gap-2"><i class="fas fa-compact-disc text-blue-400"></i> <span id="flyoutTitle">No stream selected</span></h3>
-                    <p id="flyoutMeta" class="text-xs text-slate-400">Click any live button above → immersive player + visualizer</p>
-                </div>
-                <div class="flex gap-3 items-center">
-                    <button id="closeFlyoutBtn" class="bg-slate-700 hover:bg-slate-600 rounded-full px-4 py-1.5 text-sm"><i class="fas fa-chevron-down"></i> Close</button>
-                    <button id="stopStreamBtn" class="bg-red-800/80 hover:bg-red-700 rounded-full px-4 py-1.5 text-sm"><i class="fas fa-stop"></i> Stop</button>
-                </div>
-            </div>
-            <!-- canvas 120-line spectrum -->
-            <div class="visualizer-container mt-1">
-                <canvas id="spectrumCanvas" class="spectrum-canvas" width="1200" height="120" style="width:100%; height:120px"></canvas>
-                <div class="flex justify-between items-center mt-2 text-[11px] text-slate-400">
-                    <div class="flex gap-3">
-                        <span><i class="fas fa-waveform"></i> 120-band realtime FFT</span>
-                        <span id="bitrateInfo" class="text-emerald-300">—</span>
+            <!-- Phone Numbers & Clock -->
+            <div class="info-grid">
+                <div class="glass-card">
+                    <div class="card-header"><i class="fas fa-phone-alt"></i> Listen by Phone</div>
+                    <div class="phone-numbers">
+                        <div><span>Alex Jones:</span> <strong>+1(605)475-5800</strong></div>
+                        <div><span>War Room:</span> <strong>+1(605)475-3291</strong></div>
+                        <div><span>Network Feed:</span> <strong>+1(605)475-3292</strong></div>
+                        <div><span>American Journal:</span> <span class="muted">+1(605)475-3290 (on break)</span></div>
                     </div>
-                    <div class="flex gap-3">
+                </div>
+                <div class="glass-card">
+                    <div class="card-header"><i class="far fa-clock"></i> Programming Clock</div>
+                    <div class="clock-info">
+                        <div class="clock-diagram">
+                            <span class="talk-seg">Talk 1: 5min</span>
+                            <span class="talk-seg">Talk 2: 23min</span>
+                            <span class="talk-seg">Talk 3: 24:50min</span>
+                        </div>
+                        <div class="break-info">Breaks: @05 | @29 | @57:50</div>
+                        <a href="https://rss.alexjones.media/Programming-Clock.png" target="_blank" class="link-glow">
+                            <i class="fas fa-chart-simple"></i> View full graphic
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 2: VIDEO VAULT (Archive) -->
+        <div id="vaultTab" class="tab-content">
+            <div class="section-header">
+                <h1><i class="fas fa-video"></i> Video Archive Vault</h1>
+                <p>Hourly segments · Full episodes · Saturday specials</p>
+            </div>
+            
+            <div class="vault-layout">
+                <!-- Left: Calendar & Controls -->
+                <div class="vault-sidebar glass-card">
+                    <div class="date-picker-wrapper">
+                        <label><i class="fas fa-calendar-day"></i> Select Date</label>
+                        <input type="text" id="datePicker" placeholder="Choose date">
+                    </div>
+                    <div class="archive-stats">
+                        <div class="stat-item">
+                            <span class="stat-value" id="totalDates">0</span>
+                            <span class="stat-label">Available Dates</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value" id="totalVideos">0</span>
+                            <span class="stat-label">Total Videos</span>
+                        </div>
+                    </div>
+                    <button id="refreshArchiveBtn" class="glass-btn full">
+                        <i class="fas fa-sync-alt"></i> Refresh Archive
+                    </button>
+                    <div class="proxy-status" id="proxyStatus">
+                        <i class="fas fa-globe"></i> <span>Checking archive...</span>
+                    </div>
+                </div>
+
+                <!-- Right: Video Player -->
+                <div class="vault-player glass-card">
+                    <div class="video-wrapper">
+                        <video id="archiveVideo" controls poster="https://placehold.co/1280x720/1e293b/3b82f6?text=AJN+Vault"></video>
+                        <div id="videoOverlay" class="video-overlay hidden">
+                            <div class="loading-spinner"></div>
+                            <p>Loading segment...</p>
+                        </div>
+                    </div>
+                    <div class="video-info">
+                        <h3 id="videoTitle">Select a date to begin</h3>
+                        <div class="video-controls">
+                            <button id="prevVideoBtn" class="icon-btn"><i class="fas fa-backward"></i> Prev</button>
+                            <span id="videoCounter">0 / 0</span>
+                            <button id="nextVideoBtn" class="icon-btn">Next <i class="fas fa-forward"></i></button>
+                        </div>
+                        <div class="progress-container">
+                            <div class="progress-bar" id="videoProgress"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Playlist Sidebar (collapsible) -->
+            <div class="playlist-section glass-card">
+                <div class="playlist-header" id="playlistHeader">
+                    <h4><i class="fas fa-list-ul"></i> Playlist</h4>
+                    <span id="playlistCount">0 items</span>
+                    <button id="togglePlaylist" class="icon-btn-sm"><i class="fas fa-chevron-down"></i></button>
+                </div>
+                <div id="playlistContainer" class="playlist-container">
+                    <div class="empty-playlist">Select a date to load segments</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 3: INFO -->
+        <div id="infoTab" class="tab-content">
+            <div class="info-center glass-card">
+                <h2><i class="fas fa-info-circle"></i> About AJN Archive Suite</h2>
+                <div class="info-content">
+                    <p><strong>Video Archive:</strong> Automatically scrapes <code>https://rss.alexjones.media/AJNHourlyVideo.html</code> for all available .m4v segments. Supports Alex Jones (Hr1-Hr4), War Room (Hr1-Hr3), and Saturday Specials.</p>
+                    <p><strong>Live Audio:</strong> Direct streams from AJN infrastructure: AAC, MP3, OPUS formats. Click any button to open the glass flyout player with real-time spectrum visualizer.</p>
+                    <p><strong>Visualizer:</strong> 120‑line FFT analysis using Web Audio API. Real-time frequency response with gradient coloring.</p>
+                    <p><strong>Tech Stack:</strong> Vanilla JS, Web Audio API, Flatpickr, Tailwind-inspired custom CSS with glass morphism, Service Worker for offline caching.</p>
+                    <hr>
+                    <div class="credits">
+                        <i class="fas fa-music"></i> "Sirius" - The Alan Parsons Project · Loading theme<br>
+                        <i class="fas fa-shield-alt"></i> Streams provided by AJN. All rights to respective owners.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- FLYOUT AUDIO PLAYER (Glass + 120-line visualizer) -->
+    <div id="flyoutPlayer" class="flyout-glass">
+        <div class="flyout-handle" id="flyoutHandle">
+            <div class="handle-bar"></div>
+        </div>
+        <div class="flyout-content">
+            <div class="flyout-header">
+                <div>
+                    <h3 id="flyoutTitle"><i class="fas fa-compact-disc"></i> No Stream Active</h3>
+                    <p id="flyoutMeta">Select a live stream above</p>
+                </div>
+                <div class="flyout-actions">
+                    <button id="closeFlyoutBtn" class="glass-icon"><i class="fas fa-times"></i></button>
+                </div>
+            </div>
+            <div class="visualizer-stage">
+                <canvas id="spectrumCanvas" class="spectrum-canvas" width="1200" height="120"></canvas>
+                <div class="viz-controls">
+                    <div class="viz-style-buttons">
+                        <button class="viz-style active" data-viz="bars"><i class="fas fa-chart-bar"></i> Bars</button>
+                        <button class="viz-style" data-viz="lines"><i class="fas fa-chart-line"></i> Lines</button>
+                        <button class="viz-style" data-viz="circle"><i class="fas fa-chart-pie"></i> Circle</button>
+                    </div>
+                    <div class="volume-control">
                         <i class="fas fa-volume-down"></i>
-                        <input type="range" id="volumeControl" min="0" max="1" step="0.01" value="0.75" class="volume-slider w-28">
+                        <input type="range" id="flyoutVolume" min="0" max="1" step="0.01" value="0.75">
                         <i class="fas fa-volume-up"></i>
                     </div>
                 </div>
             </div>
-            <div class="flex justify-between mt-3 text-xs text-slate-400">
-                <div><i class="far fa-circle-play text-green-400"></i> Live stream · <span id="liveTimestamp">Waiting for connection</span></div>
-                <div><span id="connectionStatus" class="bg-slate-800 px-2 py-0.5 rounded-full">⚪ idle</span></div>
+            <div class="flyout-footer">
+                <span id="streamStatus"><i class="fas fa-circle text-green-400"></i> Live</span>
+                <span id="streamBitrate">—</span>
+                <button id="stopStreamBtn" class="glass-btn danger"><i class="fas fa-stop"></i> Stop Stream</button>
             </div>
         </div>
     </div>
 
-    <script>
-        // ---- GLOBALS ----
-        let currentAudio = null;
-        let currentAnalyser = null;
-        let animationId = null;
-        let canvasCtx = null;
-        let canvasWidth = 1200;   // we'll set dynamic width from parent container
-        let canvasHeight = 120;
-        let activeButton = null;
-        
-        const flyout = document.getElementById('flyoutPlayer');
-        const flyoutTitleSpan = document.getElementById('flyoutTitle');
-        const flyoutMetaSpan = document.getElementById('flyoutMeta');
-        const spectrumCanvas = document.getElementById('spectrumCanvas');
-        const volumeSlider = document.getElementById('volumeControl');
-        const stopBtn = document.getElementById('stopStreamBtn');
-        const closeFlyout = document.getElementById('closeFlyoutBtn');
-        const connectionStatusSpan = document.getElementById('connectionStatus');
-        const liveTimestampSpan = document.getElementById('liveTimestamp');
-        const bitrateInfoSpan = document.getElementById('bitrateInfo');
-        const activeStreamLabel = document.getElementById('active-stream-label');
-        
-        // init canvas context
-        function initCanvas() {
-            const container = spectrumCanvas.parentElement;
-            const rect = container.getBoundingClientRect();
-            canvasWidth = Math.max(rect.width * window.devicePixelRatio, 800);
-            spectrumCanvas.width = canvasWidth;
-            spectrumCanvas.height = canvasHeight;
-            canvasCtx = spectrumCanvas.getContext('2d');
-        }
-        
-        // Draw 120 bars (exactly 120 lines)
-        function drawSpectrum(dataArray) {
-            if (!canvasCtx) return;
-            canvasCtx.clearRect(0, 0, canvasWidth, canvasHeight);
-            const barWidth = canvasWidth / 120;   // 120 lines
-            let x = 0;
-            // we expect dataArray of length >= 120 (frequencyBinCount)
-            const len = Math.min(dataArray.length, 120);
-            for (let i = 0; i < len; i++) {
-                let value = dataArray[i] / 255;  // 0-1 range typically
-                const barHeight = Math.max(2, value * canvasHeight);
-                // color gradient: cyan->blue->purple
-                const hue = 200 + (value * 80);  // 200 to 280
-                canvasCtx.fillStyle = `hsl(${hue}, 80%, 55%)`;
-                canvasCtx.fillRect(x, canvasHeight - barHeight, barWidth - 0.5, barHeight);
-                x += barWidth;
-            }
-            // if less than 120, fill remaining with silence bars
-            if (len < 120) {
-                for (let i = len; i < 120; i++) {
-                    canvasCtx.fillStyle = `rgba(30, 50, 80, 0.3)`;
-                    canvasCtx.fillRect(x, canvasHeight - 2, barWidth - 0.5, 2);
-                    x += barWidth;
-                }
-            }
-        }
-        
-        function stopVisualizerAndAudio(resetUI = true) {
-            if (animationId) {
-                cancelAnimationFrame(animationId);
-                animationId = null;
-            }
-            if (currentAudio) {
-                try {
-                    currentAudio.pause();
-                    currentAudio.src = '';
-                    currentAudio.disconnect?.();
-                } catch(e) {}
-                currentAudio = null;
-            }
-            if (currentAnalyser && currentAnalyser.disconnect) {
-                try { currentAnalyser.disconnect(); } catch(e) {}
-                currentAnalyser = null;
-            }
-            if (resetUI) {
-                if (canvasCtx) canvasCtx.clearRect(0, 0, canvasWidth, canvasHeight);
-                connectionStatusSpan.innerHTML = '⚪ idle';
-                liveTimestampSpan.innerHTML = 'Stopped';
-                activeStreamLabel.innerHTML = 'No active stream';
-                bitrateInfoSpan.innerHTML = '—';
-                if (activeButton) {
-                    activeButton.classList.remove('active-stream', 'border-blue-400');
-                    activeButton = null;
-                }
-            }
-        }
-        
-        // start audio stream + Web Audio API analyser
-        async function startStream(url, streamName, typeHint = 'aac') {
-            stopVisualizerAndAudio(true);
-            initCanvas();
-            
-            // create Audio element
-            const audio = new Audio();
-            audio.crossOrigin = "anonymous";   // required for CORS if stream supports
-            audio.src = url;
-            audio.preload = "auto";
-            audio.volume = volumeSlider.value;
-            
-            // try to get metadata for bitrate guess
-            const streamLabelShort = streamName.length > 35 ? streamName.slice(0,32)+'…' : streamName;
-            flyoutTitleSpan.innerHTML = `<i class="fas fa-bolt text-yellow-400 mr-1"></i> ${streamLabelShort}`;
-            flyoutMetaSpan.innerHTML = `🎧 Live stream · ${typeHint.toUpperCase()} · <span class="text-blue-300">Click stop or choose another stream</span>`;
-            activeStreamLabel.innerHTML = streamName;
-            connectionStatusSpan.innerHTML = '🟡 buffering...';
-            liveTimestampSpan.innerHTML = 'Connecting ...';
-            
-            // add to DOM and play
-            try {
-                await audio.play();
-                connectionStatusSpan.innerHTML = '🟢 LIVE';
-                liveTimestampSpan.innerHTML = new Date().toLocaleTimeString() + ' (live)';
-                // simple bitrate display hint
-                if (url.includes('opus')) bitrateInfoSpan.innerHTML = 'Opus ~96kbps';
-                else if (url.includes('mp3')) bitrateInfoSpan.innerHTML = 'MP3 ~128kbps';
-                else bitrateInfoSpan.innerHTML = 'AAC ~64-128kbps';
-                
-                // setup Web Audio analyser
-                const AudioContext = window.AudioContext || window.webkitAudioContext;
-                const audioCtx = new AudioContext();
-                const source = audioCtx.createMediaElementSource(audio);
-                const analyser = audioCtx.createAnalyser();
-                analyser.fftSize = 512;   // gives 256 bins, we'll use 120 bins.
-                const bufferLength = analyser.frequencyBinCount; // ~256
-                const dataArray = new Uint8Array(bufferLength);
-                
-                source.connect(analyser);
-                analyser.connect(audioCtx.destination);
-                // resume if suspended
-                if (audioCtx.state === 'suspended') {
-                    await audioCtx.resume();
-                }
-                
-                currentAudio = audio;
-                currentAnalyser = analyser;
-                // store audioContext for safety but not needed globally
-                const drawLoop = () => {
-                    if (!currentAnalyser || !currentAudio || currentAudio.paused) {
-                        if (animationId) cancelAnimationFrame(animationId);
-                        return;
-                    }
-                    if (currentAnalyser) {
-                        currentAnalyser.getByteFrequencyData(dataArray);
-                        // we need to map the bins to 120 lines: average or downsample
-                        const downsampled = new Uint8Array(120);
-                        const step = bufferLength / 120;
-                        for (let i = 0; i < 120; i++) {
-                            const index = Math.floor(i * step);
-                            if (index < bufferLength) downsampled[i] = dataArray[index];
-                            else downsampled[i] = 0;
-                        }
-                        drawSpectrum(downsampled);
-                    } else {
-                        // fallback clear
-                        if (canvasCtx) canvasCtx.clearRect(0,0,canvasWidth,canvasHeight);
-                    }
-                    animationId = requestAnimationFrame(drawLoop);
-                };
-                if (animationId) cancelAnimationFrame(animationId);
-                drawLoop();
-                
-                // handle audio errors
-                audio.onerror = (e) => {
-                    console.warn("Stream error", e);
-                    connectionStatusSpan.innerHTML = '🔴 stream error';
-                    liveTimestampSpan.innerHTML = 'Check source or CORS';
-                    stopVisualizerAndAudio(true);
-                };
-                audio.onended = () => {
-                    if (currentAudio === audio && !audio.paused) {
-                        // if ended accidentally, maybe live stream reconnect not needed, but just mark
-                        connectionStatusSpan.innerHTML = '⚠️ stream ended';
-                    }
-                };
-                
-            } catch (err) {
-                console.error('Playback failed:', err);
-                connectionStatusSpan.innerHTML = '❌ play error (CORS / network)';
-                liveTimestampSpan.innerHTML = 'Retry or select another stream';
-                flyoutMetaSpan.innerHTML = '⚠️ Unable to play. Stream may require CORS proxy or different format. Try MP3 fallback.';
-                stopVisualizerAndAudio(true);
-            }
-        }
-        
-        // ---- UI HANDLERS ----
-        function openFlyout() {
-            flyout.classList.add('open');
-        }
-        
-        function closeFlyoutPanel() {
-            flyout.classList.remove('open');
-        }
-        
-        // attach event listeners to all stream buttons
-        const streamBtns = document.querySelectorAll('.stream-btn');
-        streamBtns.forEach(btn => {
-            btn.addEventListener('click', async (e) => {
-                e.preventDefault();
-                const streamUrl = btn.getAttribute('data-stream-url');
-                const streamName = btn.getAttribute('data-stream-name') || 'AJN Stream';
-                const streamType = btn.getAttribute('data-stream-type') || 'audio';
-                if (!streamUrl) return;
-                
-                // stop current playback & remove active style
-                stopVisualizerAndAudio(true);
-                if (activeButton) activeButton.classList.remove('active-stream');
-                btn.classList.add('active-stream');
-                activeButton = btn;
-                
-                // open flyout if closed
-                if (!flyout.classList.contains('open')) openFlyout();
-                
-                // start new stream
-                await startStream(streamUrl, streamName, streamType);
-            });
-        });
-        
-        // stop button on flyout
-        stopBtn.addEventListener('click', () => {
-            stopVisualizerAndAudio(true);
-            flyoutTitleSpan.innerHTML = 'No stream selected';
-            flyoutMetaSpan.innerHTML = 'Click any live button above → immersive player + visualizer';
-            activeStreamLabel.innerHTML = 'No active stream';
-            connectionStatusSpan.innerHTML = '⚪ idle';
-            if (canvasCtx) canvasCtx.clearRect(0, 0, canvasWidth, canvasHeight);
-        });
-        
-        // close flyout
-        closeFlyout.addEventListener('click', () => {
-            closeFlyoutPanel();
-        });
-        document.getElementById('flyoutHandle')?.addEventListener('click', () => {
-            flyout.classList.toggle('open');
-        });
-        
-        // volume control
-        volumeSlider.addEventListener('input', (e) => {
-            if (currentAudio) currentAudio.volume = parseFloat(e.target.value);
-        });
-        
-        // responsive canvas redraw on resize
-        let resizeTimeout;
-        window.addEventListener('resize', () => {
-            if (resizeTimeout) clearTimeout(resizeTimeout);
-            resizeTimeout = setTimeout(() => {
-                if (flyout.classList.contains('open') && currentAnalyser) {
-                    initCanvas();
-                    // redraw next frame will handle
-                } else if (canvasCtx) {
-                    initCanvas();
-                }
-            }, 150);
-        });
-        
-        // initial canvas size
-        initCanvas();
-        
-        // extra: tiny connection monitor
-        setInterval(() => {
-            if (currentAudio && !currentAudio.paused && currentAudio.readyState > 2) {
-                // good
-                if (connectionStatusSpan.innerHTML !== '🟢 LIVE') connectionStatusSpan.innerHTML = '🟢 LIVE';
-                liveTimestampSpan.innerHTML = new Date().toLocaleTimeString();
-            } else if (currentAudio && !currentAudio.paused && currentAudio.readyState <= 2) {
-                connectionStatusSpan.innerHTML = '🔵 buffering...';
-            }
-        }, 2000);
-        
-        // showcase metadata of selected programming (Affiliate clock)
-        const clockLink = document.createElement('div');
-        // pretty tooltip not needed but inline works
-        console.log('AJN Audio Matrix ready with 120-line visualizer');
-    </script>
-    <!-- small floating note about CORS: some streams may need CORS enabled; user is aware -->
-    <div class="text-center text-[10px] text-slate-500 pb-4 mt-2">
-        <i class="fas fa-shield-alt"></i> Streams are provided from official AJN infrastructure. Some external streams require CORS; if a stream fails, try alternate AAC/MP3 variant. Visualizer uses Web Audio API.
-    </div>
+    <!-- Scripts (Modular) -->
+    <script src="js/scraper.js"></script>
+    <script src="js/visualizer.js"></script>
+    <script src="js/player.js"></script>
+    <script src="js/app.js"></script>
 </body>
 </html>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>AJN INFOWARS Player </title>
+    <title>AJN Archive Player · Sirius Edition · Live Twitter Embed + Multi-Proxy PWA</title>
     <meta name="description" content="AJN Hourly Video Archive - Sirius interlude with robust proxy fallback and integrated Live stream (Twitter Embed)">
     <meta name="theme-color" content="#0a0f1c">
     <link rel="manifest" href="manifest.json">
@@ -11,7 +11,6 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Twitter Widgets Script will be loaded dynamically when Live opens -->
     <style>
         body { background: #0a0f1c; }
         .player-container { background: #000; border-radius: 1.2rem; overflow: hidden; position: relative; }
@@ -186,7 +185,7 @@
         }
         .live-container {
             background: #0f172a;
-            border-radius: 2rem;        
+            border-radius: 2rem;
             width: 90%;
             max-width: 700px;
             border: 1px solid #3b82f6;
@@ -285,16 +284,12 @@
     <div id="liveOverlay" class="live-overlay">
         <div class="live-container">
             <div class="live-header">
-                <h3><span class="live-badge">● LIVE</span> AJN Broadcast </h3>
+                <h3><span class="live-badge">● LIVE</span> AJN Broadcast (Twitter Stream)</h3>
                 <button id="closeLiveBtn" class="live-close">✕ Close Stream</button>
             </div>
             <div id="liveEmbedContainer" class="live-embed-wrapper">
-                <div class="live-loading">⏳ Loading live broadcast...</div>
-                <!-- Twitter embed will be injected here dynamically -->
-                <blockquote id="twitterLiveBlockquote" class="twitter-tweet" data-media-max-width="560">
-                    <p lang="en" dir="ltr">ALEX JONES LIVE: Airspace Over Iran Cleared As Trump Prepares To Relaunch War, Turkey Claims Plot To Kill Ivanka Foiled, 47 Ordered Gabbard To Quit Plus, Israeli Spy Group Project 545 Has Been Caught Targeting Hundreds Of US Journalists Who Oppose War <a href="https://t.co/qj4mJX0dOC">https://t.co/qj4mJX0dOC</a></p>
-                    &mdash; INFOWARS (@infowars) <a href="https://twitter.com/infowars/status/2058235440046477568?ref_src=twsrc%5Etfw">May 23, 2026</a>
-                </blockquote>
+                <div class="live-loading">⏳ Loading live broadcast... Twitter widget will appear below.</div>
+                <!-- Twitter embed will be injected here dynamically via JavaScript -->
             </div>
             <div class="p-3 text-center text-xs text-slate-400 bg-slate-900 border-t border-slate-800">Live broadcast powered by Twitter — independent from archive player</div>
         </div>
@@ -335,11 +330,11 @@
                                 <div class="pulse-wave">
                                     <span></span><span></span><span></span><span></span><span></span>
                                 </div>
-                                <div class="overlay-title">🎵 </div>
-                                <div class="overlay-sub" id="overlayStatusMsg">Loading AJN libary  — please wait (INFO WARRIOR) </div>
+                                <div class="overlay-title">🎵 The Alan Parsons Project · Sirius</div>
+                                <div class="overlay-sub" id="overlayStatusMsg">Loading AJN archive — please wait</div>
                                 <div class="flex flex-col gap-2 max-w-xs mx-auto">
-                                    <button id="startAudioBtn" class="init-audio-btn hidden">🔊 Initialize loading </button>
-                                    <button id="stopMusicAndPlayBtn" class="stop-music-btn">⏹ Play Video</button>
+                                    <button id="startAudioBtn" class="init-audio-btn hidden">🔊 Initialize Audio Stream</button>
+                                    <button id="stopMusicAndPlayBtn" class="stop-music-btn">⏹ Stop Music & Play Video</button>
                                 </div>
                                 <div id="proxyStatusMsg" class="proxy-status"></div>
                             </div>
@@ -392,12 +387,10 @@
         
         // LIVE state management
         let isLiveOpen = false;
-        let twitterWidgetLoaded = false;
         const liveOverlay = document.getElementById('liveOverlay');
         const liveEmbedContainer = document.getElementById('liveEmbedContainer');
         const openLiveBtn = document.getElementById('openLiveBtn');
         const closeLiveBtn = document.getElementById('closeLiveBtn');
-        const twitterBlockquote = document.getElementById('twitterLiveBlockquote');
         
         const musicOverlay = document.getElementById('musicOverlay');
         const overlayStatusMsg = document.getElementById('overlayStatusMsg');
@@ -419,8 +412,6 @@
         // Function to load Twitter Widgets script dynamically only once
         function loadTwitterWidgets() {
             if (window.twttr && window.twttr.widgets) {
-                // Already loaded, just re-render
-                if (window.twttr.widgets.load) window.twttr.widgets.load();
                 return Promise.resolve();
             }
             return new Promise((resolve, reject) => {
@@ -442,21 +433,63 @@
             });
         }
         
-        // Ensures embed inside overlay is rendered correctly
-        async function renderTwitterEmbed() {
+        // Create fresh Twitter embed HTML block
+        function getTwitterEmbedHTML() {
+            return `<blockquote class="twitter-tweet" data-media-max-width="560">
+                        <p lang="en" dir="ltr">ALEX JONES LIVE: Airspace Over Iran Cleared As Trump Prepares To Relaunch War, Turkey Claims Plot To Kill Ivanka Foiled, 47 Ordered Gabbard To Quit Plus, Israeli Spy Group Project 545 Has Been Caught Targeting Hundreds Of US Journalists Who Oppose War <a href="https://t.co/qj4mJX0dOC">https://t.co/qj4mJX0dOC</a></p>
+                        &mdash; INFOWARS (@infowars) <a href="https://twitter.com/infowars/status/2058235440046477568?ref_src=twsrc%5Etfw">May 23, 2026</a>
+                    </blockquote>`;
+        }
+        
+        // Completely destroy and recreate the embed container to stop ALL audio
+        function destroyAndRebuildEmbedContainer() {
             if (!liveEmbedContainer) return;
-            // Show loading indicator
-            const loadingDiv = liveEmbedContainer.querySelector('.live-loading');
-            if (loadingDiv) loadingDiv.style.display = 'flex';
+            // Save the parent
+            const parent = liveEmbedContainer.parentNode;
+            const newContainer = document.createElement('div');
+            newContainer.id = 'liveEmbedContainer';
+            newContainer.className = 'live-embed-wrapper';
+            newContainer.innerHTML = '<div class="live-loading">⏳ Live stream closed. Click LIVE again to restart broadcast.</div>';
+            // Replace the old container with new empty one
+            parent.replaceChild(newContainer, liveEmbedContainer);
+            // Update reference
+            window.liveEmbedContainer = newContainer;
+            return newContainer;
+        }
+        
+        // Function to inject embed and render Twitter widget
+        async function injectAndRenderLiveEmbed() {
+            // Get fresh container reference
+            let container = document.getElementById('liveEmbedContainer');
+            if (!container) {
+                // Recreate if missing
+                const wrapper = document.querySelector('.live-container .live-embed-wrapper');
+                if (wrapper) {
+                    container = wrapper;
+                } else {
+                    return;
+                }
+            }
+            // Clear container and add loading indicator + embed HTML
+            container.innerHTML = '<div class="live-loading">⏳ Loading live broadcast... Twitter widget will appear below.</div>';
+            // Append the blockquote HTML
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = getTwitterEmbedHTML();
+            const blockquote = tempDiv.firstChild;
+            container.appendChild(blockquote);
+            
             try {
                 await loadTwitterWidgets();
                 if (window.twttr && window.twttr.widgets) {
                     await window.twttr.widgets.load();
                 }
-                if (loadingDiv) loadingDiv.style.display = 'none';
+                // Remove loading indicator after load
+                const loadingEl = container.querySelector('.live-loading');
+                if (loadingEl) loadingEl.style.display = 'none';
             } catch (e) {
                 console.warn("Twitter widgets failed", e);
-                if (loadingDiv) loadingDiv.innerHTML = '⚠️ Live stream widget could not load. Please try again.';
+                const loadingEl = container.querySelector('.live-loading');
+                if (loadingEl) loadingEl.innerHTML = '⚠️ Live stream widget could not load. Please try again.';
             }
         }
         
@@ -472,38 +505,30 @@
                     audioElement.pause();
                     announce("Background music paused because Live stream opened.");
                 }
-                // Show overlay and render Twitter embed
+                // Show overlay
                 liveOverlay.classList.add('active');
                 isLiveOpen = true;
-                // Ensure the container shows the blockquote and loads embed
-                await renderTwitterEmbed();
+                // Inject fresh embed (clean slate)
+                await injectAndRenderLiveEmbed();
                 announce("Live broadcast started. Archive playback paused.");
             } else if (!show && isLiveOpen) {
-                // Remove overlay, but DO NOT destroy the embed src (since it's a twitter widget, just hide)
-                liveOverlay.classList.remove('active');
-                isLiveOpen = false;
-                // Force any potential background audio from embedded video to stop by clearing and re-inserting blockquote (clean slate)
-                // This prevents "zombie" audio from twitter's iframe players.
-                const container = liveEmbedContainer;
-                const oldBlockquote = document.getElementById('twitterLiveBlockquote');
-                if (oldBlockquote && container) {
-                    // Remove and re-insert the blockquote to stop any ongoing stream
-                    const newBlockquote = document.createElement('blockquote');
-                    newBlockquote.id = 'twitterLiveBlockquote';
-                    newBlockquote.className = 'twitter-tweet';
-                    newBlockquote.setAttribute('data-media-max-width', '560');
-                    newBlockquote.innerHTML = `<p lang="en" dir="ltr">ALEX JONES LIVE: Airspace Over Iran Cleared As Trump Prepares To Relaunch War, Turkey Claims Plot To Kill Ivanka Foiled, 47 Ordered Gabbard To Quit Plus, Israeli Spy Group Project 545 Has Been Caught Targeting Hundreds Of US Journalists Who Oppose War <a href="https://t.co/qj4mJX0dOC">https://t.co/qj4mJX0dOC</a></p>&mdash; INFOWARS (@infowars) <a href="https://twitter.com/infowars/status/2058235440046477568?ref_src=twsrc%5Etfw">May 23, 2026</a>`;
-                    oldBlockquote.remove();
-                    container.appendChild(newBlockquote);
-                    // Keep loading placeholder
-                    if (!container.querySelector('.live-loading')) {
-                        const loadingDiv = document.createElement('div');
-                        loadingDiv.className = 'live-loading';
-                        loadingDiv.innerText = '⏳ Live stream closed. Click LIVE again to restart.';
-                        container.insertBefore(loadingDiv, newBlockquote);
+                // CRITICAL: Destroy the entire embed container to stop ALL zombie audio
+                // This removes any iframes or media elements that Twitter injected
+                const oldContainer = document.getElementById('liveEmbedContainer');
+                if (oldContainer) {
+                    // Clear innerHTML completely first to stop any playing media
+                    oldContainer.innerHTML = '';
+                    // Then destroy and recreate the container
+                    const newContainer = destroyAndRebuildEmbedContainer();
+                    // Add fresh loading state
+                    if (newContainer) {
+                        newContainer.innerHTML = '<div class="live-loading">✅ Live stream stopped. Click LIVE to watch again.</div>';
                     }
                 }
-                announce("Live stream closed. You may resume archive playback.");
+                // Hide overlay
+                liveOverlay.classList.remove('active');
+                isLiveOpen = false;
+                announce("Live stream closed. All audio from the stream has been stopped. You may resume archive playback.");
             }
         }
         
@@ -614,7 +639,7 @@
         stopMusicAndPlayBtn?.addEventListener('click', stopMusicAndPlayVideo);
         pillStopBtn?.addEventListener('click', stopMusicAndPlayVideo);
         
-        // ========== MULTI-PROXY CORS FALLBACK SYSTEM (unchanged) ==========
+        // ========== MULTI-PROXY CORS FALLBACK SYSTEM ==========
         const FEED_URL = 'https://rss.alexjones.media/AJNHourlyVideo.html';
         const PROXY_LIST = [
             'https://api.allorigins.win/raw?url=',

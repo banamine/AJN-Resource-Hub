@@ -18,15 +18,14 @@ jobs:
           node-version: '18'
           
       - name: Install dependencies
-        # This replaces your old 'npm install -g' lines
-        run: npm install 
+        run: npm install
           
       - name: Run ESLint
-        # 'npm run lint' will use the local eslint and your package.json config
-        # '|| true' ensures the workflow doesn't crash if it finds linting errors
+        # '|| true' allows the workflow to proceed even if errors are found,
+        # ensuring the SARIF report is generated and uploaded.
         run: npm run lint || true
           
-      - name: Upload analysis results to GitHub
+      - name: Upload analysis results
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: eslint-results.sarif

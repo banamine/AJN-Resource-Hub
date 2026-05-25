@@ -1,28 +1,31 @@
-{
-  "env": {
-    "browser": true,
-    "es2021": true,
-    "serviceworker": true,
-    "webextensions": true
-  },
-  "extends": "eslint:recommended",
-  "parserOptions": {
-    "ecmaVersion": 12,
-    "sourceType": "module"
-  },
-  "rules": {
-    "no-unused-vars": ["warn", { 
-      "argsIgnorePattern": "^_",
-      "varsIgnorePattern": "^_" 
-    }],
-    "no-console": ["warn", { "allow": ["warn", "error", "log"] }],
-    "no-undef": "off",
-    "no-async-promise-executor": "warn",
-    "no-constant-condition": ["error", { "checkLoops": false }]
-  },
-  "globals": {
-    "flatpickr": "readonly",
-    "AudioContext": "readonly",
-    "webkitAudioContext": "readonly"
-  }
-}
+name: ESLint Scanner
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  eslint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          
+      - name: Install dependencies
+        run: npm install
+          
+      - name: Run ESLint
+        # '|| true' allows the workflow to proceed even if errors are found,
+        # ensuring the SARIF report is generated and uploaded.
+        run: npm run lint || true
+          
+      - name: Upload analysis results
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: eslint-results.sarif

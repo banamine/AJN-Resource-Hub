@@ -1,111 +1,154 @@
-// visualizer.js - Advanced Spectrum Visualizer (120 lines, 3 styles)
-const AudioVisualizer = (function() {
-    let animationId = null;
-    let canvas = null;
-    let ctx = null;
-    let analyser = null;
-    let currentStyle = 'bars';
-    let width = 1200;
-    let height = 120;
-    let dataArray = null;
+/**
+ * Audio Visualizer Module - 120-line spectrum analyzer
+ * @module visualizer
+ */
+
+let audioContext = null;
+let analyserNode = null;
+let sourceNode = null;
+let animationId = null;
+let canvas = null;
+let canvasCtx = null;
+let canvasWidth = 1200;
+let canvasHeight = 120;
+let isActive = false;
+
+/**
+ * Initialize canvas
+ * @param {HTMLCanvasElement} canvasElement - Canvas element
+ */
+export function initCanvas(canvasElement) {
+    canvas = canvasElement;
+    if (!canvas) return;
     
-    function init(canvasElement, audioContext, sourceNode) {
-        canvas = canvasElement;
-        ctx = canvas.getContext('2d');
+    const rect = canvas.parentElement?.getBoundingClientRect();
+    canvasWidth = rect?.width || 1200;
+    canvas.height = canvasHeight;
+    canvas.width = canvasWidth;
+    canvasCtx = canvas.getContext('2d');
+}
+
+/**
+ * Draw spectrum bars
+ * @param {Uint8Array} dataArray - Frequency data
+ */
+function drawSpectrum(dataArray) {
+    if (!canvasCtx) return;
+    
+    canvasCtx.clearRect(0, 0, canvasWidth, canvasHeight);
+    
+    const barCount = 120;
+    const barWidth = canvasWidth / barCount;
+    const step = dataArray.length / barCount;
+    
+    for (let i = 0; i < barCount; i++) {
+        const index = Math.floor(i * step);
+        let value = (dataArray[index] || 0) / 255;
+        value = Math.pow(value, 1.2);
         
-        analyser = audioContext.createAnalyser();
-        analyser.fftSize = 512;
-        const bufferLength = analyser.frequencyBinCount;
-        dataArray = new Uint8Array(bufferLength);
+        const barHeight = Math.max(2, value * canvasHeight);
+        const x = i * barWidth;
+        const hue = 200 + (value * 80);
         
-        sourceNode.connect(analyser);
-        
-        // Set canvas dimensions
-        const rect = canvas.parentElement.getBoundingClientRect();
-        width = rect.width || 1200;
-        canvas.width = width;
-        canvas.height = height;
-        
-        startLoop();
-        return analyser;
+        canvasCtx.fillStyle = `hsl(${hue}, 80%, 55%)`;
+        canvasCtx.fillRect(x, canvasHeight - barHeight, barWidth - 1, barHeight);
+    }
+}
+
+/**
+ * Start visualization loop
+ */
+function startVisualizerLoop() {
+    if (animationId) {
+        cancelAnimationFrame(animationId);
     }
     
-    function setStyle(style) {
-        currentStyle = style;
-    }
-    
-    function startLoop() {
-        if (animationId) cancelAnimationFrame(animationId);
-        
-        function draw() {
-            if (!analyser || !ctx) return;
-            
-            analyser.getByteFrequencyData(dataArray);
-            ctx.clearRect(0, 0, width, height);
-            
-            const barCount = 120;
-            const barWidth = width / barCount;
-            
-            // Downsample to 120 bars
-            const step = dataArray.length / barCount;
-            
-            for (let i = 0; i < barCount; i++) {
-                const index = Math.floor(i * step);
-                let value = dataArray[index] / 255;
-                value = Math.pow(value, 1.2); // curve for better visual
-                
-                const barHeight = Math.max(2, value * height);
-                const x = i * barWidth;
-                
-                // Color gradient based on frequency and intensity
-                const hue = 200 + (value * 80);
-                const saturation = 70 + (value * 30);
-                const lightness = 50 + (value * 20);
-                
-                if (currentStyle === 'bars') {
-                    ctx.fillStyle = `hsl(${hue}, ${saturation}%, ${lightness}%)`;
-                    ctx.fillRect(x, height - barHeight, barWidth - 1, barHeight);
-                } 
-                else if (currentStyle === 'lines') {
-                    ctx.beginPath();
-                    ctx.moveTo(x + barWidth/2, height);
-                    ctx.lineTo(x + barWidth/2, height - barHeight);
-                    ctx.strokeStyle = `hsl(${hue}, 80%, 60%)`;
-                    ctx.lineWidth = barWidth * 0.6;
-                    ctx.stroke();
-                }
-                else if (currentStyle === 'circle') {
-                    // Circular meter style
-                    const radius = Math.min(barHeight * 0.6, barWidth * 0.8);
-                    ctx.beginPath();
-                    ctx.arc(x + barWidth/2, height - radius - 2, radius * 0.7 + value * 3, 0, Math.PI * 2);
-                    ctx.fillStyle = `hsl(${hue}, 80%, 55%)`;
-                    ctx.fill();
-                }
+    function draw() {
+        if (!analyserNode || !isActive) {
+            if (animationId) {
+                cancelAnimationFrame(animationId);
+                animationId = null;
             }
-            
-            animationId = requestAnimationFrame(draw);
+            return;
         }
         
-        draw();
+        const dataArray = new Uint8Array(analyserNode.frequencyBinCount);
+        analyserNode.getByteFrequencyData(dataArray);
+        drawSpectrum(dataArray);
+        
+        animationId = requestAnimationFrame(draw);
     }
     
-    function stop() {
-        if (animationId) {
-            cancelAnimationFrame(animationId);
-            animationId = null;
+    draw();
+}
+
+/**
+ * Connect audio source to visualizer
+ * @param {HTMLAudioElement} audioElement - Audio element
+ * @returns {boolean} - Success status
+ */
+export function connectVisualizer(audioElement) {
+    if (!audioElement || !canvas) {
+        return false;
+    }
+    
+    try {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        audioContext = new AudioCtx();
+        
+        sourceNode = audioContext.createMediaElementSource(audioElement);
+        analyserNode = audioContext.createAnalyser();
+        analyserNode.fftSize = 512;
+        
+        sourceNode.connect(analyserNode);
+        analyserNode.connect(audioContext.destination);
+        
+        if (audioContext.state === 'suspended') {
+            audioContext.resume().catch(console.warn);
         }
-        if (ctx) ctx.clearRect(0, 0, width, height);
+        
+        isActive = true;
+        startVisualizerLoop();
+        
+        return true;
+    } catch (error) {
+        console.error('Visualizer connection failed:', error);
+        return false;
+    }
+}
+
+/**
+ * Stop visualizer and cleanup
+ */
+export function stopVisualizer() {
+    isActive = false;
+    
+    if (animationId) {
+        cancelAnimationFrame(animationId);
+        animationId = null;
     }
     
-    function resize() {
-        if (canvas && canvas.parentElement) {
-            const rect = canvas.parentElement.getBoundingClientRect();
-            width = rect.width || 1200;
-            canvas.width = width;
-            canvas.height = height;
-        }
+    if (audioContext) {
+        audioContext.close().catch(console.warn);
+        audioContext = null;
     }
     
-    return { init, setStyle, stop, resize };
-})();
+    analyserNode = null;
+    sourceNode = null;
+    
+    if (canvasCtx) {
+        canvasCtx.clearRect(0, 0, canvasWidth, canvasHeight);
+    }
+}
+
+/**
+ * Resize canvas
+ */
+export function resizeVisualizer() {
+    if (canvas && canvas.parentElement) {
+        const rect = canvas.parentElement.getBoundingClientRect();
+        canvasWidth = rect.width || 1200;
+        canvas.width = canvasWidth;
+        canvas.height = canvasHeight;
+    }
+}

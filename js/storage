@@ -1,0 +1,82 @@
+/**
+ * Storage Module - Cache management
+ * @module storage
+ */
+
+const CACHE_KEY = 'ajn_archive_complete';
+const CACHE_VERSION = '2.0.0';
+
+/**
+ * Save archive to localStorage
+ * @param {Object} archive - Archive object
+ * @param {Array} dates - Available dates
+ * @returns {boolean}
+ */
+export function saveArchive(archive, dates) {
+    try {
+        const data = {
+            archive: archive,
+            dates: dates,
+            version: CACHE_VERSION,
+            timestamp: Date.now()
+        };
+        localStorage.setItem(CACHE_KEY, JSON.stringify(data));
+        return true;
+    } catch (error) {
+        console.error('Failed to save cache:', error);
+        return false;
+    }
+}
+
+/**
+ * Load archive from localStorage
+ * @returns {Object|null} - Archive data or null
+ */
+export function loadArchive() {
+    try {
+        const cached = localStorage.getItem(CACHE_KEY);
+        if (!cached) return null;
+        
+        const data = JSON.parse(cached);
+        
+        // Check version compatibility
+        if (data.version !== CACHE_VERSION) {
+            console.log('Cache version mismatch, clearing...');
+            localStorage.removeItem(CACHE_KEY);
+            return null;
+        }
+        
+        // Check if cache is too old (7 days)
+        const maxAge = 7 * 24 * 60 * 60 * 1000;
+        if (Date.now() - data.timestamp > maxAge) {
+            console.log('Cache expired');
+            return null;
+        }
+        
+        return data;
+    } catch (error) {
+        console.error('Failed to load cache:', error);
+        return null;
+    }
+}
+
+/**
+ * Clear archive cache
+ */
+export function clearArchive() {
+    try {
+        localStorage.removeItem(CACHE_KEY);
+        return true;
+    } catch (error) {
+        console.error('Failed to clear cache:', error);
+        return false;
+    }
+}
+
+/**
+ * Check if cache exists
+ * @returns {boolean}
+ */
+export function hasCache() {
+    return localStorage.getItem(CACHE_KEY) !== null;
+}

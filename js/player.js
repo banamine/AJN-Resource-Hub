@@ -1,83 +1,123 @@
-// player.js - Core Player Management
-const AJNPlayer = (function() {
-    let currentAudio = null;
-    let audioContext = null;
-    let currentSource = null;
-    let currentAnalyser = null;
-    let visualizerActive = false;
+/**
+ * Video Player Module
+ * @module player
+ */
+
+let currentSegments = [];
+let currentIndex = 0;
+let videoPlayer = null;
+let onVideoEndCallback = null;
+
+/**
+ * Initialize the video player
+ * @param {HTMLVideoElement} player - Video element
+ * @param {Function} onEnd - Callback when video ends
+ */
+export function initPlayer(player, onEnd) {
+    videoPlayer = player;
+    onVideoEndCallback = onEnd;
     
-    async function playAudioStream(url, streamName, visualizerCanvas, onStatusChange) {
-        stopAll();
-        
-        if (onStatusChange) onStatusChange('connecting', 'Connecting to stream...');
-        
-        const audio = new Audio();
-        audio.crossOrigin = "anonymous";
-        audio.src = url;
-        audio.volume = 0.75;
-        
-        try {
-            await audio.play();
-            
-            // Setup Web Audio for visualizer
-            const AudioCtx = window.AudioContext || window.webkitAudioContext;
-            audioContext = new AudioCtx();
-            const source = audioContext.createMediaElementSource(audio);
-            const analyser = audioContext.createAnalyser();
-            analyser.fftSize = 512;
-            
-            source.connect(analyser);
-            analyser.connect(audioContext.destination);
-            
-            if (audioContext.state === 'suspended') {
-                await audioContext.resume();
+    if (videoPlayer) {
+        videoPlayer.addEventListener('ended', () => {
+            if (onVideoEndCallback) {
+                onVideoEndCallback();
             }
-            
-            currentAudio = audio;
-            currentSource = source;
-            currentAnalyser = analyser;
-            
-            // Initialize visualizer
-            if (visualizerCanvas) {
-                AudioVisualizer.init(visualizerCanvas, audioContext, source);
-                visualizerActive = true;
-            }
-            
-            if (onStatusChange) onStatusChange('live', 'Live');
-            
-            audio.onerror = () => {
-                if (onStatusChange) onStatusChange('error', 'Stream error');
-            };
-            
-            return true;
-        } catch(e) {
-            console.error('Playback failed:', e);
-            if (onStatusChange) onStatusChange('error', e.message);
-            return false;
-        }
+        });
+    }
+}
+
+/**
+ * Load video by index
+ * @param {number} index - Index in segments array
+ * @returns {Object|null} - Loaded segment or null
+ */
+export function loadVideo(index) {
+    if (!videoPlayer || !currentSegments[index]) {
+        return null;
     }
     
-    function setVolume(volume) {
-        if (currentAudio) currentAudio.volume = Math.max(0, Math.min(1, volume));
+    const segment = currentSegments[index];
+    currentIndex = index;
+    
+    videoPlayer.src = segment.url;
+    videoPlayer.load();
+    
+    const playPromise = videoPlayer.play();
+    if (playPromise !== undefined) {
+        playPromise.catch(error => {
+            console.warn('Auto-play prevented:', error);
+        });
     }
     
-    function stopAll() {
-        if (currentAudio) {
-            currentAudio.pause();
-            currentAudio.src = '';
-            currentAudio = null;
-        }
-        if (audioContext) {
-            audioContext.close().catch(console.log);
-            audioContext = null;
-        }
-        currentSource = null;
-        currentAnalyser = null;
-        AudioVisualizer.stop();
-        visualizerActive = false;
+    return segment;
+}
+
+/**
+ * Set current segments array
+ * @param {Array} segments - Array of video segments
+ */
+export function setSegments(segments) {
+    currentSegments = segments;
+    currentIndex = 0;
+}
+
+/**
+ * Get current segments
+ * @returns {Array}
+ */
+export function getSegments() {
+    return currentSegments;
+}
+
+/**
+ * Get current index
+ * @returns {number}
+ */
+export function getCurrentIndex() {
+    return currentIndex;
+}
+
+/**
+ * Play next video
+ * @returns {boolean} - True if next exists
+ */
+export function playNext() {
+    if (currentIndex + 1 < currentSegments.length) {
+        loadVideo(currentIndex + 1);
+        return true;
     }
-    
-    function getAnalyser() { return currentAnalyser; }
-    
-    return { playAudioStream, setVolume, stopAll, getAnalyser };
-})();
+    return false;
+}
+
+/**
+ * Play previous video
+ * @returns {boolean} - True if previous exists
+ */
+export function playPrevious() {
+    if (currentIndex - 1 >= 0) {
+        loadVideo(currentIndex - 1);
+        return true;
+    }
+    return false;
+}
+
+/**
+ * Get current progress percentage
+ * @returns {number}
+ */
+export function getProgress() {
+    if (!videoPlayer || !videoPlayer.duration) {
+        return 0;
+    }
+    return (videoPlayer.currentTime / videoPlayer.duration) * 100;
+}
+
+/**
+ * Set volume
+ * @param {number} volume - 0 to 1
+ */
+export function setVolume(volume) {
+    if (videoPlayer) {
+        videoPlayer.volume = Math.max(0, Math.min(1, volume));
+    }
+}

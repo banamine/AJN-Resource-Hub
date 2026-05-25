@@ -2,10 +2,10 @@
   "name": "ajn-resource-hub",
   "version": "1.0.0",
   "devDependencies": {
-    "eslint": "^8.0.0",
-    "@microsoft/eslint-formatter-sarif": "^3.0.0"
+    "eslint": "^8.10.0",
+    "@microsoft/eslint-formatter-sarif": "^3.1.0"
   },
   "scripts": {
-    "lint": "eslint . --format @microsoft/eslint-formatter-sarif --output-file eslint-results.sarif"
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx --format @microsoft/eslint-formatter-sarif --output-file eslint-results.sarif"
   }
 }

@@ -17,22 +17,22 @@ jobs:
         with:
           node-version: '18'
           
-      - name: Install ESLint
+      - name: Install Dependencies
         run: |
-          npm install -g eslint
-          npm install -g eslint-plugin-html
+          # Install locally to avoid global permission issues
+          npm install --save-dev eslint eslint-plugin-html
           
       - name: Run ESLint on JavaScript files
         run: |
+          # Use npx to ensure we use the local version of eslint
           if [ -d "js" ]; then
-            eslint js/**/*.js --max-warnings=0
+            npx eslint js/**/*.js --max-warnings=0
           else
-            echo "No js directory found, checking for script blocks in HTML"
+            echo "No js directory found"
           fi
           
       - name: Extract and lint JavaScript from HTML
         run: |
-          # Check HTML files for JavaScript errors using Node
           node -e '
           const fs = require("fs");
           const files = fs.readdirSync(".").filter(f => f.endsWith(".html"));

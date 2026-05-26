@@ -274,20 +274,17 @@
         ariaAnnouncer.style.cssText = 'position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0';
         document.body.appendChild(ariaAnnouncer);
         function announce(msg) { 
-            const sanitizedMsg = msg.replace(/[&<>]/g, function(m) {
-                if (m === '&') return '&amp;';
-                if (m === '<') return '&lt;';
-                if (m === '>') return '&gt;';
-                return m;
-            });
-            ariaAnnouncer.textContent = sanitizedMsg; 
-            console.log('[ARIA]', sanitizedMsg); 
+            // Use textContent, not innerHTML, to prevent injection
+            if (ariaAnnouncer) {
+                ariaAnnouncer.textContent = String(msg || '');
+            }
+            console.log('[ARIA]', msg); 
         }
         
         // COMPREHENSIVE HTML ESCAPE FUNCTION - Fixes XSS vulnerability
         function escapeHtml(str) {
             if (!str) return '';
-            return str
+            return String(str)
                 .replace(/&/g, '&amp;')
                 .replace(/</g, '&lt;')
                 .replace(/>/g, '&gt;')
@@ -296,6 +293,17 @@
                 .replace(/\//g, '&#47;')
                 .replace(/`/g, '&#96;')
                 .replace(/=/g, '&#61;');
+        }
+        
+        // SECURE DOM ELEMENT CREATION - No innerHTML with user data
+        function createSecureElement(tag, className, textContent, attributes = {}) {
+            const el = document.createElement(tag);
+            if (className) el.className = className;
+            if (textContent) el.textContent = textContent;
+            for (const [key, value] of Object.entries(attributes)) {
+                el.setAttribute(key, value);
+            }
+            return el;
         }
         
         function initSiriusAudio() {
@@ -394,7 +402,7 @@
             'https://corsproxy.io/?',
             'https://thingproxy.freeboard.io/fetch/'
         ];
-        const CACHE_KEY = 'ajn_full_archive_v13_weekends_secure';
+        const CACHE_KEY = 'ajn_full_archive_v14_secure';
         
         let masterArchive = {};
         let availableDates = [];
@@ -411,7 +419,7 @@
         const selectedDateDisplay = document.getElementById('selectedDateDisplay');
         
         function updateProxyStatus(msg) { 
-            if (proxyStatusSpan) proxyStatusSpan.textContent = msg ? escapeHtml(msg) : ''; 
+            if (proxyStatusSpan) proxyStatusSpan.textContent = msg ? String(msg) : ''; 
         }
         
         async function fetchWithMultiProxyForUrl(customUrl) {
@@ -565,13 +573,19 @@
             } catch (e) { return null; }
         }
         
+        // SECURE PLAYLIST RENDERER - No innerHTML with user data
         function renderPlaylistSidebar() {
             if (!playlistContainer) return;
             if (!currentSegments.length) {
                 playlistContainer.innerHTML = '<div class="text-center text-slate-500 text-sm py-10">No segments for this date</div>';
                 return;
             }
-            const fragment = document.createDocumentFragment();
+            
+            // Clear container securely
+            while (playlistContainer.firstChild) {
+                playlistContainer.removeChild(playlistContainer.firstChild);
+            }
+            
             for (let idx = 0; idx < currentSegments.length; idx++) {
                 const seg = currentSegments[idx];
                 const isActive = (idx === currentIndex);
@@ -580,25 +594,91 @@
                 else if (seg.isWarRoom) showType = 'War Room';
                 else if (seg.isSundayNight) showType = 'Sunday Night Live';
                 
-                let separatorHtml = '';
+                // Add separator for War Room transition (static HTML, no user data)
                 if (idx > 0 && seg.isWarRoom && currentSegments[idx-1].isAlex) {
-                    separatorHtml = '<div class="relative my-2"><div class="border-t border-slate-700"></div><div class="text-center text-[10px] text-slate-500 -mt-3">⚔️ WAR ROOM ⚔️</div></div>';
+                    const separator = document.createElement('div');
+                    separator.className = 'relative my-2';
+                    separator.innerHTML = '<div class="border-t border-slate-700"></div><div class="text-center text-[10px] text-slate-500 -mt-3">⚔️ WAR ROOM ⚔️</div>';
+                    playlistContainer.appendChild(separator);
                 }
+                
+                // Add separator for weekend specials (static HTML, no user data)
                 if (idx > 0 && seg.isSundayNight && (currentSegments[idx-1].isWarRoom || currentSegments[idx-1].isAlex)) {
-                    separatorHtml = '<div class="relative my-2"><div class="border-t border-amber-700/40"></div><div class="text-center text-[10px] text-amber-500/70 -mt-3">🌙 SUNDAY / WEEKEND SPECIAL</div></div>';
+                    const separator = document.createElement('div');
+                    separator.className = 'relative my-2';
+                    separator.innerHTML = '<div class="border-t border-amber-700/40"></div><div class="text-center text-[10px] text-amber-500/70 -mt-3">🌙 SUNDAY / WEEKEND SPECIAL</div>';
+                    playlistContainer.appendChild(separator);
                 }
+                
+                // Create main segment div
                 const div = document.createElement('div');
-                div.className = `segment-item p-3 rounded-xl border-l-4 ${isActive ? 'segment-active border-blue-500 bg-slate-800/60' : 'border-transparent bg-slate-800/30 hover:bg-slate-800/70'}`;
+                const baseClass = `segment-item p-3 rounded-xl border-l-4 ${isActive ? 'segment-active border-blue-500 bg-slate-800/60' : 'border-transparent bg-slate-800/30 hover:bg-slate-800/70'}`;
+                div.className = baseClass;
                 div.setAttribute('data-index', idx);
+                
+                // Create flex container
+                const flexDiv = document.createElement('div');
+                flexDiv.className = 'flex justify-between items-center gap-2';
+                
+                // Left side content
+                const leftDiv = document.createElement('div');
+                leftDiv.className = 'flex-1 min-w-0';
+                
+                // Top row with tags
+                const topRow = document.createElement('div');
+                topRow.className = 'flex items-center gap-2 flex-wrap';
+                
+                const showTypeSpan = document.createElement('span');
+                let showTypeColor = 'text-blue-400';
+                if (seg.isWarRoom) showTypeColor = 'text-purple-400';
+                else if (seg.isSundayNight) showTypeColor = 'text-amber-400';
+                showTypeSpan.className = `text-xs font-semibold ${showTypeColor}`;
+                showTypeSpan.textContent = escapeHtml(showType);
+                topRow.appendChild(showTypeSpan);
+                
                 const hourLabel = seg.hour && seg.hour <= 4 ? `Hr${seg.hour}` : (seg.isSundayNight ? '✨ Special' : '');
-                const escapedTitle = escapeHtml(seg.title.substring(0, 60));
-                const escapedShowType = escapeHtml(showType);
-                const escapedDisplayDate = escapeHtml(seg.displayDate);
-                div.innerHTML = `${separatorHtml}<div class="flex justify-between items-center gap-2"><div class="flex-1 min-w-0"><div class="flex items-center gap-2 flex-wrap"><span class="text-xs font-semibold ${seg.isAlex ? 'text-blue-400' : (seg.isWarRoom ? 'text-purple-400' : 'text-amber-400')}">${escapedShowType}</span>${hourLabel ? `<span class="text-xs font-mono text-slate-300">${escapeHtml(hourLabel)}</span>` : ''}<span class="text-[10px] bg-slate-700 px-1.5 py-0.5 rounded-full">${escapedDisplayDate}</span></div><p class="text-sm font-medium text-white truncate mt-1">${escapedTitle}</p></div>${isActive ? '<span class="text-green-400 text-xs">▶</span>' : '<span class="text-slate-500 text-xs">●</span>'}</div>`;
-                div.addEventListener('click', (function(idx) { return function() { currentIndex = idx; loadVideoByIndex(currentIndex); renderPlaylistSidebar(); }; })(idx));
-                fragment.appendChild(div);
+                if (hourLabel) {
+                    const hourSpan = document.createElement('span');
+                    hourSpan.className = 'text-xs font-mono text-slate-300';
+                    hourSpan.textContent = escapeHtml(hourLabel);
+                    topRow.appendChild(hourSpan);
+                }
+                
+                const dateSpan = document.createElement('span');
+                dateSpan.className = 'text-[10px] bg-slate-700 px-1.5 py-0.5 rounded-full';
+                dateSpan.textContent = escapeHtml(seg.displayDate);
+                topRow.appendChild(dateSpan);
+                leftDiv.appendChild(topRow);
+                
+                // Title paragraph
+                const titleP = document.createElement('p');
+                titleP.className = 'text-sm font-medium text-white truncate mt-1';
+                titleP.textContent = escapeHtml(seg.title.substring(0, 60));
+                leftDiv.appendChild(titleP);
+                
+                flexDiv.appendChild(leftDiv);
+                
+                // Right side indicator
+                const indicatorSpan = document.createElement('span');
+                indicatorSpan.className = isActive ? 'text-green-400 text-xs' : 'text-slate-500 text-xs';
+                indicatorSpan.textContent = isActive ? '▶' : '●';
+                flexDiv.appendChild(indicatorSpan);
+                
+                div.appendChild(flexDiv);
+                
+                // Add click handler
+                div.addEventListener('click', (function(index) {
+                    return function() { 
+                        currentIndex = index; 
+                        loadVideoByIndex(currentIndex); 
+                        renderPlaylistSidebar(); 
+                    };
+                })(idx));
+                
+                playlistContainer.appendChild(div);
             }
-            playlistContainer.replaceChildren(fragment);
+            
+            // Scroll active element into view
             const activeEl = playlistContainer.querySelector('.segment-active');
             if (activeEl) activeEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
@@ -620,7 +700,8 @@
             videoPlayer.src = seg.url;
             videoPlayer.load();
             videoPlayer.play().catch(e => console.log('Play blocked:', e));
-            currentTitleSpan.innerText = escapeHtml(seg.title);
+            // Use textContent, not innerHTML, for title
+            if (currentTitleSpan) currentTitleSpan.textContent = escapeHtml(seg.title);
             positionBadge.innerText = `${index + 1} / ${currentSegments.length}`;
             progressFill.style.width = '0%';
             announce(`Now playing: ${seg.title}`);

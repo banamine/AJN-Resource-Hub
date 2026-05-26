@@ -1,11 +1,13 @@
 {
   "name": "ajn-resource-hub",
   "version": "1.0.0",
+  "description": "AJN Archive site",
+  "main": "index.html",
   "devDependencies": {
     "eslint": "^8.0.0",
     "@microsoft/eslint-formatter-sarif": "^3.0.0"
   },
   "scripts": {
-    "lint": "eslint . --format @microsoft/eslint-formatter-sarif --output-file eslint-results.sarif"
+    "lint": "eslint . --ext .js"
   }
 }

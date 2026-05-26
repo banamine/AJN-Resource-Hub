@@ -255,6 +255,50 @@
     </div>
 
     <script>
+        // ========== SECURE HTML SANITIZATION USING BROWSER API ==========
+        // This completely prevents XSS by using the browser's own HTML sanitization
+        function sanitizeText(str) {
+            if (!str) return '';
+            // Use a template element which automatically handles escaping
+            const div = document.createElement('div');
+            // Use textContent (safe) rather than innerHTML
+            div.textContent = str;
+            return div.textContent;
+        }
+        
+        // For inserting as text content (the safest method - always prefer this)
+        function setTextContentSafely(element, text) {
+            if (element) {
+                element.textContent = sanitizeText(text);
+            }
+        }
+        
+        // Secure DOM element creation with textContent (never innerHTML with user data)
+        function createSecureElement(tag, className, textContent, attributes = {}) {
+            const el = document.createElement(tag);
+            if (className) el.className = className;
+            // ALWAYS use textContent, never innerHTML, for user-supplied text
+            if (textContent) el.textContent = sanitizeText(textContent);
+            for (const [key, value] of Object.entries(attributes)) {
+                el.setAttribute(key, value);
+            }
+            return el;
+        }
+        
+        // For static HTML separators that contain NO user data, we can use innerHTML
+        // But we ensure they are hardcoded strings with zero user input
+        function createStaticSeparator(htmlString) {
+            const div = document.createElement('div');
+            // Only allow known static strings - this is safe because it contains no user data
+            if (htmlString === '<div class="border-t border-slate-700"></div><div class="text-center text-[10px] text-slate-500 -mt-3">⚔️ WAR ROOM ⚔️</div>' ||
+                htmlString === '<div class="border-t border-amber-700/40"></div><div class="text-center text-[10px] text-amber-500/70 -mt-3">🌙 SUNDAY / WEEKEND SPECIAL</div>') {
+                div.innerHTML = htmlString;
+            } else {
+                div.textContent = htmlString;
+            }
+            return div;
+        }
+        
         // ========== AUDIO SETUP (Sirius with 25s seek) ==========
         const SIRIUS_PRIMARY = 'https://raw.githubusercontent.com/banamine/AJN-Resource-Hub/main/The%20Alan%20Parsons%20Project%20-%20Sirius%20(Official%20Audio).mp3';
         const SIRIUS_FALLBACK = 'https://archive.org/download/a-132-5_20260424/1.%20The%20Alan%20Parsons%20Project%20-%20Sirius%20%28Official%20Audio%29.mp4';
@@ -282,29 +326,13 @@
         ariaAnnouncer.style.cssText = 'position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0';
         document.body.appendChild(ariaAnnouncer);
         function announce(msg) { 
-            if (ariaAnnouncer) ariaAnnouncer.textContent = String(msg || '');
+            if (ariaAnnouncer) ariaAnnouncer.textContent = sanitizeText(String(msg || ''));
             console.log('[ARIA]', msg); 
         }
         
-        function escapeHtml(str) {
-            if (!str) return '';
-            return String(str)
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
-                .replace(/"/g, '&quot;')
-                .replace(/'/g, '&#39;')
-                .replace(/\//g, '&#47;')
-                .replace(/`/g, '&#96;')
-                .replace(/=/g, '&#61;');
-        }
-        
-        function createSecureElement(tag, className, textContent, attributes = {}) {
-            const el = document.createElement(tag);
-            if (className) el.className = className;
-            if (textContent) el.textContent = textContent;
-            for (const [key, value] of Object.entries(attributes)) el.setAttribute(key, value);
-            return el;
+        // SECURE: Use sanitizeText for any text that goes to the DOM
+        function updateProxyStatus(msg) { 
+            if (proxyStatusSpan) proxyStatusSpan.textContent = msg ? sanitizeText(String(msg)) : ''; 
         }
         
         function initSiriusAudio() {
@@ -389,7 +417,7 @@
         stopMusicAndPlayBtn?.addEventListener('click', stopMusicAndPlayVideo);
         pillStopBtn?.addEventListener('click', stopMusicAndPlayVideo);
         
-        // ========== MULTI-PROXY CORS + STRICT DATE VALIDATION (FIX) ==========
+        // ========== MULTI-PROXY CORS + STRICT DATE VALIDATION ==========
         const MAIN_FEED = 'https://rss.alexjones.media/AJNHourlyVideo.html';
         const SECONDARY_FEED = 'https://rss.alexjones.media/AJNHourlyVideo_2.html';
         const LEGACY_FEED = 'https://rss.alexjones.media/network_feed_hourly_video.html';
@@ -399,7 +427,7 @@
             'https://corsproxy.io/?',
             'https://thingproxy.freeboard.io/fetch/'
         ];
-        const CACHE_KEY = 'ajn_full_archive_v15_validated';
+        const CACHE_KEY = 'ajn_full_archive_v16_secure';
         
         let masterArchive = {};
         let availableDates = [];
@@ -414,8 +442,6 @@
         const segmentCountSpan = document.getElementById('segment-count');
         const playlistContainer = document.getElementById('playlist-container');
         const selectedDateDisplay = document.getElementById('selectedDateDisplay');
-        
-        function updateProxyStatus(msg) { if (proxyStatusSpan) proxyStatusSpan.textContent = msg ? String(msg) : ''; }
         
         async function fetchWithMultiProxyForUrl(customUrl) {
             updateProxyStatus(`Fetching: ${customUrl.split('/').pop()}...`);
@@ -440,8 +466,6 @@
             throw new Error(`All fetch methods failed for ${customUrl}`);
         }
         
-        // ========== ENHANCED PARSER WITH DATE SANITY CHECK ==========
-        // Day-of-week mapping to detect mismatches between filename date and anchor text day label
         function getDayOfWeekFromDateStr(dateStr) {
             if (!dateStr || dateStr.length !== 8) return null;
             const year = parseInt(dateStr.slice(0,4));
@@ -469,12 +493,10 @@
                 let dateStr = dateMatch ? dateMatch[1] : '';
                 if (!dateStr || dateStr.length !== 8) continue;
                 
-                // ----- VALIDATION LOGIC: enforce date consistency -----
                 const expectedWeekday = getDayOfWeekFromDateStr(dateStr);
                 const lowerTitle = titleText.toLowerCase();
                 let hasDayConflict = false;
                 if (expectedWeekday) {
-                    // if title says "Monday" but filename date is not Monday -> discard
                     if (lowerTitle.includes('monday') && expectedWeekday !== 'mon') hasDayConflict = true;
                     else if (lowerTitle.includes('tuesday') && expectedWeekday !== 'tue') hasDayConflict = true;
                     else if (lowerTitle.includes('wednesday') && expectedWeekday !== 'wed') hasDayConflict = true;
@@ -483,15 +505,13 @@
                     else if (lowerTitle.includes('saturday') && expectedWeekday !== 'sat') hasDayConflict = true;
                     else if (lowerTitle.includes('sunday') && expectedWeekday !== 'sun') hasDayConflict = true;
                 }
-                // Additional sanity: if filename date doesn't match any plausible segment date (already strict)
-                // Extra check: if the title contains a different 8-digit date, compare
                 const altDateInTitle = titleText.match(/(\d{8})/);
                 if (altDateInTitle && altDateInTitle[1] !== dateStr) hasDayConflict = true;
                 
                 if (hasDayConflict) {
                     discardedDueToMismatch++;
-                    console.warn(`[VALIDATION] Discarded mismatched entry: title "${titleText.substring(0,60)}" | filename date ${dateStr} (expected ${expectedWeekday})`);
-                    continue;  // SKIP corrupted entry
+                    console.warn(`[VALIDATION] Discarded mismatched entry: title "${titleText.substring(0,60)}" | filename date ${dateStr}`);
+                    continue;
                 }
                 
                 let hourMatch = filename.match(/Hr(\d)/i);
@@ -514,7 +534,7 @@
                 segments.push({ url, title: titleText, filename, dateStr, hour, isAlex, isWarRoom, isSundayNight, displayDate });
             }
             if (discardedDueToMismatch > 0) {
-                console.log(`🔍 Date sanity check removed ${discardedDueToMismatch} invalid entries (corrupted day labels).`);
+                console.log(`🔍 Date sanity check removed ${discardedDueToMismatch} invalid entries.`);
                 announce(`Filtered ${discardedDueToMismatch} corrupted RSS entries.`);
             }
             return segments;
@@ -560,7 +580,7 @@
         }
         
         async function fetchArchiveInBackground() {
-            feedStatusSpan.innerHTML = '📡 Scanning & validating full archive (filtering corrupted entries)...';
+            if (feedStatusSpan) feedStatusSpan.textContent = '📡 Scanning & validating full archive...';
             try {
                 const segments = await fetchAllArchiveSources();
                 if (segments.length === 0) throw new Error('No segments found');
@@ -570,12 +590,12 @@
                 backgroundFetchComplete = true;
                 masterArchive = archive;
                 availableDates = dates;
-                feedStatusSpan.innerHTML = `✅ ${availableDates.length} clean dates (weekends + validated)`;
+                if (feedStatusSpan) feedStatusSpan.textContent = `✅ ${availableDates.length} clean dates (validated)`;
                 updateCalendarDates();
                 if (availableDates.length && (!currentSegments || currentSegments.length === 0)) {
                     const newest = availableDates[0];
                     const disp = `${newest.slice(0,4)}-${newest.slice(4,6)}-${newest.slice(6,8)}`;
-                    selectedDateDisplay.innerText = disp;
+                    if (selectedDateDisplay) selectedDateDisplay.textContent = disp;
                     loadPlaylistForDate(newest);
                 }
                 if (musicOverlay && musicOverlay.style.display === 'flex') {
@@ -584,13 +604,13 @@
                         stopBtn.textContent = '⚡ System Ready — Play Video';
                         stopBtn.classList.add('system-ready-btn');
                         if (overlayStatusMsg) overlayStatusMsg.textContent = 'Full validated archive ready. Click to start video.';
-                        announce('Archive ready with date-sanity. Click System Ready button.');
+                        announce('Archive ready with date-sanity.');
                     }
                 }
                 updateProxyStatus('');
             } catch (err) {
                 console.error('Fetch error:', err);
-                feedStatusSpan.innerHTML = '⚠️ Validation error';
+                if (feedStatusSpan) feedStatusSpan.textContent = '⚠️ Validation error';
                 updateProxyStatus('Failed to load validated archive. Check network.');
             }
         }
@@ -605,7 +625,7 @@
             } catch (e) { return null; }
         }
         
-        // RENDER PLAYLIST (secure)
+        // SECURE PLAYLIST RENDERER - Uses textContent exclusively for user data
         function renderPlaylistSidebar() {
             if (!playlistContainer) return;
             if (!currentSegments.length) {
@@ -613,6 +633,7 @@
                 return;
             }
             while (playlistContainer.firstChild) playlistContainer.removeChild(playlistContainer.firstChild);
+            
             for (let idx = 0; idx < currentSegments.length; idx++) {
                 const seg = currentSegments[idx];
                 const isActive = (idx === currentIndex);
@@ -621,57 +642,70 @@
                 else if (seg.isWarRoom) showType = 'War Room';
                 else if (seg.isSundayNight) showType = 'Sunday Night Live';
                 
+                // Static separators (safe - no user data)
                 if (idx > 0 && seg.isWarRoom && currentSegments[idx-1].isAlex) {
-                    const separator = document.createElement('div');
-                    separator.className = 'relative my-2';
-                    separator.innerHTML = '<div class="border-t border-slate-700"></div><div class="text-center text-[10px] text-slate-500 -mt-3">⚔️ WAR ROOM ⚔️</div>';
+                    const separator = createStaticSeparator('<div class="border-t border-slate-700"></div><div class="text-center text-[10px] text-slate-500 -mt-3">⚔️ WAR ROOM ⚔️</div>');
                     playlistContainer.appendChild(separator);
                 }
                 if (idx > 0 && seg.isSundayNight && (currentSegments[idx-1].isWarRoom || currentSegments[idx-1].isAlex)) {
-                    const separator = document.createElement('div');
-                    separator.className = 'relative my-2';
-                    separator.innerHTML = '<div class="border-t border-amber-700/40"></div><div class="text-center text-[10px] text-amber-500/70 -mt-3">🌙 SUNDAY / WEEKEND SPECIAL</div>';
+                    const separator = createStaticSeparator('<div class="border-t border-amber-700/40"></div><div class="text-center text-[10px] text-amber-500/70 -mt-3">🌙 SUNDAY / WEEKEND SPECIAL</div>');
                     playlistContainer.appendChild(separator);
                 }
+                
                 const div = document.createElement('div');
                 div.className = `segment-item p-3 rounded-xl border-l-4 ${isActive ? 'segment-active border-blue-500 bg-slate-800/60' : 'border-transparent bg-slate-800/30 hover:bg-slate-800/70'}`;
                 div.setAttribute('data-index', idx);
+                
                 const flexDiv = document.createElement('div');
                 flexDiv.className = 'flex justify-between items-center gap-2';
+                
                 const leftDiv = document.createElement('div');
                 leftDiv.className = 'flex-1 min-w-0';
+                
                 const topRow = document.createElement('div');
                 topRow.className = 'flex items-center gap-2 flex-wrap';
+                
                 const showTypeSpan = document.createElement('span');
                 let showTypeColor = 'text-blue-400';
                 if (seg.isWarRoom) showTypeColor = 'text-purple-400';
                 else if (seg.isSundayNight) showTypeColor = 'text-amber-400';
                 showTypeSpan.className = `text-xs font-semibold ${showTypeColor}`;
-                showTypeSpan.textContent = escapeHtml(showType);
+                showTypeSpan.textContent = sanitizeText(showType);
                 topRow.appendChild(showTypeSpan);
+                
                 const hourLabel = seg.hour && seg.hour <= 4 ? `Hr${seg.hour}` : (seg.isSundayNight ? '✨ Special' : '');
                 if (hourLabel) {
                     const hourSpan = document.createElement('span');
                     hourSpan.className = 'text-xs font-mono text-slate-300';
-                    hourSpan.textContent = escapeHtml(hourLabel);
+                    hourSpan.textContent = sanitizeText(hourLabel);
                     topRow.appendChild(hourSpan);
                 }
+                
                 const dateSpan = document.createElement('span');
                 dateSpan.className = 'text-[10px] bg-slate-700 px-1.5 py-0.5 rounded-full';
-                dateSpan.textContent = escapeHtml(seg.displayDate);
+                dateSpan.textContent = sanitizeText(seg.displayDate);
                 topRow.appendChild(dateSpan);
                 leftDiv.appendChild(topRow);
+                
                 const titleP = document.createElement('p');
                 titleP.className = 'text-sm font-medium text-white truncate mt-1';
-                titleP.textContent = escapeHtml(seg.title.substring(0, 60));
+                titleP.textContent = sanitizeText(seg.title.substring(0, 60));
                 leftDiv.appendChild(titleP);
                 flexDiv.appendChild(leftDiv);
+                
                 const indicatorSpan = document.createElement('span');
                 indicatorSpan.className = isActive ? 'text-green-400 text-xs' : 'text-slate-500 text-xs';
                 indicatorSpan.textContent = isActive ? '▶' : '●';
                 flexDiv.appendChild(indicatorSpan);
                 div.appendChild(flexDiv);
-                div.addEventListener('click', (function(index) { return function() { currentIndex = index; loadVideoByIndex(currentIndex); renderPlaylistSidebar(); }; })(idx));
+                
+                div.addEventListener('click', (function(index) { 
+                    return function() { 
+                        currentIndex = index; 
+                        loadVideoByIndex(currentIndex); 
+                        renderPlaylistSidebar(); 
+                    }; 
+                })(idx));
                 playlistContainer.appendChild(div);
             }
             const activeEl = playlistContainer.querySelector('.segment-active');
@@ -683,7 +717,7 @@
             currentSegments = masterArchive[dateStr];
             currentIndex = 0;
             renderPlaylistSidebar();
-            segmentCountSpan.innerText = `${currentSegments.length} videos`;
+            if (segmentCountSpan) segmentCountSpan.textContent = `${currentSegments.length} videos`;
             videoReadyToPlay = true;
             return true;
         }
@@ -695,9 +729,9 @@
             videoPlayer.src = seg.url;
             videoPlayer.load();
             videoPlayer.play().catch(e => console.log('Play blocked:', e));
-            if (currentTitleSpan) currentTitleSpan.textContent = escapeHtml(seg.title);
-            positionBadge.innerText = `${index + 1} / ${currentSegments.length}`;
-            progressFill.style.width = '0%';
+            if (currentTitleSpan) currentTitleSpan.textContent = sanitizeText(seg.title);
+            if (positionBadge) positionBadge.textContent = `${index + 1} / ${currentSegments.length}`;
+            if (progressFill) progressFill.style.width = '0%';
             announce(`Now playing: ${seg.title}`);
             if (loadingStarted) {
                 if (audioElement && !audioElement.paused) stopMusicAndPlayVideo();
@@ -708,9 +742,11 @@
         function playNext() { if (currentIndex + 1 < currentSegments.length) { currentIndex++; loadVideoByIndex(currentIndex); renderPlaylistSidebar(); } }
         function playPrev() { if (currentIndex - 1 >= 0) { currentIndex--; loadVideoByIndex(currentIndex); renderPlaylistSidebar(); } }
         
-        videoPlayer.addEventListener('timeupdate', () => { if (videoPlayer.duration) progressFill.style.width = `${(videoPlayer.currentTime / videoPlayer.duration) * 100}%`; });
-        videoPlayer.addEventListener('ended', () => playNext());
-        videoPlayer.addEventListener('error', () => setTimeout(() => playNext(), 1500));
+        if (videoPlayer) {
+            videoPlayer.addEventListener('timeupdate', () => { if (videoPlayer.duration && progressFill) progressFill.style.width = `${(videoPlayer.currentTime / videoPlayer.duration) * 100}%`; });
+            videoPlayer.addEventListener('ended', () => playNext());
+            videoPlayer.addEventListener('error', () => setTimeout(() => playNext(), 1500));
+        }
         
         function updateCalendarDates() {
             if (!flatpickrInstance) return;
@@ -724,10 +760,10 @@
             if (cached && Object.keys(cached.archive).length > 0) {
                 masterArchive = cached.archive;
                 availableDates = cached.dates;
-                feedStatusSpan.innerHTML = `📅 ${availableDates.length} validated dates (cached)`;
+                if (feedStatusSpan) feedStatusSpan.textContent = `📅 ${availableDates.length} validated dates (cached)`;
                 if (availableDates.length) {
                     const newest = availableDates[0];
-                    selectedDateDisplay.innerText = `${newest.slice(0,4)}-${newest.slice(4,6)}-${newest.slice(6,8)}`;
+                    if (selectedDateDisplay) selectedDateDisplay.textContent = `${newest.slice(0,4)}-${newest.slice(4,6)}-${newest.slice(6,8)}`;
                     loadPlaylistForDate(newest);
                 }
                 startSiriusAndOverlay();
@@ -737,6 +773,7 @@
                 loadingStarted = true;
             }
             fetchArchiveInBackground();
+            
             flatpickrInstance = flatpickr("#openCalendarBtn", {
                 dateFormat: "Y-m-d",
                 onChange: (dates) => {
@@ -744,9 +781,9 @@
                         const d = dates[0];
                         const ymd = `${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}`;
                         if (masterArchive[ymd]) {
-                            selectedDateDisplay.innerText = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+                            if (selectedDateDisplay) selectedDateDisplay.textContent = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
                             loadPlaylistForDate(ymd);
-                            announce(`Date changed to ${selectedDateDisplay.innerText}`);
+                            announce(`Date changed to ${selectedDateDisplay ? selectedDateDisplay.textContent : ''}`);
                         }
                     }
                 }

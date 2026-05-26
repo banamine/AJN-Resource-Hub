@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>AJN Archive Player 路 Sirius Edition 路 Full Archive + Weekends</title>
+    <title>AJN Archive Player · Sirius Edition · Full Archive + Weekends</title>
     <meta name="description" content="AJN Hourly Video Archive - Full feed with weekend shows and multi-proxy fallback">
     <meta name="theme-color" content="#0a0f1c">
     <link rel="manifest" href="manifest.json">
@@ -166,87 +166,88 @@
 <body class="font-sans antialiased text-gray-200">
 
     <div id="audioPill" class="audio-pill" style="display: none;">
-        <span class="status-text">馃幍 Sirius</span>
+        <span class="status-text">🎵 Sirius</span>
         <button id="pillStopBtn">Stop</button>
     </div>
 
     <div id="update-toast" style="display: none;" class="update-toast">
-        <span>馃攧 New dates available!</span>
+        <span>🔄 New dates available!</span>
         <button id="refresh-cache-btn" class="bg-blue-600 px-4 py-1 rounded-full text-sm">Refresh</button>
     </div>
 
-    <div class="max-w-7xl mx-auto px-4 py-5 md:py-7">
-        <div class="flex flex-col md:flex-row justify-between items-center gap-4 border-b border-slate-800 pb-5 mb-6">
-            <div>
-                <h1 class="text-3xl font-extrabold bg-gradient-to-r from-emerald-400 to-blue-500 bg-clip-text text-transparent">AJN  Player 路 Full Archive</h1>
-                <p class="text-sm text-slate-400">Alex Jones + WarRoom + Sunday Night Live 路 </p>
-            </div>
-            <div class="flex items-center gap-3">
-                <button id="openCalendarBtn" class="bg-slate-800 border border-slate-700 rounded-full px-4 py-2 text-sm flex items-center gap-2 hover:bg-slate-700">
-                    馃搮 <span id="selectedDateDisplay">Pick a date</span>
-                </button>
-                <div class="text-xs bg-slate-800 px-3 py-1.5 rounded-full">
-                    <span id="feed-status">Initializing...</span>
+    <main id="main-content">
+        <div class="max-w-7xl mx-auto px-4 py-5 md:py-7">
+            <header class="flex flex-col md:flex-row justify-between items-center gap-4 border-b border-slate-800 pb-5 mb-6">
+                <div>
+                    <h1 class="text-3xl font-extrabold bg-gradient-to-r from-emerald-400 to-blue-500 bg-clip-text text-transparent">AJN Archive Player · Full Archive</h1>
+                    <p class="text-sm text-slate-400">Alex Jones + WarRoom + Sunday Night Live · Auto-advance · Multi-proxy</p>
                 </div>
-            </div>
-        </div>
+                <div class="flex items-center gap-3">
+                    <button id="openCalendarBtn" class="bg-slate-800 border border-slate-700 rounded-full px-4 py-2 text-sm flex items-center gap-2 hover:bg-slate-700">
+                        📅 <span id="selectedDateDisplay">Pick a date</span>
+                    </button>
+                    <div class="text-xs bg-slate-800 px-3 py-1.5 rounded-full">
+                        <span id="feed-status">Initializing...</span>
+                    </div>
+                </div>
+            </header>
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div class="lg:col-span-2">
-                <div class="player-container bg-slate-900 border border-slate-700 rounded-2xl overflow-hidden relative">
-                    <div class="bg-black aspect-video relative">
-                        <video id="main-video" controls class="w-full h-full object-contain" poster="https://placehold.co/1280x720/0f172a/3b82f6?text=AJN+Archive"></video>
-                        
-                        <div id="musicOverlay" class="music-overlay" style="display: none;">
-                            <div class="music-overlay-content">
-                                <div class="vinyl-spinner"></div>
-                                <div class="pulse-wave">
-                                    <span></span><span></span><span></span><span></span><span></span>
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div class="lg:col-span-2">
+                    <div class="player-container bg-slate-900 border border-slate-700 rounded-2xl overflow-hidden relative">
+                        <div class="bg-black aspect-video relative">
+                            <video id="main-video" controls class="w-full h-full object-contain" poster="https://placehold.co/1280x720/0f172a/3b82f6?text=AJN+Archive"></video>
+                            
+                            <div id="musicOverlay" class="music-overlay" style="display: none;">
+                                <div class="music-overlay-content">
+                                    <div class="vinyl-spinner"></div>
+                                    <div class="pulse-wave">
+                                        <span></span><span></span><span></span><span></span><span></span>
+                                    </div>
+                                    <div class="overlay-title">🎵 The Alan Parsons Project · Sirius</div>
+                                    <div class="overlay-sub" id="overlayStatusMsg">Loading AJN full archive — please wait</div>
+                                    <div class="flex flex-col gap-2 max-w-xs mx-auto">
+                                        <button id="startAudioBtn" class="init-audio-btn hidden">🔊 Initialize Audio Stream</button>
+                                        <button id="stopMusicAndPlayBtn" class="stop-music-btn">⏹ Stop Music & Play Video</button>
+                                    </div>
+                                    <div id="proxyStatusMsg" class="proxy-status"></div>
                                 </div>
-                                <div class="overlay-title">馃幍  路 Sirius</div>
-                                <div class="overlay-sub" id="overlayStatusMsg">Loading AJN  鈥?please wait</div>
-                                <div class="flex flex-col gap-2 max-w-xs mx-auto">
-                                    <button id="startAudioBtn" class="init-audio-btn hidden">馃攰 Initialize Audio Stream</button>
-                                    <button id="stopMusicAndPlayBtn" class="stop-music-btn">鈴?Stop Music & Play Video</button>
+                            </div>
+                        </div>
+                        <div class="p-4 bg-slate-800/80 border-t border-slate-700">
+                            <div class="flex flex-wrap justify-between items-center gap-3">
+                                <div class="flex-1 min-w-0">
+                                    <h2 id="current-title" class="text-white font-bold text-lg truncate">Select a date to begin</h2>
+                                    <div class="flex items-center gap-3 mt-1">
+                                        <span id="position-badge" class="text-[10px] bg-slate-700 px-2 py-0.5 rounded-full">0 / 0</span>
+                                    </div>
                                 </div>
-                                <div id="proxyStatusMsg" class="proxy-status"></div>
+                                <div class="flex gap-2">
+                                    <button id="prev-segment-btn" class="bg-slate-700 hover:bg-slate-600 px-3 py-1.5 rounded-full text-sm transition">◀ Prev</button>
+                                    <button id="next-segment-btn" class="bg-blue-700 hover:bg-blue-600 px-3 py-1.5 rounded-full text-sm transition">Next ▶</button>
+                                </div>
+                            </div>
+                            <div class="mt-3 w-full bg-slate-700 rounded-full h-1.5 overflow-hidden">
+                                <div id="progress-bar" class="bg-blue-500 h-full w-0 transition-all duration-300"></div>
                             </div>
                         </div>
                     </div>
-                    <div class="p-4 bg-slate-800/80 border-t border-slate-700">
-                        <div class="flex flex-wrap justify-between items-center gap-3">
-                            <div class="flex-1 min-w-0">
-                                <h2 id="current-title" class="text-white font-bold text-lg truncate">Select a date to begin</h2>
-                                <div class="flex items-center gap-3 mt-1">
-                                    <span id="position-badge" class="text-[10px] bg-slate-700 px-2 py-0.5 rounded-full">0 / 0</span>
-                                </div>
-                            </div>
-                            <div class="flex gap-2">
-                                <button id="prev-segment-btn" class="bg-slate-700 hover:bg-slate-600 px-3 py-1.5 rounded-full text-sm transition">鈼€ Prev</button>
-                                <button id="next-segment-btn" class="bg-blue-700 hover:bg-blue-600 px-3 py-1.5 rounded-full text-sm transition">Next 鈻?/button>
-                            </div>
-                        </div>
-                        <div class="mt-3 w-full bg-slate-700 rounded-full h-1.5 overflow-hidden">
-                            <div id="progress-bar" class="bg-blue-500 h-full w-0 transition-all duration-300"></div>
-                        </div>
+                </div>
+
+                <div class="bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden flex flex-col h-[560px]">
+                    <div class="bg-slate-950 px-4 py-3 border-b border-slate-800 flex justify-between">
+                        <h3 class="font-bold text-white text-sm">📋 Playlist · Weekends Included</h3>
+                        <span id="segment-count" class="text-[11px] text-slate-400">0 items</span>
+                    </div>
+                    <div id="playlist-container" class="playlist-scroll p-2 space-y-2 flex-1">
+                        <div class="text-center text-slate-500 text-sm py-10 italic">Select a date</div>
                     </div>
                 </div>
             </div>
-
-            <div class="bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden flex flex-col h-[560px]">
-                <div class="bg-slate-950 px-4 py-3 border-b border-slate-800 flex justify-between">
-                    <h3 class="font-bold text-white text-sm">馃搵 Playlist 路 Weekends Included</h3>
-                    <span id="segment-count" class="text-[11px] text-slate-400">0 items</span>
-                </div>
-                <div id="playlist-container" class="playlist-scroll p-2 space-y-2 flex-1">
-                    <div class="text-center text-slate-500 text-sm py-10 italic">Select a date</div>
-                </div>
-            </div>
         </div>
-    </div>
+    </main>
 
     <script>
-        // ========== AUDIO SETUP (Sirius with 25s seek) ==========
         const SIRIUS_PRIMARY = 'https://raw.githubusercontent.com/banamine/AJN-Resource-Hub/main/The%20Alan%20Parsons%20Project%20-%20Sirius%20(Official%20Audio).mp3';
         const SIRIUS_FALLBACK = 'https://archive.org/download/a-132-5_20260424/1.%20The%20Alan%20Parsons%20Project%20-%20Sirius%20%28Official%20Audio%29.mp4';
         const SEEK_TO_SECONDS = 25;
@@ -267,21 +268,16 @@
         const videoPlayer = document.getElementById('main-video');
         const proxyStatusSpan = document.getElementById('proxyStatusMsg');
         
-        // ARIA announcer
         const ariaAnnouncer = document.createElement('div');
         ariaAnnouncer.setAttribute('aria-live', 'polite');
         ariaAnnouncer.setAttribute('aria-atomic', 'true');
         ariaAnnouncer.style.cssText = 'position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0';
         document.body.appendChild(ariaAnnouncer);
         function announce(msg) { 
-            // Use textContent, not innerHTML, to prevent injection
-            if (ariaAnnouncer) {
-                ariaAnnouncer.textContent = String(msg || '');
-            }
+            if (ariaAnnouncer) ariaAnnouncer.textContent = String(msg || '');
             console.log('[ARIA]', msg); 
         }
         
-        // COMPREHENSIVE HTML ESCAPE FUNCTION - Fixes XSS vulnerability
         function escapeHtml(str) {
             if (!str) return '';
             return String(str)
@@ -293,17 +289,6 @@
                 .replace(/\//g, '&#47;')
                 .replace(/`/g, '&#96;')
                 .replace(/=/g, '&#61;');
-        }
-        
-        // SECURE DOM ELEMENT CREATION - No innerHTML with user data
-        function createSecureElement(tag, className, textContent, attributes = {}) {
-            const el = document.createElement(tag);
-            if (className) el.className = className;
-            if (textContent) el.textContent = textContent;
-            for (const [key, value] of Object.entries(attributes)) {
-                el.setAttribute(key, value);
-            }
-            return el;
         }
         
         function initSiriusAudio() {
@@ -343,10 +328,10 @@
                     audioElement.currentTime = SEEK_TO_SECONDS;
                 }
                 startAudioBtn.classList.add('hidden');
-                if (overlayStatusMsg) overlayStatusMsg.textContent = '馃帣锔?Streaming AJN Matrix Interlude...';
+                if (overlayStatusMsg) overlayStatusMsg.textContent = '🎙️ Streaming AJN Matrix Interlude...';
                 announce('AJN archive loading. Sirius music playing.');
             } catch (autoplayError) {
-                if (overlayStatusMsg) overlayStatusMsg.textContent = '馃攪 Browser blocked autoplay 鈥?click below to activate audio.';
+                if (overlayStatusMsg) overlayStatusMsg.textContent = '🔇 Browser blocked autoplay — click below to activate audio.';
                 startAudioBtn.classList.remove('hidden');
                 announce('Autoplay blocked. Click Initialize Audio Stream to unlock sound.');
             }
@@ -384,7 +369,7 @@
                     await audioElement.play();
                     if (audioElement.duration > SEEK_TO_SECONDS) audioElement.currentTime = SEEK_TO_SECONDS;
                     startAudioBtn.classList.add('hidden');
-                    if (overlayStatusMsg) overlayStatusMsg.textContent = '馃帣锔?Streaming AJN Matrix Interlude...';
+                    if (overlayStatusMsg) overlayStatusMsg.textContent = '🎙️ Streaming AJN Matrix Interlude...';
                     announce('Audio stream initialized. Loading archive in background.');
                 } catch(e) { console.error('Manual start failed:', e); }
             }
@@ -392,7 +377,6 @@
         stopMusicAndPlayBtn?.addEventListener('click', stopMusicAndPlayVideo);
         pillStopBtn?.addEventListener('click', stopMusicAndPlayVideo);
         
-        // ========== MULTI-PROXY CORS FALLBACK SYSTEM + WEEKEND & DEEPER FETCH ==========
         const MAIN_FEED = 'https://rss.alexjones.media/AJNHourlyVideo.html';
         const SECONDARY_FEED = 'https://rss.alexjones.media/AJNHourlyVideo_2.html';
         const LEGACY_FEED = 'https://rss.alexjones.media/network_feed_hourly_video.html';
@@ -510,7 +494,6 @@
                     const segments = parseSegmentsFromHTML(html);
                     if (segments.length > 0) {
                         allSegments = [...allSegments, ...segments];
-                        console.log(`Fetched ${segments.length} segments from ${url}`);
                     }
                 } catch (e) {
                     console.warn(`Failed to fetch ${url}:`, e.message);
@@ -518,9 +501,7 @@
             }
             const uniqueMap = new Map();
             for (const seg of allSegments) {
-                if (!uniqueMap.has(seg.url)) {
-                    uniqueMap.set(seg.url, seg);
-                }
+                if (!uniqueMap.has(seg.url)) uniqueMap.set(seg.url, seg);
             }
             const uniqueSegments = Array.from(uniqueMap.values());
             if (uniqueSegments.length === 0) throw new Error('No segments found in any feed source');
@@ -528,7 +509,7 @@
         }
         
         async function fetchArchiveInBackground() {
-            feedStatusSpan.innerHTML = '馃摗 Scanning full archive (including weekends)...';
+            feedStatusSpan.innerHTML = '📡 Scanning full archive (including weekends)...';
             try {
                 const segments = await fetchAllArchiveSources();
                 if (segments.length === 0) throw new Error('No segments found');
@@ -538,7 +519,7 @@
                 backgroundFetchComplete = true;
                 masterArchive = archive;
                 availableDates = dates;
-                feedStatusSpan.innerHTML = `鉁?${availableDates.length} dates loaded (inc. weekends)`;
+                feedStatusSpan.innerHTML = `✅ ${availableDates.length} dates loaded (inc. weekends)`;
                 updateCalendarDates();
                 if (availableDates.length && (!currentSegments || currentSegments.length === 0)) {
                     const newest = availableDates[0];
@@ -549,7 +530,7 @@
                 if (musicOverlay && musicOverlay.style.display === 'flex') {
                     const stopBtn = document.getElementById('stopMusicAndPlayBtn');
                     if (stopBtn && !stopBtn.classList.contains('system-ready-btn')) {
-                        stopBtn.textContent = '鈿?System Ready 鈥?Play Video';
+                        stopBtn.textContent = '⚡ System Ready — Play Video';
                         stopBtn.classList.add('system-ready-btn');
                         if (overlayStatusMsg) overlayStatusMsg.textContent = 'Full archive loaded. Click to start video.';
                         announce('Archive ready with weekends. Click System Ready button.');
@@ -557,8 +538,7 @@
                 }
                 updateProxyStatus('');
             } catch (err) {
-                console.error('Fetch error:', err);
-                feedStatusSpan.innerHTML = '鈿狅笍 Connection error';
+                feedStatusSpan.innerHTML = '⚠️ Connection error';
                 updateProxyStatus('Failed to load archive. Check network or try later.');
             }
         }
@@ -573,112 +553,69 @@
             } catch (e) { return null; }
         }
         
-        // SECURE PLAYLIST RENDERER - No innerHTML with user data
         function renderPlaylistSidebar() {
             if (!playlistContainer) return;
             if (!currentSegments.length) {
                 playlistContainer.innerHTML = '<div class="text-center text-slate-500 text-sm py-10">No segments for this date</div>';
                 return;
             }
-            
-            // Clear container securely
-            while (playlistContainer.firstChild) {
-                playlistContainer.removeChild(playlistContainer.firstChild);
-            }
+            while (playlistContainer.firstChild) playlistContainer.removeChild(playlistContainer.firstChild);
             
             for (let idx = 0; idx < currentSegments.length; idx++) {
                 const seg = currentSegments[idx];
                 const isActive = (idx === currentIndex);
-                let showType = '';
-                if (seg.isAlex) showType = 'Alex Jones';
-                else if (seg.isWarRoom) showType = 'War Room';
-                else if (seg.isSundayNight) showType = 'Sunday Night Live';
+                let showType = seg.isAlex ? 'Alex Jones' : (seg.isWarRoom ? 'War Room' : 'Sunday Night Live');
                 
-                // Add separator for War Room transition (static HTML, no user data)
                 if (idx > 0 && seg.isWarRoom && currentSegments[idx-1].isAlex) {
-                    const separator = document.createElement('div');
-                    separator.className = 'relative my-2';
-                    separator.innerHTML = '<div class="border-t border-slate-700"></div><div class="text-center text-[10px] text-slate-500 -mt-3">鈿旓笍 WAR ROOM 鈿旓笍</div>';
-                    playlistContainer.appendChild(separator);
+                    const sep = document.createElement('div');
+                    sep.className = 'relative my-2';
+                    sep.innerHTML = '<div class="border-t border-slate-700"></div><div class="text-center text-[10px] text-slate-500 -mt-3">⚔️ WAR ROOM ⚔️</div>';
+                    playlistContainer.appendChild(sep);
                 }
-                
-                // Add separator for weekend specials (static HTML, no user data)
                 if (idx > 0 && seg.isSundayNight && (currentSegments[idx-1].isWarRoom || currentSegments[idx-1].isAlex)) {
-                    const separator = document.createElement('div');
-                    separator.className = 'relative my-2';
-                    separator.innerHTML = '<div class="border-t border-amber-700/40"></div><div class="text-center text-[10px] text-amber-500/70 -mt-3">馃寵 SUNDAY / WEEKEND SPECIAL</div>';
-                    playlistContainer.appendChild(separator);
+                    const sep = document.createElement('div');
+                    sep.className = 'relative my-2';
+                    sep.innerHTML = '<div class="border-t border-amber-700/40"></div><div class="text-center text-[10px] text-amber-500/70 -mt-3">🌙 SUNDAY / WEEKEND SPECIAL</div>';
+                    playlistContainer.appendChild(sep);
                 }
                 
-                // Create main segment div
                 const div = document.createElement('div');
-                const baseClass = `segment-item p-3 rounded-xl border-l-4 ${isActive ? 'segment-active border-blue-500 bg-slate-800/60' : 'border-transparent bg-slate-800/30 hover:bg-slate-800/70'}`;
-                div.className = baseClass;
+                div.className = `segment-item p-3 rounded-xl border-l-4 ${isActive ? 'segment-active border-blue-500 bg-slate-800/60' : 'border-transparent bg-slate-800/30 hover:bg-slate-800/70'}`;
                 div.setAttribute('data-index', idx);
-                
-                // Create flex container
                 const flexDiv = document.createElement('div');
                 flexDiv.className = 'flex justify-between items-center gap-2';
-                
-                // Left side content
                 const leftDiv = document.createElement('div');
                 leftDiv.className = 'flex-1 min-w-0';
-                
-                // Top row with tags
                 const topRow = document.createElement('div');
                 topRow.className = 'flex items-center gap-2 flex-wrap';
-                
                 const showTypeSpan = document.createElement('span');
-                let showTypeColor = 'text-blue-400';
-                if (seg.isWarRoom) showTypeColor = 'text-purple-400';
-                else if (seg.isSundayNight) showTypeColor = 'text-amber-400';
-                showTypeSpan.className = `text-xs font-semibold ${showTypeColor}`;
+                showTypeSpan.className = `text-xs font-semibold ${seg.isWarRoom ? 'text-purple-400' : (seg.isSundayNight ? 'text-amber-400' : 'text-blue-400')}`;
                 showTypeSpan.textContent = escapeHtml(showType);
                 topRow.appendChild(showTypeSpan);
-                
-                const hourLabel = seg.hour && seg.hour <= 4 ? `Hr${seg.hour}` : (seg.isSundayNight ? '鉁?Special' : '');
-                if (hourLabel) {
+                if (seg.hour && seg.hour <= 4) {
                     const hourSpan = document.createElement('span');
                     hourSpan.className = 'text-xs font-mono text-slate-300';
-                    hourSpan.textContent = escapeHtml(hourLabel);
+                    hourSpan.textContent = escapeHtml(`Hr${seg.hour}`);
                     topRow.appendChild(hourSpan);
                 }
-                
                 const dateSpan = document.createElement('span');
                 dateSpan.className = 'text-[10px] bg-slate-700 px-1.5 py-0.5 rounded-full';
                 dateSpan.textContent = escapeHtml(seg.displayDate);
                 topRow.appendChild(dateSpan);
                 leftDiv.appendChild(topRow);
-                
-                // Title paragraph
                 const titleP = document.createElement('p');
                 titleP.className = 'text-sm font-medium text-white truncate mt-1';
                 titleP.textContent = escapeHtml(seg.title.substring(0, 60));
                 leftDiv.appendChild(titleP);
-                
                 flexDiv.appendChild(leftDiv);
-                
-                // Right side indicator
                 const indicatorSpan = document.createElement('span');
                 indicatorSpan.className = isActive ? 'text-green-400 text-xs' : 'text-slate-500 text-xs';
-                indicatorSpan.textContent = isActive ? '鈻? : '鈼?;
+                indicatorSpan.textContent = isActive ? '▶' : '●';
                 flexDiv.appendChild(indicatorSpan);
-                
                 div.appendChild(flexDiv);
-                
-                // Add click handler
-                div.addEventListener('click', (function(index) {
-                    return function() { 
-                        currentIndex = index; 
-                        loadVideoByIndex(currentIndex); 
-                        renderPlaylistSidebar(); 
-                    };
-                })(idx));
-                
+                div.addEventListener('click', () => { currentIndex = idx; loadVideoByIndex(idx); renderPlaylistSidebar(); });
                 playlistContainer.appendChild(div);
             }
-            
-            // Scroll active element into view
             const activeEl = playlistContainer.querySelector('.segment-active');
             if (activeEl) activeEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
@@ -689,7 +626,6 @@
             currentIndex = 0;
             renderPlaylistSidebar();
             segmentCountSpan.innerText = `${currentSegments.length} videos`;
-            videoReadyToPlay = true;
             return true;
         }
         
@@ -699,9 +635,8 @@
             videoPlayer.pause();
             videoPlayer.src = seg.url;
             videoPlayer.load();
-            videoPlayer.play().catch(e => console.log('Play blocked:', e));
-            // Use textContent, not innerHTML, for title
-            if (currentTitleSpan) currentTitleSpan.textContent = escapeHtml(seg.title);
+            videoPlayer.play().catch(e => console.log('Playback:', e));
+            currentTitleSpan.textContent = escapeHtml(seg.title);
             positionBadge.innerText = `${index + 1} / ${currentSegments.length}`;
             progressFill.style.width = '0%';
             announce(`Now playing: ${seg.title}`);
@@ -711,26 +646,10 @@
             }
         }
         
-        function playNext() {
-            if (currentIndex + 1 < currentSegments.length) {
-                currentIndex++;
-                loadVideoByIndex(currentIndex);
-                renderPlaylistSidebar();
-            }
-        }
-        function playPrev() {
-            if (currentIndex - 1 >= 0) {
-                currentIndex--;
-                loadVideoByIndex(currentIndex);
-                renderPlaylistSidebar();
-            }
-        }
-        
         videoPlayer.addEventListener('timeupdate', () => {
             if (videoPlayer.duration) progressFill.style.width = `${(videoPlayer.currentTime / videoPlayer.duration) * 100}%`;
         });
-        videoPlayer.addEventListener('ended', () => playNext());
-        videoPlayer.addEventListener('error', () => setTimeout(() => playNext(), 1500));
+        videoPlayer.addEventListener('ended', () => { if(currentIndex + 1 < currentSegments.length) { currentIndex++; loadVideoByIndex(currentIndex); renderPlaylistSidebar(); } });
         
         function updateCalendarDates() {
             if (!flatpickrInstance) return;
@@ -738,13 +657,13 @@
             flatpickrInstance.set('enable', dateObjects);
         }
         
-        async function init() {
+        function init() {
             initSiriusAudio();
             const cached = loadFromLocalStorage();
             if (cached && Object.keys(cached.archive).length > 0) {
                 masterArchive = cached.archive;
                 availableDates = cached.dates;
-                feedStatusSpan.innerHTML = `馃搮 ${availableDates.length} dates (cached + weekends)`;
+                feedStatusSpan.innerHTML = `📅 ${availableDates.length} dates loaded`;
                 if (availableDates.length) {
                     const newest = availableDates[0];
                     selectedDateDisplay.innerText = `${newest.slice(0,4)}-${newest.slice(4,6)}-${newest.slice(6,8)}`;
@@ -757,7 +676,6 @@
                 loadingStarted = true;
             }
             fetchArchiveInBackground();
-            
             flatpickrInstance = flatpickr("#openCalendarBtn", {
                 dateFormat: "Y-m-d",
                 onChange: (dates) => {
@@ -773,9 +691,15 @@
                 }
             });
             updateCalendarDates();
-            document.getElementById('prev-segment-btn')?.addEventListener('click', playPrev);
-            document.getElementById('next-segment-btn')?.addEventListener('click', playNext);
+            document.getElementById('prev-segment-btn')?.addEventListener('click', () => { if(currentIndex > 0) { currentIndex--; loadVideoByIndex(currentIndex); renderPlaylistSidebar(); }});
+            document.getElementById('next-segment-btn')?.addEventListener('click', () => { if(currentIndex + 1 < currentSegments.length) { currentIndex++; loadVideoByIndex(currentIndex); renderPlaylistSidebar(); }});
             document.getElementById('refresh-cache-btn')?.addEventListener('click', () => window.location.reload());
+        }
+        
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js').catch(err => console.error(err));
+            });
         }
         
         init();

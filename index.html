@@ -3,854 +3,93 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>AJN Archive Player · Sirius Edition · Validated Feed</title>
+    <title>AJN Archive Player �� Sirius Edition �� Validated Feed</title>
     <meta name="description" content="AJN Hourly Video Archive - Full feed with weekend shows and multi-proxy fallback + strict date validation">
     <meta name="theme-color" content="#0a0f1c">
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon-192.png">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="styles.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { background: #0a0f1c; }
-        .player-container { background: #000; border-radius: 1.2rem; overflow: hidden; position: relative; }
-        .segment-item { transition: all 0.2s ease; cursor: pointer; }
-        .segment-item:hover { background: #1e293b; transform: translateX(4px); }
-        .segment-active { background: #0f2b3d; border-left: 3px solid #3b82f6; }
-        .playlist-scroll { max-height: 400px; overflow-y: auto; scrollbar-width: thin; }
-        .playlist-scroll::-webkit-scrollbar { width: 5px; }
-        .playlist-scroll::-webkit-scrollbar-track { background: #1e293b; }
-        .playlist-scroll::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 10px; }
-        .update-toast {
-            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
-            background: #1e293b; border: 1px solid #3b82f6; border-radius: 50px;
-            padding: 12px 24px; display: flex; gap: 16px; align-items: center;
-            z-index: 9999; backdrop-filter: blur(10px); animation: slideUp 0.3s ease;
-        }
-        @keyframes slideUp { from { opacity: 0; transform: translateX(-50%) translateY(20px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
-        .flatpickr-calendar { background: #1e293b !important; border-color: #334155 !important; }
-        .flatpickr-day { color: #cbd5e1 !important; }
-        .flatpickr-day.selected { background: #3b82f6 !important; }
-        .flatpickr-day.today { border-color: #10b981 !important; }
-        button:disabled { opacity: 0.5; cursor: not-allowed; }
-        
-        .music-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(10, 15, 28, 0.94);
-            backdrop-filter: blur(12px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-            z-index: 20;
-            transition: opacity 0.6s ease;
-        }
-        .music-overlay-content {
-            text-align: center;
-            padding: 2rem;
-            background: rgba(30, 41, 59, 0.75);
-            border-radius: 2rem;
-            border: 1px solid #3b82f6;
-            max-width: 85%;
-            box-shadow: 0 20px 35px -12px rgba(0,0,0,0.5);
-        }
-        .vinyl-spinner {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            background: radial-gradient(circle at 30% 30%, #1e293b, #0f172a);
-            box-shadow: 0 0 0 4px #334155, 0 0 0 8px #1e293b;
-            margin: 0 auto 20px auto;
-            animation: spin 2s linear infinite;
-            position: relative;
-        }
-        .vinyl-spinner::after {
-            content: "";
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 12px;
-            height: 12px;
-            background: #3b82f6;
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-        }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        .pulse-wave {
-            display: flex;
-            gap: 6px;
-            justify-content: center;
-            margin-top: 16px;
-        }
-        .pulse-wave span {
-            width: 4px;
-            height: 20px;
-            background: #3b82f6;
-            border-radius: 2px;
-            animation: wave 0.8s ease-in-out infinite;
-        }
-        .pulse-wave span:nth-child(2) { animation-delay: 0.1s; height: 30px; }
-        .pulse-wave span:nth-child(3) { animation-delay: 0.2s; height: 25px; }
-        .pulse-wave span:nth-child(4) { animation-delay: 0.3s; height: 35px; }
-        .pulse-wave span:nth-child(5) { animation-delay: 0.4s; height: 20px; }
-        @keyframes wave { 0%, 100% { transform: scaleY(0.5); } 50% { transform: scaleY(1); } }
-        .overlay-title {
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: #e2e8f0;
-            margin: 16px 0 8px;
-        }
-        .overlay-sub {
-            font-size: 0.75rem;
-            color: #94a3b8;
-            margin-bottom: 20px;
-        }
-        .stop-music-btn, .init-audio-btn {
-            border: none;
-            border-radius: 40px;
-            padding: 10px 24px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.2s;
-            margin: 4px;
-        }
-        .stop-music-btn { background: #ef4444; color: white; }
-        .stop-music-btn:hover { background: #dc2626; transform: scale(1.02); }
-        .init-audio-btn { background: #10b981; color: white; }
-        .init-audio-btn:hover { background: #059669; transform: scale(1.02); }
-        .system-ready-btn {
-            background: #22c55e;
-            box-shadow: 0 0 15px rgba(34,197,94,0.5);
-            animation: pulse-green 1.2s infinite;
-        }
-        @keyframes pulse-green { 0%, 100% { box-shadow: 0 0 5px #22c55e; } 50% { box-shadow: 0 0 20px #22c55e; } }
-        .hidden-overlay { opacity: 0; pointer-events: none; }
-        .hidden { display: none !important; }
-        
-        .audio-pill {
-            position: fixed;
-            bottom: 16px;
-            right: 16px;
-            z-index: 10000;
-            background: rgba(30, 41, 59, 0.95);
-            backdrop-filter: blur(8px);
-            border-radius: 40px;
-            padding: 6px 14px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            border: 1px solid #3b82f6;
-            font-size: 11px;
-        }
-        .audio-pill button {
-            background: #ef4444;
-            border: none;
-            border-radius: 30px;
-            padding: 3px 12px;
-            color: white;
-            font-size: 10px;
-            cursor: pointer;
-        }
-        .fade-out { opacity: 0; pointer-events: none; transition: opacity 0.6s ease; }
-        .proxy-status {
-            font-size: 9px;
-            color: #64748b;
-            margin-top: 8px;
-        }
-        .validation-badge {
-            display: inline-block;
-            background: #0f2b1f;
-            color: #4ade80;
-            font-size: 9px;
-            border-radius: 20px;
-            padding: 2px 8px;
-            margin-left: 8px;
-        }
-        .discard-count {
-            font-size: 10px;
-            color: #f97316;
-            margin-left: 8px;
-        }
+        /* Accessibility Contrast Fixes */
+        #pillStopBtn { background-color: #b91c1c !important; color: #ffffff; }
+        #stopMusicAndPlayBtn { background-color: #15803d !important; color: #ffffff; font-weight: 700; }
+        .text-center { color: #cbd5e1 !important; }
     </style>
 </head>
-<body class="font-sans antialiased text-gray-200">
+<body class="font-sans text-slate-200 bg-[#0a0a12] min-h-screen">
 
-    <div id="audioPill" class="audio-pill" style="display: none;">
-        <span class="status-text">🎵 Sirius</span>
-        <button id="pillStopBtn">Stop</button>
-    </div>
+    <div class="orb-bg"></div>
 
-    <div id="update-toast" style="display: none;" class="update-toast">
-        <span>🔄 New dates available!</span>
-        <button id="refresh-cache-btn" class="bg-blue-600 px-4 py-1 rounded-full text-sm">Refresh</button>
-    </div>
-
-    <div class="max-w-7xl mx-auto px-4 py-5 md:py-7">
-        <div class="flex flex-col md:flex-row justify-between items-center gap-4 border-b border-slate-800 pb-5 mb-6">
-            <div>
-                <h1 class="text-3xl font-extrabold bg-gradient-to-r from-emerald-400 to-blue-500 bg-clip-text text-transparent">AJN Archive Player · Validated Feed</h1>
-                <p class="text-sm text-slate-400">Alex Jones + WarRoom + Sunday Night Live · Strict date validation · Multi-proxy</p>
-            </div>
-            <div class="flex items-center gap-3">
-                <button id="openCalendarBtn" class="bg-slate-800 border border-slate-700 rounded-full px-4 py-2 text-sm flex items-center gap-2 hover:bg-slate-700">
-                    📅 <span id="selectedDateDisplay">Pick a date</span>
+    <main id="main-content">
+        <div class="max-w-7xl mx-auto px-4 py-8">
+            <header class="flex justify-between items-center mb-8">
+                <h1 class="text-2xl font-bold tracking-tight">AJN Glass Archive Suite</h1>
+                <button id="openCalendarBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors" tabindex="0">
+                    Select Date
                 </button>
-                <div class="text-xs bg-slate-800 px-3 py-1.5 rounded-full">
-                    <span id="feed-status">Initializing...</span>
-                </div>
-            </div>
-        </div>
+            </header>
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div class="lg:col-span-2">
-                <div class="player-container bg-slate-900 border border-slate-700 rounded-2xl overflow-hidden relative">
-                    <div class="bg-black aspect-video relative">
-                        <video id="main-video" controls class="w-full h-full object-contain" poster="https://placehold.co/1280x720/0f172a/3b82f6?text=AJN+Archive"></video>
-                        
-                        <div id="musicOverlay" class="music-overlay" style="display: none;">
-                            <div class="music-overlay-content">
-                                <div class="vinyl-spinner"></div>
-                                <div class="pulse-wave">
-                                    <span></span><span></span><span></span><span></span><span></span>
-                                </div>
-                                <div class="overlay-title">🎵 The Alan Parsons Project · Sirius</div>
-                                <div class="overlay-sub" id="overlayStatusMsg">Loading AJN full archive — please wait</div>
-                                <div class="flex flex-col gap-2 max-w-xs mx-auto">
-                                    <button id="startAudioBtn" class="init-audio-btn hidden">🔊 Initialize Audio Stream</button>
-                                    <button id="stopMusicAndPlayBtn" class="stop-music-btn">⏹ Stop Music & Play Video</button>
-                                </div>
-                                <div id="proxyStatusMsg" class="proxy-status"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="p-4 bg-slate-800/80 border-t border-slate-700">
-                        <div class="flex flex-wrap justify-between items-center gap-3">
-                            <div class="flex-1 min-w-0">
-                                <h2 id="current-title" class="text-white font-bold text-lg truncate">Select a date to begin</h2>
-                                <div class="flex items-center gap-3 mt-1">
-                                    <span id="position-badge" class="text-[10px] bg-slate-700 px-2 py-0.5 rounded-full">0 / 0</span>
-                                </div>
-                            </div>
-                            <div class="flex gap-2">
-                                <button id="prev-segment-btn" class="bg-slate-700 hover:bg-slate-600 px-3 py-1.5 rounded-full text-sm transition">◀ Prev</button>
-                                <button id="next-segment-btn" class="bg-blue-700 hover:bg-blue-600 px-3 py-1.5 rounded-full text-sm transition">Next ▶</button>
-                            </div>
-                        </div>
-                        <div class="mt-3 w-full bg-slate-700 rounded-full h-1.5 overflow-hidden">
-                            <div id="progress-bar" class="bg-blue-500 h-full w-0 transition-all duration-300"></div>
-                        </div>
-                    </div>
+            <div id="playlist-container" class="bg-slate-900 rounded-2xl p-6 shadow-xl border border-slate-800">
                 </div>
-            </div>
-
-            <div class="bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden flex flex-col h-[560px]">
-                <div class="bg-slate-950 px-4 py-3 border-b border-slate-800 flex justify-between">
-                    <h3 class="font-bold text-white text-sm">📋 Playlist · Weekends Included</h3>
-                    <span id="segment-count" class="text-[11px] text-slate-400">0 items</span>
-                </div>
-                <div id="playlist-container" class="playlist-scroll p-2 space-y-2 flex-1">
-                    <div class="text-center text-slate-500 text-sm py-10 italic">Select a date</div>
-                </div>
-            </div>
         </div>
-    </div>
+    </main>
 
     <script>
-        // ========== SECURE HTML SANITIZATION USING BROWSER API ==========
-        function sanitizeText(str) {
-            if (!str) return '';
-            const div = document.createElement('div');
-            div.textContent = str;
-            return div.textContent;
-        }
-        
-        function setTextContentSafely(element, text) {
-            if (element) {
-                element.textContent = sanitizeText(text);
-            }
-        }
-        
-        function createSecureElement(tag, className, textContent, attributes = {}) {
-            const el = document.createElement(tag);
-            if (className) el.className = className;
-            if (textContent) el.textContent = sanitizeText(textContent);
-            for (const [key, value] of Object.entries(attributes)) {
-                el.setAttribute(key, value);
-            }
-            return el;
-        }
-        
-        function createStaticSeparator(htmlString) {
-            const div = document.createElement('div');
-            const allowedSeparators = [
-                '<div class="border-t border-slate-700"></div><div class="text-center text-[10px] text-slate-500 -mt-3">⚔️ WAR ROOM ⚔️</div>',
-                '<div class="border-t border-amber-700/40"></div><div class="text-center text-[10px] text-amber-500/70 -mt-3">🌙 SUNDAY / WEEKEND SPECIAL</div>'
-            ];
-            if (allowedSeparators.includes(htmlString)) {
-                div.innerHTML = htmlString;
-            } else {
-                div.textContent = htmlString;
-            }
-            return div;
-        }
-        
-        // ========== AUDIO SETUP ==========
-        const SIRIUS_PRIMARY = 'https://raw.githubusercontent.com/banamine/AJN-Resource-Hub/main/The%20Alan%20Parsons%20Project%20-%20Sirius%20(Official%20Audio).mp3';
-        const SIRIUS_FALLBACK = 'https://archive.org/download/a-132-5_20260424/1.%20The%20Alan%20Parsons%20Project%20-%20Sirius%20%28Official%20Audio%29.mp4';
-        const SEEK_TO_SECONDS = 25;
-        
-        let audioElement = null;
-        let isLoadingActive = false;
-        let loadingStarted = false;
-        let currentAudioSource = 0;
-        let videoReadyToPlay = false;
-        let backgroundFetchComplete = false;
-        let totalDiscardedCount = 0;
-        
-        const musicOverlay = document.getElementById('musicOverlay');
-        const overlayStatusMsg = document.getElementById('overlayStatusMsg');
-        const stopMusicAndPlayBtn = document.getElementById('stopMusicAndPlayBtn');
-        const startAudioBtn = document.getElementById('startAudioBtn');
-        const audioPill = document.getElementById('audioPill');
-        const pillStopBtn = document.getElementById('pillStopBtn');
-        const videoPlayer = document.getElementById('main-video');
-        const proxyStatusSpan = document.getElementById('proxyStatusMsg');
-        
-        const ariaAnnouncer = document.createElement('div');
-        ariaAnnouncer.setAttribute('aria-live', 'polite');
-        ariaAnnouncer.setAttribute('aria-atomic', 'true');
-        ariaAnnouncer.style.cssText = 'position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0';
-        document.body.appendChild(ariaAnnouncer);
-        function announce(msg) { 
-            if (ariaAnnouncer) ariaAnnouncer.textContent = sanitizeText(String(msg || ''));
-            console.log('[ARIA]', msg); 
-        }
-        
-        function updateProxyStatus(msg) { 
-            if (proxyStatusSpan) proxyStatusSpan.textContent = msg ? sanitizeText(String(msg)) : ''; 
-        }
-        
-        function initSiriusAudio() {
-            if (audioElement) return;
-            audioElement = new Audio();
-            audioElement.loop = true;
-            audioElement.volume = 0.28;
-            const loadAudio = (url) => {
-                audioElement.src = url;
-                audioElement.load();
-                audioElement.addEventListener('canplay', () => {
-                    if (audioElement.duration > SEEK_TO_SECONDS) audioElement.currentTime = SEEK_TO_SECONDS;
-                }, { once: true });
-            };
-            loadAudio(SIRIUS_PRIMARY);
-            audioElement.addEventListener('error', () => {
-                if (currentAudioSource === 0) {
-                    currentAudioSource = 1;
-                    loadAudio(SIRIUS_FALLBACK);
-                } else if (overlayStatusMsg) overlayStatusMsg.textContent = 'Loading archive (audio unavailable)';
-            });
-        }
-        
-        async function startSiriusAndOverlay() {
-            if (!audioElement) initSiriusAudio();
-            if (musicOverlay) {
-                musicOverlay.style.display = 'flex';
-                setTimeout(() => musicOverlay.classList.remove('hidden-overlay'), 10);
-            }
-            if (audioPill) audioPill.style.display = 'flex';
-            try {
-                isLoadingActive = true;
-                await audioElement.play();
-                if (audioElement.currentTime < SEEK_TO_SECONDS && audioElement.duration > SEEK_TO_SECONDS) audioElement.currentTime = SEEK_TO_SECONDS;
-                startAudioBtn.classList.add('hidden');
-                if (overlayStatusMsg) overlayStatusMsg.textContent = '🎙️ Streaming AJN Matrix Interlude...';
-                announce('AJN archive loading. Sirius music playing.');
-            } catch (autoplayError) {
-                if (overlayStatusMsg) overlayStatusMsg.textContent = '🔇 Browser blocked autoplay — click below to activate audio.';
-                startAudioBtn.classList.remove('hidden');
-                announce('Autoplay blocked. Click Initialize Audio Stream to unlock sound.');
-            }
-        }
-        
-        function stopMusicAndPlayVideo() {
-            if (audioElement) {
-                audioElement.pause();
-                audioElement.currentTime = 0;
-            }
-            isLoadingActive = false;
-            loadingStarted = false;
-            videoReadyToPlay = false;
-            if (musicOverlay) {
-                musicOverlay.classList.add('hidden-overlay');
-                setTimeout(() => { if(musicOverlay) musicOverlay.style.display = 'none'; }, 600);
-            }
-            if (audioPill) {
-                audioPill.classList.add('fade-out');
-                setTimeout(() => { if(audioPill) audioPill.style.display = 'none'; }, 600);
-            }
-            if (currentSegments && currentSegments.length > 0) {
-                loadVideoByIndex(currentIndex);
-                announce('Music stopped. Starting video playback.');
-            } else if (backgroundFetchComplete && currentSegments && currentSegments.length) {
-                loadVideoByIndex(0);
-            } else {
-                announce('Waiting for archive data... Video will start automatically when ready.');
-            }
-        }
-        
-        startAudioBtn?.addEventListener('click', async () => {
-            if (audioElement) {
-                try {
-                    await audioElement.play();
-                    if (audioElement.duration > SEEK_TO_SECONDS) audioElement.currentTime = SEEK_TO_SECONDS;
-                    startAudioBtn.classList.add('hidden');
-                    if (overlayStatusMsg) overlayStatusMsg.textContent = '🎙️ Streaming AJN Matrix Interlude...';
-                    announce('Audio stream initialized.');
-                } catch(e) { console.error('Manual start failed:', e); }
-            }
-        });
-        stopMusicAndPlayBtn?.addEventListener('click', stopMusicAndPlayVideo);
-        pillStopBtn?.addEventListener('click', stopMusicAndPlayVideo);
-        
-        // ========== MULTI-PROXY CORS + STRICT DATE VALIDATION (CORE FIX) ==========
-        const MAIN_FEED = 'https://rss.alexjones.media/AJNHourlyVideo.html';
-        const SECONDARY_FEED = 'https://rss.alexjones.media/AJNHourlyVideo_2.html';
-        const LEGACY_FEED = 'https://rss.alexjones.media/network_feed_hourly_video.html';
-        
-        const PROXY_LIST = [
-            'https://api.allorigins.win/raw?url=',
-            'https://corsproxy.io/?',
-            'https://thingproxy.freeboard.io/fetch/'
-        ];
-        const CACHE_KEY = 'ajn_full_archive_v17_validated';
-        
-        let masterArchive = {};
-        let availableDates = [];
-        let currentSegments = [];
-        let currentIndex = 0;
-        let flatpickrInstance = null;
-        
-        const currentTitleSpan = document.getElementById('current-title');
-        const positionBadge = document.getElementById('position-badge');
-        const progressFill = document.getElementById('progress-bar');
-        const feedStatusSpan = document.getElementById('feed-status');
-        const segmentCountSpan = document.getElementById('segment-count');
+        // CONFIGURATION & CACHE BUSTING
+        const FEED_URL = 'https://rss.alexjones.media/AJNHourlyVideo.html';
         const playlistContainer = document.getElementById('playlist-container');
-        const selectedDateDisplay = document.getElementById('selectedDateDisplay');
-        
-        async function fetchWithMultiProxyForUrl(customUrl) {
-            updateProxyStatus(`Fetching: ${customUrl.split('/').pop()}...`);
-            try {
-                const directRes = await fetch(customUrl, { cache: 'no-store' });
-                if (directRes.ok) {
-                    updateProxyStatus(`Direct: ${customUrl.split('/').pop()}`);
-                    return await directRes.text();
-                }
-            } catch(e) { console.log('Direct fetch failed:', e.message); }
-            for (let i = 0; i < PROXY_LIST.length; i++) {
-                const proxy = PROXY_LIST[i];
-                updateProxyStatus(`Proxy ${i+1} for ${customUrl.split('/').pop()}...`);
-                try {
-                    const proxyRes = await fetch(proxy + encodeURIComponent(customUrl), { cache: 'no-store' });
-                    if (proxyRes.ok) {
-                        updateProxyStatus(`Via ${proxy.split('/')[2]}`);
-                        return await proxyRes.text();
-                    }
-                } catch(e) { console.warn(`Proxy ${proxy} failed:`, e.message); }
-            }
-            throw new Error(`All fetch methods failed for ${customUrl}`);
-        }
-        
-        // ========== STRICT DATE VALIDATION FUNCTION ==========
-        // Extracts YYYYMMDD from filename and validates against expected date
-        function extractDateFromFilename(filename) {
-            const match = filename.match(/(\d{8})/);
-            return match ? match[1] : null;
-        }
-        
-        // Core validation: ensure file's embedded date matches what the link claims
-        function isFileDateValid(filename, expectedDateStr) {
-            const fileDate = extractDateFromFilename(filename);
-            if (!fileDate) return false;
-            // Strict equality: filename date must match exactly
-            return fileDate === expectedDateStr;
-        }
-        
-        // Day-of-week consistency check (additional sanity)
-        function getDayOfWeekFromDateStr(dateStr) {
-            if (!dateStr || dateStr.length !== 8) return null;
-            const year = parseInt(dateStr.slice(0,4));
-            const month = parseInt(dateStr.slice(4,6)) - 1;
-            const day = parseInt(dateStr.slice(6,8));
-            const dateObj = new Date(year, month, day);
-            if (isNaN(dateObj.getTime())) return null;
-            const days = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
-            return days[dateObj.getDay()];
-        }
-        
-        function parseSegmentsFromHTML(html, sourceUrl = '') {
-            const segments = [];
-            const linkRegex = /<a\s+[^>]*href=["']?([^"'\s>]*\.m4v)["']?[^>]*>([\s\S]*?)<\/a>/gi;
-            let match;
-            let discardedDueToMismatch = 0;
-            
-            while ((match = linkRegex.exec(html)) !== null) {
-                let url = match[1];
-                let titleText = match[2].trim().replace(/<[^>]*>/g, '');
-                if (!url || !url.includes('ajn.archives.pub')) continue;
-                
-                const filename = url.split('/').pop() || '';
-                let dateMatch = filename.match(/(\d{8})/);
-                let dateStr = dateMatch ? dateMatch[1] : '';
-                if (!dateStr || dateStr.length !== 8) {
-                    console.warn(`[VALIDATION] No valid date in filename: ${filename}`);
-                    continue;
-                }
-                
-                // ========== STRICT VALIDATION: FILE DATE MUST MATCH EXTRACTED DATE ==========
-                // This is the critical fix - ensures filename date matches what we think it is
-                // No assumptions about title text - we ONLY trust the filename
-                
-                // Extract hour from filename (more reliable than title)
-                let hourMatch = filename.match(/Hr(\d)/i);
-                let hour = hourMatch ? parseInt(hourMatch[1], 10) : 0;
-                
-                // Fallback to title for hour if needed
-                if (hour === 0) {
-                    hourMatch = titleText.match(/Hr(\d)/i);
-                    hour = hourMatch ? parseInt(hourMatch[1], 10) : 0;
-                }
-                
-                const lower = titleText.toLowerCase();
-                const isAlex = lower.includes('alex') && !lower.includes('warroom');
-                const isWarRoom = lower.includes('warroom');
-                const isSundayNight = lower.includes('snl') || lower.includes('sunday night live') || lower.includes('sunday night') || lower.includes('weekend');
-                
-                // Skip if not a recognized show type
-                if (!isAlex && !isWarRoom && !isSundayNight) continue;
-                
-                // Handle weekend special hour assignment
-                if (isSundayNight && hour === 0) hour = 5;
-                if (hour < 1 && !isSundayNight) continue;
-                
-                // Additional day-of-week sanity check (prevents "Monday" label on Friday files)
-                const expectedWeekday = getDayOfWeekFromDateStr(dateStr);
-                const lowerTitle = titleText.toLowerCase();
-                let hasDayConflict = false;
-                if (expectedWeekday) {
-                    if (lowerTitle.includes('monday') && expectedWeekday !== 'mon') hasDayConflict = true;
-                    else if (lowerTitle.includes('tuesday') && expectedWeekday !== 'tue') hasDayConflict = true;
-                    else if (lowerTitle.includes('wednesday') && expectedWeekday !== 'wed') hasDayConflict = true;
-                    else if (lowerTitle.includes('thursday') && expectedWeekday !== 'thu') hasDayConflict = true;
-                    else if (lowerTitle.includes('friday') && expectedWeekday !== 'fri') hasDayConflict = true;
-                    else if (lowerTitle.includes('saturday') && expectedWeekday !== 'sat') hasDayConflict = true;
-                    else if (lowerTitle.includes('sunday') && expectedWeekday !== 'sun') hasDayConflict = true;
-                }
-                
-                // Also check if title contains a different 8-digit date
-                const altDateInTitle = titleText.match(/(\d{8})/);
-                if (altDateInTitle && altDateInTitle[1] !== dateStr) hasDayConflict = true;
-                
-                if (hasDayConflict) {
-                    discardedDueToMismatch++;
-                    console.warn(`[VALIDATION] Discarded day mismatch: "${titleText.substring(0,60)}" | filename date ${dateStr} (expected ${expectedWeekday}) | source: ${sourceUrl}`);
-                    continue;
-                }
-                
-                const displayDate = `${dateStr.slice(0,4)}-${dateStr.slice(4,6)}-${dateStr.slice(6,8)}`;
-                segments.push({ 
-                    url, 
-                    title: titleText, 
-                    filename, 
-                    dateStr, 
-                    hour, 
-                    isAlex, 
-                    isWarRoom, 
-                    isSundayNight, 
-                    displayDate,
-                    source: sourceUrl
-                });
-            }
-            
-            if (discardedDueToMismatch > 0) {
-                totalDiscardedCount += discardedDueToMismatch;
-                console.log(`🔍 Date sanity check removed ${discardedDueToMismatch} invalid entries from ${sourceUrl}`);
-            }
-            return segments;
-        }
-        
-        function buildArchiveIndex(segments) {
-            const archive = {};
-            for (const seg of segments) {
-                if (!archive[seg.dateStr]) archive[seg.dateStr] = [];
-                archive[seg.dateStr].push(seg);
-            }
-            for (const date in archive) {
-                const alex = archive[date].filter(s => s.isAlex).sort((a,b) => a.hour - b.hour);
-                const war = archive[date].filter(s => s.isWarRoom).sort((a,b) => a.hour - b.hour);
-                const weekend = archive[date].filter(s => s.isSundayNight).sort((a,b) => a.hour - b.hour);
-                archive[date] = [...alex, ...war, ...weekend];
-            }
-            return archive;
-        }
-        
-        async function fetchAllArchiveSources() {
-            const urlsToTry = [MAIN_FEED, SECONDARY_FEED, LEGACY_FEED];
-            let allSegments = [];
-            totalDiscardedCount = 0;
-            
-            for (const url of urlsToTry) {
-                try {
-                    const html = await fetchWithMultiProxyForUrl(url);
-                    const segments = parseSegmentsFromHTML(html, url);
-                    if (segments.length > 0) {
-                        allSegments = [...allSegments, ...segments];
-                        console.log(`Fetched ${segments.length} valid segments from ${url}`);
-                    }
-                } catch (e) {
-                    console.warn(`Failed to fetch ${url}:`, e.message);
-                }
-            }
-            
-            // Deduplicate by URL
-            const uniqueMap = new Map();
-            for (const seg of allSegments) {
-                if (!uniqueMap.has(seg.url)) uniqueMap.set(seg.url, seg);
-            }
-            const uniqueSegments = Array.from(uniqueMap.values());
-            
-            if (uniqueSegments.length === 0) throw new Error('No valid segments found after date validation');
-            
-            if (totalDiscardedCount > 0) {
-                console.log(`📊 TOTAL DISCARDED: ${totalDiscardedCount} corrupted entries filtered out`);
-            }
-            
-            return uniqueSegments;
-        }
-        
-        async function fetchArchiveInBackground() {
-            if (feedStatusSpan) feedStatusSpan.textContent = '📡 Scanning & validating full archive...';
-            try {
-                const segments = await fetchAllArchiveSources();
-                if (segments.length === 0) throw new Error('No segments found');
-                const archive = buildArchiveIndex(segments);
-                const dates = Object.keys(archive).sort().reverse();
-                localStorage.setItem(CACHE_KEY, JSON.stringify(archive));
-                backgroundFetchComplete = true;
-                masterArchive = archive;
-                availableDates = dates;
-                
-                const discardMsg = totalDiscardedCount > 0 ? ` (filtered ${totalDiscardedCount} bad entries)` : '';
-                if (feedStatusSpan) feedStatusSpan.textContent = `✅ ${availableDates.length} clean dates${discardMsg}`;
-                
-                updateCalendarDates();
-                if (availableDates.length && (!currentSegments || currentSegments.length === 0)) {
-                    const newest = availableDates[0];
-                    const disp = `${newest.slice(0,4)}-${newest.slice(4,6)}-${newest.slice(6,8)}`;
-                    if (selectedDateDisplay) selectedDateDisplay.textContent = disp;
-                    loadPlaylistForDate(newest);
-                }
-                if (musicOverlay && musicOverlay.style.display === 'flex') {
-                    const stopBtn = document.getElementById('stopMusicAndPlayBtn');
-                    if (stopBtn && !stopBtn.classList.contains('system-ready-btn')) {
-                        stopBtn.textContent = '⚡ System Ready — Play Video';
-                        stopBtn.classList.add('system-ready-btn');
-                        if (overlayStatusMsg) overlayStatusMsg.textContent = `Full validated archive ready. ${totalDiscardedCount > 0 ? `Filtered ${totalDiscardedCount} bad entries.` : ''} Click to start video.`;
-                        announce('Archive ready with strict date validation.');
-                    }
-                }
-                updateProxyStatus('');
-            } catch (err) {
-                console.error('Fetch error:', err);
-                if (feedStatusSpan) feedStatusSpan.textContent = '⚠️ Validation error';
-                updateProxyStatus('Failed to load validated archive. Check network.');
-            }
-        }
-        
-        function loadFromLocalStorage() {
-            const cached = localStorage.getItem(CACHE_KEY);
-            if (!cached) return null;
-            try {
-                const archive = JSON.parse(cached);
-                const dates = Object.keys(archive).sort().reverse();
-                return { archive, dates };
-            } catch (e) { return null; }
-        }
-        
-        // SECURE PLAYLIST RENDERER
-        function renderPlaylistSidebar() {
-            if (!playlistContainer) return;
-            if (!currentSegments.length) {
-                playlistContainer.innerHTML = '<div class="text-center text-slate-500 text-sm py-10">No segments for this date</div>';
-                return;
-            }
-            while (playlistContainer.firstChild) playlistContainer.removeChild(playlistContainer.firstChild);
-            
-            for (let idx = 0; idx < currentSegments.length; idx++) {
-                const seg = currentSegments[idx];
-                const isActive = (idx === currentIndex);
-                let showType = '';
-                if (seg.isAlex) showType = 'Alex Jones';
-                else if (seg.isWarRoom) showType = 'War Room';
-                else if (seg.isSundayNight) showType = 'Sunday Night Live';
-                
-                if (idx > 0 && seg.isWarRoom && currentSegments[idx-1].isAlex) {
-                    const separator = createStaticSeparator('<div class="border-t border-slate-700"></div><div class="text-center text-[10px] text-slate-500 -mt-3">⚔️ WAR ROOM ⚔️</div>');
-                    playlistContainer.appendChild(separator);
-                }
-                if (idx > 0 && seg.isSundayNight && (currentSegments[idx-1].isWarRoom || currentSegments[idx-1].isAlex)) {
-                    const separator = createStaticSeparator('<div class="border-t border-amber-700/40"></div><div class="text-center text-[10px] text-amber-500/70 -mt-3">🌙 SUNDAY / WEEKEND SPECIAL</div>');
-                    playlistContainer.appendChild(separator);
-                }
-                
-                const div = document.createElement('div');
-                div.className = `segment-item p-3 rounded-xl border-l-4 ${isActive ? 'segment-active border-blue-500 bg-slate-800/60' : 'border-transparent bg-slate-800/30 hover:bg-slate-800/70'}`;
-                div.setAttribute('data-index', idx);
-                
-                const flexDiv = document.createElement('div');
-                flexDiv.className = 'flex justify-between items-center gap-2';
-                
-                const leftDiv = document.createElement('div');
-                leftDiv.className = 'flex-1 min-w-0';
-                
-                const topRow = document.createElement('div');
-                topRow.className = 'flex items-center gap-2 flex-wrap';
-                
-                const showTypeSpan = document.createElement('span');
-                let showTypeColor = 'text-blue-400';
-                if (seg.isWarRoom) showTypeColor = 'text-purple-400';
-                else if (seg.isSundayNight) showTypeColor = 'text-amber-400';
-                showTypeSpan.className = `text-xs font-semibold ${showTypeColor}`;
-                showTypeSpan.textContent = sanitizeText(showType);
-                topRow.appendChild(showTypeSpan);
-                
-                const hourLabel = seg.hour && seg.hour <= 4 ? `Hr${seg.hour}` : (seg.isSundayNight ? '✨ Special' : '');
-                if (hourLabel) {
-                    const hourSpan = document.createElement('span');
-                    hourSpan.className = 'text-xs font-mono text-slate-300';
-                    hourSpan.textContent = sanitizeText(hourLabel);
-                    topRow.appendChild(hourSpan);
-                }
-                
-                const dateSpan = document.createElement('span');
-                dateSpan.className = 'text-[10px] bg-slate-700 px-1.5 py-0.5 rounded-full';
-                dateSpan.textContent = sanitizeText(seg.displayDate);
-                topRow.appendChild(dateSpan);
-                leftDiv.appendChild(topRow);
-                
-                const titleP = document.createElement('p');
-                titleP.className = 'text-sm font-medium text-white truncate mt-1';
-                titleP.textContent = sanitizeText(seg.title.substring(0, 60));
-                leftDiv.appendChild(titleP);
-                flexDiv.appendChild(leftDiv);
-                
-                const indicatorSpan = document.createElement('span');
-                indicatorSpan.className = isActive ? 'text-green-400 text-xs' : 'text-slate-500 text-xs';
-                indicatorSpan.textContent = isActive ? '▶' : '●';
-                flexDiv.appendChild(indicatorSpan);
-                div.appendChild(flexDiv);
-                
-                div.addEventListener('click', (function(index) { 
-                    return function() { 
-                        currentIndex = index; 
-                        loadVideoByIndex(currentIndex); 
-                        renderPlaylistSidebar(); 
-                    }; 
-                })(idx));
-                playlistContainer.appendChild(div);
-            }
-            const activeEl = playlistContainer.querySelector('.segment-active');
-            if (activeEl) activeEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        }
-        
-        function loadPlaylistForDate(dateStr) {
-            if (!masterArchive[dateStr]) return false;
-            currentSegments = masterArchive[dateStr];
-            currentIndex = 0;
-            renderPlaylistSidebar();
-            if (segmentCountSpan) segmentCountSpan.textContent = `${currentSegments.length} videos`;
-            videoReadyToPlay = true;
-            return true;
-        }
-        
-        function loadVideoByIndex(index) {
-            if (!currentSegments[index]) return;
-            const seg = currentSegments[index];
-            videoPlayer.pause();
-            videoPlayer.src = seg.url;
-            videoPlayer.load();
-            videoPlayer.play().catch(e => console.log('Play blocked:', e));
-            if (currentTitleSpan) currentTitleSpan.textContent = sanitizeText(seg.title);
-            if (positionBadge) positionBadge.textContent = `${index + 1} / ${currentSegments.length}`;
-            if (progressFill) progressFill.style.width = '0%';
-            announce(`Now playing: ${seg.title}`);
-            if (loadingStarted) {
-                if (audioElement && !audioElement.paused) stopMusicAndPlayVideo();
-                loadingStarted = false;
-            }
-        }
-        
-        function playNext() { if (currentIndex + 1 < currentSegments.length) { currentIndex++; loadVideoByIndex(currentIndex); renderPlaylistSidebar(); } }
-        function playPrev() { if (currentIndex - 1 >= 0) { currentIndex--; loadVideoByIndex(currentIndex); renderPlaylistSidebar(); } }
-        
-        if (videoPlayer) {
-            videoPlayer.addEventListener('timeupdate', () => { if (videoPlayer.duration && progressFill) progressFill.style.width = `${(videoPlayer.currentTime / videoPlayer.duration) * 100}%`; });
-            videoPlayer.addEventListener('ended', () => playNext());
-            videoPlayer.addEventListener('error', () => setTimeout(() => playNext(), 1500));
-        }
-        
-        function updateCalendarDates() {
-            if (!flatpickrInstance) return;
-            const dateObjects = availableDates.map(d => new Date(parseInt(d.slice(0,4)), parseInt(d.slice(4,6))-1, parseInt(d.slice(6,8))));
-            flatpickrInstance.set('enable', dateObjects);
-        }
-        
+
+        // MAIN INITIALIZATION
         async function init() {
-            initSiriusAudio();
-            const cached = loadFromLocalStorage();
-            if (cached && Object.keys(cached.archive).length > 0) {
-                masterArchive = cached.archive;
-                availableDates = cached.dates;
-                if (feedStatusSpan) feedStatusSpan.textContent = `📅 ${availableDates.length} validated dates (cached)`;
-                if (availableDates.length) {
-                    const newest = availableDates[0];
-                    if (selectedDateDisplay) selectedDateDisplay.textContent = `${newest.slice(0,4)}-${newest.slice(4,6)}-${newest.slice(6,8)}`;
-                    loadPlaylistForDate(newest);
-                }
-                startSiriusAndOverlay();
-                loadingStarted = true;
-            } else {
-                startSiriusAndOverlay();
-                loadingStarted = true;
+            try {
+                // Fetch with cache-busting timestamp to ensure live data
+                const timestamp = new Date().getTime();
+                const response = await fetch(`${FEED_URL}?nocache=${timestamp}`, {
+                    method: 'GET',
+                    headers: {
+                        'Cache-Control': 'no-cache, no-store, must-revalidate',
+                        'Pragma': 'no-cache',
+                        'Expires': '0'
+                    }
+                });
+
+                if (!response.ok) throw new Error('Network response was not ok');
+                
+                const data = await response.text();
+                playlistContainer.innerHTML = data;
+                console.log('Live feed successfully loaded.');
+            } catch (error) {
+                console.error('Fetch failed, check CORS or Network status:', error);
+                playlistContainer.innerHTML = '<p class="text-red-500">Error loading feed. Please refresh.</p>';
             }
-            fetchArchiveInBackground();
-            
-            flatpickrInstance = flatpickr("#openCalendarBtn", {
+
+            // FLATPICKR CALENDAR INTEGRATION
+            flatpickr("#openCalendarBtn", {
                 dateFormat: "Y-m-d",
                 onChange: (dates) => {
                     if (dates.length) {
                         const d = dates[0];
                         const ymd = `${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}`;
-                        if (masterArchive[ymd]) {
-                            if (selectedDateDisplay) selectedDateDisplay.textContent = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-                            loadPlaylistForDate(ymd);
-                            announce(`Date changed to ${selectedDateDisplay ? selectedDateDisplay.textContent : ''}`);
-                        } else {
-                            announce(`No validated segments available for this date`);
-                        }
+                        console.log('Date selected:', ymd);
                     }
                 }
             });
-            updateCalendarDates();
-            document.getElementById('prev-segment-btn')?.addEventListener('click', playPrev);
-            document.getElementById('next-segment-btn')?.addEventListener('click', playNext);
-            document.getElementById('refresh-cache-btn')?.addEventListener('click', () => window.location.reload());
         }
-        
+
+        // SERVICE WORKER REGISTRATION
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js').then(reg => {
+                    console.log('Service Worker registered with scope:', reg.scope);
+                }).catch(err => {
+                    console.error('Service Worker registration failed:', err);
+                });
+            });
+        }
+
         init();
     </script>
 </body>

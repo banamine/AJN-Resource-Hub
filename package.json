@@ -1,1 +1,8 @@
-
+{
+  "name": "ajn-resource-hub",
+  "version": "1.0.0",
+  "devDependencies": {
+    "eslint": "^8.0.0",
+    "@microsoft/eslint-formatter-sarif": "^3.0.0"
+  }
+}

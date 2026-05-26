@@ -5,10 +5,6 @@ const urlsToCache = [
   './',
   './index.html',
   './css/styles.css',
-  './js/scraper.js',
-  './js/visualizer.js',
-  './js/player.js',
-  './js/app.js',
   './manifest.json'
 ];
 

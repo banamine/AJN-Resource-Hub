@@ -1,28 +1,8 @@
-{
-  "env": {
-    "browser": true,
-    "es2021": true,
-    "serviceworker": true,
-    "webextensions": true
-  },
-  "extends": "eslint:recommended",
-  "parserOptions": {
-    "ecmaVersion": 12,
-    "sourceType": "module"
-  },
-  "rules": {
-    "no-unused-vars": ["warn", { 
-      "argsIgnorePattern": "^_",
-      "varsIgnorePattern": "^_" 
-    }],
-    "no-console": ["warn", { "allow": ["warn", "error", "log"] }],
-    "no-undef": "off",
-    "no-async-promise-executor": "warn",
-    "no-constant-condition": ["error", { "checkLoops": false }]
-  },
-  "globals": {
-    "flatpickr": "readonly",
-    "AudioContext": "readonly",
-    "webkitAudioContext": "readonly"
-  }
-}
+- name: Run ESLint
+        run: |
+          npx eslint . \
+            --config .eslintrc.json \
+            --ext .js,.jsx,.ts,.tsx \
+            --format @microsoft/eslint-formatter-sarif \
+            --output-file eslint-results.sarif
+        continue-on-error: true

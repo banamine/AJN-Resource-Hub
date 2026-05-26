@@ -3,30 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>AJN Archive Player ， Sirius Edition ， Validated Feed</title>
-    <meta name="description" content="AJN Hourly Video Archive - Full feed with weekend shows and multi-proxy fallback + strict date validation">
+    <title>AJN Archive Player ， Sirius Edition ， Full Archive + Weekends</title>
+    <meta name="description" content="AJN Hourly Video Archive - Full feed with weekend shows and multi-proxy fallback">
     <meta name="theme-color" content="#0a0f1c">
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon-192.png">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-    <link rel="stylesheet" href="styles.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        body { background: #0a0f1c; color: #e2e8f0; }
+        .player-container { background: #000; border-radius: 1.2rem; overflow: hidden; position: relative; }
+        .segment-item { transition: all 0.2s ease; cursor: pointer; }
+        .segment-item:hover { background: #1e293b; transform: translateX(4px); }
+        .segment-active { background: #0f2b3d; border-left: 3px solid #3b82f6; }
         /* Accessibility Contrast Fixes */
         #pillStopBtn { background-color: #b91c1c !important; color: #ffffff; }
         #stopMusicAndPlayBtn { background-color: #15803d !important; color: #ffffff; font-weight: 700; }
         .text-center { color: #cbd5e1 !important; }
     </style>
 </head>
-<body class="font-sans text-slate-200 bg-[#0a0a12] min-h-screen">
-
-    <div class="orb-bg"></div>
+<body class="font-sans">
 
     <main id="main-content">
         <div class="max-w-7xl mx-auto px-4 py-8">
             <header class="flex justify-between items-center mb-8">
-                <h1 class="text-2xl font-bold tracking-tight">AJN Glass Archive Suite</h1>
+                <h1 class="text-2xl font-bold">AJN Glass Archive Suite</h1>
                 <button id="openCalendarBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors" tabindex="0">
                     Select Date
                 </button>
@@ -38,58 +40,65 @@
     </main>
 
     <script>
-        // CONFIGURATION & CACHE BUSTING
-        const FEED_URL = 'https://rss.alexjones.media/AJNHourlyVideo.html';
-        const playlistContainer = document.getElementById('playlist-container');
+        let loadingStarted = false;
+        let flatpickrInstance;
+        let masterArchive = {};
 
-        // MAIN INITIALIZATION
+        // Helper to announce to screen readers
+        function announce(message) {
+            const el = document.createElement('div');
+            el.setAttribute('aria-live', 'polite');
+            el.className = 'sr-only';
+            el.textContent = message;
+            document.body.appendChild(el);
+            setTimeout(() => el.remove(), 1000);
+        }
+
         async function init() {
-            try {
-                // Fetch with cache-busting timestamp to ensure live data
-                const timestamp = new Date().getTime();
-                const response = await fetch(`${FEED_URL}?nocache=${timestamp}`, {
-                    method: 'GET',
-                    headers: {
-                        'Cache-Control': 'no-cache, no-store, must-revalidate',
-                        'Pragma': 'no-cache',
-                        'Expires': '0'
-                    }
-                });
-
-                if (!response.ok) throw new Error('Network response was not ok');
-                
-                const data = await response.text();
-                playlistContainer.innerHTML = data;
-                console.log('Live feed successfully loaded.');
-            } catch (error) {
-                console.error('Fetch failed, check CORS or Network status:', error);
-                playlistContainer.innerHTML = '<p class="text-red-500">Error loading feed. Please refresh.</p>';
+            // Restore your specific initialization logic
+            if (typeof startSiriusAndOverlay === 'function') {
+                startSiriusAndOverlay();
+                loadingStarted = true;
             }
-
-            // FLATPICKR CALENDAR INTEGRATION
-            flatpickr("#openCalendarBtn", {
+            
+            // Your logic for fetching archives
+            if (typeof fetchArchiveInBackground === 'function') {
+                fetchArchiveInBackground();
+            }
+            
+            flatpickrInstance = flatpickr("#openCalendarBtn", {
                 dateFormat: "Y-m-d",
                 onChange: (dates) => {
                     if (dates.length) {
                         const d = dates[0];
                         const ymd = `${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}`;
-                        console.log('Date selected:', ymd);
+                        if (masterArchive[ymd]) {
+                            const dateDisplay = document.getElementById('selected-date');
+                            if (dateDisplay) dateDisplay.innerText = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+                            loadPlaylistForDate(ymd);
+                            announce(`Date changed to ${ymd}`);
+                        }
                     }
                 }
             });
+
+            // Restore your event listeners
+            document.getElementById('prev-segment-btn')?.addEventListener('click', playPrev);
+            document.getElementById('next-segment-btn')?.addEventListener('click', playNext);
+            document.getElementById('refresh-cache-btn')?.addEventListener('click', () => window.location.reload());
+            
+            if (typeof updateCalendarDates === 'function') {
+                updateCalendarDates();
+            }
         }
 
-        // SERVICE WORKER REGISTRATION
+        // Service Worker registration
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js').then(reg => {
-                    console.log('Service Worker registered with scope:', reg.scope);
-                }).catch(err => {
-                    console.error('Service Worker registration failed:', err);
-                });
+                navigator.serviceWorker.register('/sw.js').catch(err => console.error('SW Error:', err));
             });
         }
-
+        
         init();
     </script>
 </body>

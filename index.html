@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>AJN Archive Player · Sirius Edition · Full Archive + Weekends</title>
+    <title>AJN  路 Full Archive + Weekends</title>
     <meta name="description" content="AJN Hourly Video Archive - Full feed with weekend shows and multi-proxy fallback">
     <meta name="theme-color" content="#0a0f1c">
     <link rel="manifest" href="manifest.json">
@@ -166,24 +166,24 @@
 <body class="font-sans antialiased text-gray-200">
 
     <div id="audioPill" class="audio-pill" style="display: none;">
-        <span class="status-text">🎵 Sirius</span>
+        <span class="status-text">馃幍 Sirius</span>
         <button id="pillStopBtn">Stop</button>
     </div>
 
     <div id="update-toast" style="display: none;" class="update-toast">
-        <span>🔄 New dates available!</span>
+        <span>馃攧 New dates available!</span>
         <button id="refresh-cache-btn" class="bg-blue-600 px-4 py-1 rounded-full text-sm">Refresh</button>
     </div>
 
     <div class="max-w-7xl mx-auto px-4 py-5 md:py-7">
         <div class="flex flex-col md:flex-row justify-between items-center gap-4 border-b border-slate-800 pb-5 mb-6">
             <div>
-                <h1 class="text-3xl font-extrabold bg-gradient-to-r from-emerald-400 to-blue-500 bg-clip-text text-transparent">AJN Archive Player · Full Archive</h1>
-                <p class="text-sm text-slate-400">Alex Jones + WarRoom + Sunday Night Live · Auto-advance · Multi-proxy</p>
+                <h1 class="text-3xl font-extrabold bg-gradient-to-r from-emerald-400 to-blue-500 bg-clip-text text-transparent">AJN Archive Player 路 Full Archive</h1>
+                <p class="text-sm text-slate-400">Alex Jones + WarRoom + Sunday Night Live</p>
             </div>
             <div class="flex items-center gap-3">
                 <button id="openCalendarBtn" class="bg-slate-800 border border-slate-700 rounded-full px-4 py-2 text-sm flex items-center gap-2 hover:bg-slate-700">
-                    📅 <span id="selectedDateDisplay">Pick a date</span>
+                    馃搮 <span id="selectedDateDisplay">Pick a date</span>
                 </button>
                 <div class="text-xs bg-slate-800 px-3 py-1.5 rounded-full">
                     <span id="feed-status">Initializing...</span>
@@ -203,11 +203,11 @@
                                 <div class="pulse-wave">
                                     <span></span><span></span><span></span><span></span><span></span>
                                 </div>
-                                <div class="overlay-title">🎵 The Alan Parsons Project · Sirius</div>
-                                <div class="overlay-sub" id="overlayStatusMsg">Loading AJN full archive �?please wait</div>
+                                <div class="overlay-title">馃幍  路 Sirius</div>
+                                <div class="overlay-sub" id="overlayStatusMsg">Loading AJN  鈥?please wait</div>
                                 <div class="flex flex-col gap-2 max-w-xs mx-auto">
-                                    <button id="startAudioBtn" class="init-audio-btn hidden">🔊 Initialize Audio Stream</button>
-                                    <button id="stopMusicAndPlayBtn" class="stop-music-btn">�?Stop Music & Play Video</button>
+                                    <button id="startAudioBtn" class="init-audio-btn hidden">馃攰 Initialize Audio Stream</button>
+                                    <button id="stopMusicAndPlayBtn" class="stop-music-btn">鈴?Stop Music & Play Video</button>
                                 </div>
                                 <div id="proxyStatusMsg" class="proxy-status"></div>
                             </div>
@@ -222,8 +222,8 @@
                                 </div>
                             </div>
                             <div class="flex gap-2">
-                                <button id="prev-segment-btn" class="bg-slate-700 hover:bg-slate-600 px-3 py-1.5 rounded-full text-sm transition">◀ Prev</button>
-                                <button id="next-segment-btn" class="bg-blue-700 hover:bg-blue-600 px-3 py-1.5 rounded-full text-sm transition">Next �?/button>
+                                <button id="prev-segment-btn" class="bg-slate-700 hover:bg-slate-600 px-3 py-1.5 rounded-full text-sm transition">鈼€ Prev</button>
+                                <button id="next-segment-btn" class="bg-blue-700 hover:bg-blue-600 px-3 py-1.5 rounded-full text-sm transition">Next 鈻?/button>
                             </div>
                         </div>
                         <div class="mt-3 w-full bg-slate-700 rounded-full h-1.5 overflow-hidden">
@@ -235,7 +235,7 @@
 
             <div class="bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden flex flex-col h-[560px]">
                 <div class="bg-slate-950 px-4 py-3 border-b border-slate-800 flex justify-between">
-                    <h3 class="font-bold text-white text-sm">📋 Playlist · Weekends Included</h3>
+                    <h3 class="font-bold text-white text-sm">馃搵 Playlist 路 Weekends Included</h3>
                     <span id="segment-count" class="text-[11px] text-slate-400">0 items</span>
                 </div>
                 <div id="playlist-container" class="playlist-scroll p-2 space-y-2 flex-1">
@@ -343,10 +343,10 @@
                     audioElement.currentTime = SEEK_TO_SECONDS;
                 }
                 startAudioBtn.classList.add('hidden');
-                if (overlayStatusMsg) overlayStatusMsg.textContent = '🎙�?Streaming AJN Matrix Interlude...';
+                if (overlayStatusMsg) overlayStatusMsg.textContent = '馃帣锔?Streaming AJN Matrix Interlude...';
                 announce('AJN archive loading. Sirius music playing.');
             } catch (autoplayError) {
-                if (overlayStatusMsg) overlayStatusMsg.textContent = '🔇 Browser blocked autoplay �?click below to activate audio.';
+                if (overlayStatusMsg) overlayStatusMsg.textContent = '馃攪 Browser blocked autoplay 鈥?click below to activate audio.';
                 startAudioBtn.classList.remove('hidden');
                 announce('Autoplay blocked. Click Initialize Audio Stream to unlock sound.');
             }
@@ -384,7 +384,7 @@
                     await audioElement.play();
                     if (audioElement.duration > SEEK_TO_SECONDS) audioElement.currentTime = SEEK_TO_SECONDS;
                     startAudioBtn.classList.add('hidden');
-                    if (overlayStatusMsg) overlayStatusMsg.textContent = '🎙�?Streaming AJN Matrix Interlude...';
+                    if (overlayStatusMsg) overlayStatusMsg.textContent = '馃帣锔?Streaming AJN Matrix Interlude...';
                     announce('Audio stream initialized. Loading archive in background.');
                 } catch(e) { console.error('Manual start failed:', e); }
             }
@@ -528,7 +528,7 @@
         }
         
         async function fetchArchiveInBackground() {
-            feedStatusSpan.innerHTML = '📡 Scanning full archive (including weekends)...';
+            feedStatusSpan.innerHTML = '馃摗 Scanning full archive (including weekends)...';
             try {
                 const segments = await fetchAllArchiveSources();
                 if (segments.length === 0) throw new Error('No segments found');
@@ -538,7 +538,7 @@
                 backgroundFetchComplete = true;
                 masterArchive = archive;
                 availableDates = dates;
-                feedStatusSpan.innerHTML = `�?${availableDates.length} dates loaded (inc. weekends)`;
+                feedStatusSpan.innerHTML = `鉁?${availableDates.length} dates loaded (inc. weekends)`;
                 updateCalendarDates();
                 if (availableDates.length && (!currentSegments || currentSegments.length === 0)) {
                     const newest = availableDates[0];
@@ -549,7 +549,7 @@
                 if (musicOverlay && musicOverlay.style.display === 'flex') {
                     const stopBtn = document.getElementById('stopMusicAndPlayBtn');
                     if (stopBtn && !stopBtn.classList.contains('system-ready-btn')) {
-                        stopBtn.textContent = '�?System Ready �?Play Video';
+                        stopBtn.textContent = '鈿?System Ready 鈥?Play Video';
                         stopBtn.classList.add('system-ready-btn');
                         if (overlayStatusMsg) overlayStatusMsg.textContent = 'Full archive loaded. Click to start video.';
                         announce('Archive ready with weekends. Click System Ready button.');
@@ -558,7 +558,7 @@
                 updateProxyStatus('');
             } catch (err) {
                 console.error('Fetch error:', err);
-                feedStatusSpan.innerHTML = '⚠️ Connection error';
+                feedStatusSpan.innerHTML = '鈿狅笍 Connection error';
                 updateProxyStatus('Failed to load archive. Check network or try later.');
             }
         }
@@ -598,7 +598,7 @@
                 if (idx > 0 && seg.isWarRoom && currentSegments[idx-1].isAlex) {
                     const separator = document.createElement('div');
                     separator.className = 'relative my-2';
-                    separator.innerHTML = '<div class="border-t border-slate-700"></div><div class="text-center text-[10px] text-slate-500 -mt-3">⚔️ WAR ROOM ⚔️</div>';
+                    separator.innerHTML = '<div class="border-t border-slate-700"></div><div class="text-center text-[10px] text-slate-500 -mt-3">鈿旓笍 WAR ROOM 鈿旓笍</div>';
                     playlistContainer.appendChild(separator);
                 }
                 
@@ -606,7 +606,7 @@
                 if (idx > 0 && seg.isSundayNight && (currentSegments[idx-1].isWarRoom || currentSegments[idx-1].isAlex)) {
                     const separator = document.createElement('div');
                     separator.className = 'relative my-2';
-                    separator.innerHTML = '<div class="border-t border-amber-700/40"></div><div class="text-center text-[10px] text-amber-500/70 -mt-3">🌙 SUNDAY / WEEKEND SPECIAL</div>';
+                    separator.innerHTML = '<div class="border-t border-amber-700/40"></div><div class="text-center text-[10px] text-amber-500/70 -mt-3">馃寵 SUNDAY / WEEKEND SPECIAL</div>';
                     playlistContainer.appendChild(separator);
                 }
                 
@@ -636,7 +636,7 @@
                 showTypeSpan.textContent = escapeHtml(showType);
                 topRow.appendChild(showTypeSpan);
                 
-                const hourLabel = seg.hour && seg.hour <= 4 ? `Hr${seg.hour}` : (seg.isSundayNight ? '�?Special' : '');
+                const hourLabel = seg.hour && seg.hour <= 4 ? `Hr${seg.hour}` : (seg.isSundayNight ? '鉁?Special' : '');
                 if (hourLabel) {
                     const hourSpan = document.createElement('span');
                     hourSpan.className = 'text-xs font-mono text-slate-300';
@@ -661,7 +661,7 @@
                 // Right side indicator
                 const indicatorSpan = document.createElement('span');
                 indicatorSpan.className = isActive ? 'text-green-400 text-xs' : 'text-slate-500 text-xs';
-                indicatorSpan.textContent = isActive ? '�? : '�?;
+                indicatorSpan.textContent = isActive ? '鈻? : '鈼?;
                 flexDiv.appendChild(indicatorSpan);
                 
                 div.appendChild(flexDiv);
@@ -744,7 +744,7 @@
             if (cached && Object.keys(cached.archive).length > 0) {
                 masterArchive = cached.archive;
                 availableDates = cached.dates;
-                feedStatusSpan.innerHTML = `📅 ${availableDates.length} dates (cached + weekends)`;
+                feedStatusSpan.innerHTML = `馃搮 ${availableDates.length} dates (cached + weekends)`;
                 if (availableDates.length) {
                     const newest = availableDates[0];
                     selectedDateDisplay.innerText = `${newest.slice(0,4)}-${newest.slice(4,6)}-${newest.slice(6,8)}`;

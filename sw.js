@@ -1,29 +1,31 @@
-name: Deploy Static Content
-on:
-  push:
-    branches: ["cloudflare/workers-autoconfig", "main"]
-  workflow_dispatch:
+export default {
+  async fetch(request, env, ctx) {
+    const corsHeaders = {
+      "Access-Control-Allow-Origin": "https://banamine.github.io", // Your specific domain
+      "Access-Control-Allow-Methods": "GET,HEAD,POST,OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type",
+      "Access-Control-Max-Age": "86400",
+    };
 
-permissions:
-  contents: read
-  pages: write
-  id-token: write
+    // 1. Handle Preflight (OPTIONS) Requests
+    if (request.method === "OPTIONS") {
+      return new Response(null, {
+        status: 204,
+        headers: corsHeaders,
+      });
+    }
 
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
-      
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: '.'
-          
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v5
+    // 2. Fetch your archive/data
+    const response = await fetch(request);
+
+    // 3. Recreate the response with CORS headers added
+    const newResponse = new Response(response.body, response);
+    
+    // Apply headers
+    Object.keys(corsHeaders).forEach(key => {
+      newResponse.headers.set(key, corsHeaders[key]);
+    });
+
+    return newResponse;
+  }
+};

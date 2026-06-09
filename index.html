@@ -161,6 +161,22 @@
             color: #64748b;
             margin-top: 8px;
         }
+        /* Flatpickr input styling */
+        .date-input {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 9999px;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            color: #e2e8f0;
+            cursor: pointer;
+            width: 140px;
+            text-align: center;
+        }
+        .date-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+        }
     </style>
 </head>
 <body class="font-sans antialiased text-gray-200">
@@ -183,9 +199,7 @@
                     <p class="text-sm text-slate-400">Alex Jones + WarRoom + Sunday Night Live · Auto-advance · Multi-proxy</p>
                 </div>
                 <div class="flex items-center gap-3">
-                    <button id="openCalendarBtn" class="bg-slate-800 border border-slate-700 rounded-full px-4 py-2 text-sm flex items-center gap-2 hover:bg-slate-700">
-                        📅 <span id="selectedDateDisplay">Pick a date</span>
-                    </button>
+                    <input type="text" id="datePickerInput" class="date-input" placeholder="Pick a date" readonly>
                     <div class="text-xs bg-slate-800 px-3 py-1.5 rounded-full">
                         <span id="feed-status">Initializing...</span>
                     </div>
@@ -248,6 +262,20 @@
     </main>
 
     <script>
+        // ========== FIXED: safe escape (no slash/equal over-escape) ==========
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str.replace(/[&<>]/g, function(m) {
+                if (m === '&') return '&amp;';
+                if (m === '<') return '&lt;';
+                if (m === '>') return '&gt;';
+                return m;
+            }).replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, function(c) {
+                return c;
+            });
+        }
+
+        // ========== Sirius Audio Setup ==========
         const SIRIUS_PRIMARY = 'https://raw.githubusercontent.com/banamine/AJN-Resource-Hub/main/The%20Alan%20Parsons%20Project%20-%20Sirius%20(Official%20Audio).mp3';
         const SIRIUS_FALLBACK = 'https://archive.org/download/a-132-5_20260424/1.%20The%20Alan%20Parsons%20Project%20-%20Sirius%20%28Official%20Audio%29.mp4';
         const SEEK_TO_SECONDS = 25;
@@ -256,7 +284,6 @@
         let isLoadingActive = false;
         let loadingStarted = false;
         let currentAudioSource = 0;
-        let videoReadyToPlay = false;
         let backgroundFetchComplete = false;
         
         const musicOverlay = document.getElementById('musicOverlay');
@@ -276,19 +303,6 @@
         function announce(msg) { 
             if (ariaAnnouncer) ariaAnnouncer.textContent = String(msg || '');
             console.log('[ARIA]', msg); 
-        }
-        
-        function escapeHtml(str) {
-            if (!str) return '';
-            return String(str)
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
-                .replace(/"/g, '&quot;')
-                .replace(/'/g, '&#39;')
-                .replace(/\//g, '&#47;')
-                .replace(/`/g, '&#96;')
-                .replace(/=/g, '&#61;');
         }
         
         function initSiriusAudio() {
@@ -337,6 +351,7 @@
             }
         }
         
+        // FIXED: guard against uninitialized segments
         function stopMusicAndPlayVideo() {
             if (audioElement) {
                 audioElement.pause();
@@ -344,7 +359,6 @@
             }
             isLoadingActive = false;
             loadingStarted = false;
-            videoReadyToPlay = false;
             if (musicOverlay) {
                 musicOverlay.classList.add('hidden-overlay');
                 setTimeout(() => { if(musicOverlay) musicOverlay.style.display = 'none'; }, 600);
@@ -353,7 +367,8 @@
                 audioPill.classList.add('fade-out');
                 setTimeout(() => { if(audioPill) audioPill.style.display = 'none'; }, 600);
             }
-            if (currentSegments && currentSegments.length > 0) {
+            // SAFE: check if segments exist
+            if (currentSegments && currentSegments.length > 0 && currentIndex !== undefined) {
                 loadVideoByIndex(currentIndex);
                 announce('Music stopped. Starting video playback.');
             } else if (backgroundFetchComplete && currentSegments && currentSegments.length) {
@@ -377,67 +392,77 @@
         stopMusicAndPlayBtn?.addEventListener('click', stopMusicAndPlayVideo);
         pillStopBtn?.addEventListener('click', stopMusicAndPlayVideo);
         
+        // ========== PROXY + TIMEOUT FIXES ==========
         const MAIN_FEED = 'https://rss.alexjones.media/AJNHourlyVideo.html';
         const SECONDARY_FEED = 'https://rss.alexjones.media/AJNHourlyVideo_2.html';
         const LEGACY_FEED = 'https://rss.alexjones.media/network_feed_hourly_video.html';
         
+        // PROXY_LIST reordered: proxies first (CORS-safe), direct only as last resort
         const PROXY_LIST = [
             'https://api.allorigins.win/raw?url=',
             'https://corsproxy.io/?',
             'https://thingproxy.freeboard.io/fetch/'
         ];
-        const CACHE_KEY = 'ajn_full_archive_v14_secure';
         
-        let masterArchive = {};
-        let availableDates = [];
-        let currentSegments = [];
-        let currentIndex = 0;
-        let flatpickrInstance = null;
+        const CACHE_KEY = 'ajn_full_archive_v15_expiry';
+        const CACHE_EXPIRY_MS = 24 * 60 * 60 * 1000; // 24 hours
         
-        const currentTitleSpan = document.getElementById('current-title');
-        const positionBadge = document.getElementById('position-badge');
-        const progressFill = document.getElementById('progress-bar');
-        const feedStatusSpan = document.getElementById('feed-status');
-        const segmentCountSpan = document.getElementById('segment-count');
-        const playlistContainer = document.getElementById('playlist-container');
-        const selectedDateDisplay = document.getElementById('selectedDateDisplay');
-        
-        function updateProxyStatus(msg) { 
-            if (proxyStatusSpan) proxyStatusSpan.textContent = msg ? String(msg) : ''; 
+        async function fetchWithTimeout(url, timeoutMs = 12000) {
+            const controller = new AbortController();
+            const id = setTimeout(() => controller.abort(), timeoutMs);
+            try {
+                const response = await fetch(url, { signal: controller.signal, cache: 'no-store' });
+                clearTimeout(id);
+                return response;
+            } catch (err) {
+                clearTimeout(id);
+                throw err;
+            }
         }
         
+        // FIXED: try proxies first (bypass CORS), direct fetch last (but will likely fail)
         async function fetchWithMultiProxyForUrl(customUrl) {
-            updateProxyStatus(`Fetching: ${customUrl.split('/').pop()}...`);
-            try {
-                const directRes = await fetch(customUrl, { cache: 'no-store' });
-                if (directRes.ok) {
-                    updateProxyStatus(`Direct: ${customUrl.split('/').pop()}`);
-                    return await directRes.text();
-                }
-            } catch(e) { console.log('Direct fetch failed:', e.message); }
-            
+            updateProxyStatus(`Fetching: ${customUrl.split('/').pop()} via proxies...`);
+            // Try each proxy with timeout
             for (let i = 0; i < PROXY_LIST.length; i++) {
                 const proxy = PROXY_LIST[i];
-                updateProxyStatus(`Proxy ${i+1} for ${customUrl.split('/').pop()}...`);
+                const proxyUrl = proxy + encodeURIComponent(customUrl);
+                updateProxyStatus(`Proxy ${i+1} (${proxy.split('/')[2]})...`);
                 try {
-                    const proxyRes = await fetch(proxy + encodeURIComponent(customUrl), { cache: 'no-store' });
-                    if (proxyRes.ok) {
-                        updateProxyStatus(`Via ${proxy.split('/')[2]}`);
-                        return await proxyRes.text();
+                    const res = await fetchWithTimeout(proxyUrl, 10000);
+                    if (res.ok) {
+                        const text = await res.text();
+                        updateProxyStatus(`✓ via ${proxy.split('/')[2]}`);
+                        return text;
                     }
                 } catch(e) { console.warn(`Proxy ${proxy} failed:`, e.message); }
             }
+            // Last resort: direct fetch (almost always fails CORS, but we try)
+            updateProxyStatus(`Direct fetch attempt...`);
+            try {
+                const directRes = await fetchWithTimeout(customUrl, 8000);
+                if (directRes.ok) return await directRes.text();
+            } catch(e) { console.log('Direct fetch failed:', e.message); }
             throw new Error(`All fetch methods failed for ${customUrl}`);
         }
         
-        function parseSegmentsFromHTML(html) {
+        // FIXED: robust HTML parsing using DOMParser (no fragile regex)
+        function parseSegmentsFromHTML(html, baseUrl) {
             const segments = [];
-            const linkRegex = /<a\s+[^>]*href=["']?([^"'\s>]*\.m4v)["']?[^>]*>([\s\S]*?)<\/a>/gi;
-            let match;
-            while ((match = linkRegex.exec(html)) !== null) {
-                let url = match[1];
-                let titleText = match[2].trim().replace(/<[^>]*>/g, '');
-                if (!url || !url.includes('ajn.archives.pub')) continue;
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            const links = doc.querySelectorAll('a[href*=".m4v"]');
+            for (let link of links) {
+                let href = link.getAttribute('href');
+                if (!href) continue;
+                // resolve relative URLs
+                let url;
+                try {
+                    url = new URL(href, baseUrl).href;
+                } catch(e) { continue; }
+                if (!url.includes('ajn.archives.pub')) continue;
+                
+                const titleText = (link.textContent || '').trim().replace(/\s+/g, ' ');
                 const filename = url.split('/').pop() || '';
                 let dateMatch = filename.match(/(\d{8})/);
                 let dateStr = dateMatch ? dateMatch[1] : '';
@@ -460,7 +485,6 @@
                 const isSundayNight = lower.includes('snl') || lower.includes('sunday night live') || lower.includes('sunday night') || lower.includes('weekend');
                 
                 if (!isAlex && !isWarRoom && !isSundayNight) continue;
-                
                 if (isSundayNight && hour === 0) hour = 5;
                 if (hour < 1 && !isSundayNight) continue;
                 
@@ -491,7 +515,7 @@
             for (const url of urlsToTry) {
                 try {
                     const html = await fetchWithMultiProxyForUrl(url);
-                    const segments = parseSegmentsFromHTML(html);
+                    const segments = parseSegmentsFromHTML(html, url);
                     if (segments.length > 0) {
                         allSegments = [...allSegments, ...segments];
                     }
@@ -515,7 +539,8 @@
                 if (segments.length === 0) throw new Error('No segments found');
                 const archive = buildArchiveIndex(segments);
                 const dates = Object.keys(archive).sort().reverse();
-                localStorage.setItem(CACHE_KEY, JSON.stringify(archive));
+                const cacheData = { archive, timestamp: Date.now() };
+                localStorage.setItem(CACHE_KEY, JSON.stringify(cacheData));
                 backgroundFetchComplete = true;
                 masterArchive = archive;
                 availableDates = dates;
@@ -524,7 +549,7 @@
                 if (availableDates.length && (!currentSegments || currentSegments.length === 0)) {
                     const newest = availableDates[0];
                     const disp = `${newest.slice(0,4)}-${newest.slice(4,6)}-${newest.slice(6,8)}`;
-                    selectedDateDisplay.innerText = disp;
+                    datePickerInput.value = disp;
                     loadPlaylistForDate(newest);
                 }
                 if (musicOverlay && musicOverlay.style.display === 'flex') {
@@ -544,17 +569,21 @@
         }
         
         function loadFromLocalStorage() {
-            const cached = localStorage.getItem(CACHE_KEY);
-            if (!cached) return null;
+            const raw = localStorage.getItem(CACHE_KEY);
+            if (!raw) return null;
             try {
-                const archive = JSON.parse(cached);
+                const { archive, timestamp } = JSON.parse(raw);
+                if (Date.now() - timestamp > CACHE_EXPIRY_MS) return null;
                 const dates = Object.keys(archive).sort().reverse();
                 return { archive, dates };
             } catch (e) { return null; }
         }
         
+        // FIXED: preserve scroll position after rerender
+        let previousScrollTop = 0;
         function renderPlaylistSidebar() {
             if (!playlistContainer) return;
+            previousScrollTop = playlistContainer.scrollTop;
             if (!currentSegments.length) {
                 playlistContainer.innerHTML = '<div class="text-center text-slate-500 text-sm py-10">No segments for this date</div>';
                 return;
@@ -616,6 +645,8 @@
                 div.addEventListener('click', () => { currentIndex = idx; loadVideoByIndex(idx); renderPlaylistSidebar(); });
                 playlistContainer.appendChild(div);
             }
+            // restore scroll
+            playlistContainer.scrollTop = previousScrollTop;
             const activeEl = playlistContainer.querySelector('.segment-active');
             if (activeEl) activeEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
@@ -657,6 +688,36 @@
             flatpickrInstance.set('enable', dateObjects);
         }
         
+        // ========== KEYBOARD SUPPORT ==========
+        function handleKeydown(e) {
+            if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                if(currentIndex > 0) { currentIndex--; loadVideoByIndex(currentIndex); renderPlaylistSidebar(); }
+            } else if (e.key === 'ArrowRight') {
+                e.preventDefault();
+                if(currentIndex + 1 < currentSegments.length) { currentIndex++; loadVideoByIndex(currentIndex); renderPlaylistSidebar(); }
+            }
+        }
+        
+        // ========== INIT ==========
+        let masterArchive = {};
+        let availableDates = [];
+        let currentSegments = [];
+        let currentIndex = 0;
+        let flatpickrInstance = null;
+        
+        const currentTitleSpan = document.getElementById('current-title');
+        const positionBadge = document.getElementById('position-badge');
+        const progressFill = document.getElementById('progress-bar');
+        const feedStatusSpan = document.getElementById('feed-status');
+        const segmentCountSpan = document.getElementById('segment-count');
+        const playlistContainer = document.getElementById('playlist-container');
+        const datePickerInput = document.getElementById('datePickerInput');
+        
+        function updateProxyStatus(msg) { 
+            if (proxyStatusSpan) proxyStatusSpan.textContent = msg ? String(msg) : ''; 
+        }
+        
         function init() {
             initSiriusAudio();
             const cached = loadFromLocalStorage();
@@ -666,7 +727,7 @@
                 feedStatusSpan.innerHTML = `📅 ${availableDates.length} dates loaded`;
                 if (availableDates.length) {
                     const newest = availableDates[0];
-                    selectedDateDisplay.innerText = `${newest.slice(0,4)}-${newest.slice(4,6)}-${newest.slice(6,8)}`;
+                    datePickerInput.value = `${newest.slice(0,4)}-${newest.slice(4,6)}-${newest.slice(6,8)}`;
                     loadPlaylistForDate(newest);
                 }
                 startSiriusAndOverlay();
@@ -676,16 +737,18 @@
                 loadingStarted = true;
             }
             fetchArchiveInBackground();
-            flatpickrInstance = flatpickr("#openCalendarBtn", {
+            
+            // Flatpickr on INPUT element (fixed)
+            flatpickrInstance = flatpickr(datePickerInput, {
                 dateFormat: "Y-m-d",
                 onChange: (dates) => {
                     if (dates.length) {
                         const d = dates[0];
                         const ymd = `${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}`;
                         if (masterArchive[ymd]) {
-                            selectedDateDisplay.innerText = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+                            datePickerInput.value = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
                             loadPlaylistForDate(ymd);
-                            announce(`Date changed to ${selectedDateDisplay.innerText}`);
+                            announce(`Date changed to ${datePickerInput.value}`);
                         }
                     }
                 }
@@ -694,11 +757,13 @@
             document.getElementById('prev-segment-btn')?.addEventListener('click', () => { if(currentIndex > 0) { currentIndex--; loadVideoByIndex(currentIndex); renderPlaylistSidebar(); }});
             document.getElementById('next-segment-btn')?.addEventListener('click', () => { if(currentIndex + 1 < currentSegments.length) { currentIndex++; loadVideoByIndex(currentIndex); renderPlaylistSidebar(); }});
             document.getElementById('refresh-cache-btn')?.addEventListener('click', () => window.location.reload());
+            window.addEventListener('keydown', handleKeydown);
         }
         
+        // Service Worker registration with error log (won't break app)
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js').catch(err => console.error(err));
+                navigator.serviceWorker.register('/sw.js').catch(err => console.warn('SW registration failed (sw.js missing?):', err));
             });
         }
         

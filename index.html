@@ -696,11 +696,15 @@
             window.addEventListener('keydown', handleKeydown);
         }
         
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js').catch(err => console.warn('SW registration failed (sw.js missing?):', err));
-            });
-        }
+       // Change this line in your index.html (near the bottom)
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        // Use './sw.js' to ensure it looks in the correct project subdirectory
+        navigator.serviceWorker.register('./sw.js').catch(err => 
+            console.warn('SW registration failed:', err)
+        );
+    });
+}
         
         init();
     </script>

@@ -11,6 +11,11 @@ permissions:
 
 jobs:
   deploy:
+    # THIS IS THE PART THAT WAS MISSING OR INCORRECT
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+      
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

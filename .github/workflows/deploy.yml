@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   deploy:
-    # THIS IS THE PART THAT WAS MISSING OR INCORRECT
+    # Add this block exactly as shown:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>AJN Archive Player ¬∑ Sirius Edition ¬∑ Full Archive + Weekends</title>
+    <title>AJN Archive Player °§ Sirius Edition °§ Full Archive + Weekends</title>
     <meta name="description" content="AJN Hourly Video Archive - Full feed with weekend shows and multi-proxy fallback">
     <meta name="theme-color" content="#0a0f1c">
     <link rel="manifest" href="manifest.json">
@@ -166,12 +166,12 @@
 <body class="font-sans antialiased text-gray-200">
 
     <div id="audioPill" class="audio-pill" style="display: none;">
-        <span class="status-text">üéµ Sirius</span>
+        <span class="status-text">?? Sirius</span>
         <button id="pillStopBtn">Stop</button>
     </div>
 
     <div id="update-toast" style="display: none;" class="update-toast">
-        <span>üîÑ New dates available!</span>
+        <span>?? New dates available!</span>
         <button id="refresh-cache-btn" class="bg-blue-600 px-4 py-1 rounded-full text-sm">Refresh</button>
     </div>
 
@@ -179,12 +179,21 @@
         <div class="max-w-7xl mx-auto px-4 py-5 md:py-7">
             <header class="flex flex-col md:flex-row justify-between items-center gap-4 border-b border-slate-800 pb-5 mb-6">
                 <div>
+<<<<<<< Updated upstream
                     <h1 class="text-3xl font-extrabold bg-gradient-to-r from-emerald-400 to-blue-500 bg-clip-text text-transparent">AJN Archive Player ¬∑ Full Archive</h1>
                     <p class="text-sm text-slate-400">Alex Jones + WarRoom + Sunday Night Live ¬∑ Auto-advance ¬∑ Multi-proxy</p>
                 </div>
                 <div class="flex items-center gap-3">
                     <button id="openCalendarBtn" class="bg-slate-800 border border-slate-700 rounded-full px-4 py-2 text-sm flex items-center gap-2 hover:bg-slate-700">
                         üìÖ <span id="selectedDateDisplay">Pick a date</span>
+=======
+                    <h1 class="text-3xl font-extrabold bg-gradient-to-r from-emerald-400 to-blue-500 bg-clip-text text-transparent">AJN Archive Player °§ Full Archive</h1>
+                    <p class="text-sm text-slate-400">Alex Jones + WarRoom + Sunday Night Live °§ Auto-advance °§ Multi-proxy</p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <button id="openCalendarBtn" class="bg-slate-800 border border-slate-700 rounded-full px-4 py-2 text-sm flex items-center gap-2 hover:bg-slate-700">
+                        ?? <span id="selectedDateDisplay">Pick a date</span>
+>>>>>>> Stashed changes
                     </button>
                     <div class="text-xs bg-slate-800 px-3 py-1.5 rounded-full">
                         <span id="feed-status">Initializing...</span>
@@ -204,11 +213,19 @@
                                     <div class="pulse-wave">
                                         <span></span><span></span><span></span><span></span><span></span>
                                     </div>
+<<<<<<< Updated upstream
                                     <div class="overlay-title">üéµ The Alan Parsons Project ¬∑ Sirius</div>
                                     <div class="overlay-sub" id="overlayStatusMsg">Loading AJN full archive ‚Äî please wait</div>
                                     <div class="flex flex-col gap-2 max-w-xs mx-auto">
                                         <button id="startAudioBtn" class="init-audio-btn hidden">üîä Initialize Audio Stream</button>
                                         <button id="stopMusicAndPlayBtn" class="stop-music-btn">‚èπ Stop Music & Play Video</button>
+=======
+                                    <div class="overlay-title">?? The Alan Parsons Project °§ Sirius</div>
+                                    <div class="overlay-sub" id="overlayStatusMsg">Loading AJN full archive °™ please wait</div>
+                                    <div class="flex flex-col gap-2 max-w-xs mx-auto">
+                                        <button id="startAudioBtn" class="init-audio-btn hidden">?? Initialize Audio Stream</button>
+                                        <button id="stopMusicAndPlayBtn" class="stop-music-btn">? Stop Music & Play Video</button>
+>>>>>>> Stashed changes
                                     </div>
                                     <div id="proxyStatusMsg" class="proxy-status"></div>
                                 </div>
@@ -223,8 +240,13 @@
                                     </div>
                                 </div>
                                 <div class="flex gap-2">
+<<<<<<< Updated upstream
                                     <button id="prev-segment-btn" class="bg-slate-700 hover:bg-slate-600 px-3 py-1.5 rounded-full text-sm transition">‚óÄ Prev</button>
                                     <button id="next-segment-btn" class="bg-blue-700 hover:bg-blue-600 px-3 py-1.5 rounded-full text-sm transition">Next ‚ñ∂</button>
+=======
+                                    <button id="prev-segment-btn" class="bg-slate-700 hover:bg-slate-600 px-3 py-1.5 rounded-full text-sm transition">? Prev</button>
+                                    <button id="next-segment-btn" class="bg-blue-700 hover:bg-blue-600 px-3 py-1.5 rounded-full text-sm transition">Next ?</button>
+>>>>>>> Stashed changes
                                 </div>
                             </div>
                             <div class="mt-3 w-full bg-slate-700 rounded-full h-1.5 overflow-hidden">
@@ -236,7 +258,11 @@
 
                 <div class="bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden flex flex-col h-[560px]">
                     <div class="bg-slate-950 px-4 py-3 border-b border-slate-800 flex justify-between">
+<<<<<<< Updated upstream
                         <h3 class="font-bold text-white text-sm">üìã Playlist ¬∑ Weekends Included</h3>
+=======
+                        <h3 class="font-bold text-white text-sm">?? Playlist °§ Weekends Included</h3>
+>>>>>>> Stashed changes
                         <span id="segment-count" class="text-[11px] text-slate-400">0 items</span>
                     </div>
                     <div id="playlist-container" class="playlist-scroll p-2 space-y-2 flex-1">
@@ -328,10 +354,17 @@
                     audioElement.currentTime = SEEK_TO_SECONDS;
                 }
                 startAudioBtn.classList.add('hidden');
+<<<<<<< Updated upstream
                 if (overlayStatusMsg) overlayStatusMsg.textContent = 'üéôÔ∏è Streaming AJN Matrix Interlude...';
                 announce('AJN archive loading. Sirius music playing.');
             } catch (autoplayError) {
                 if (overlayStatusMsg) overlayStatusMsg.textContent = 'üîá Browser blocked autoplay ‚Äî click below to activate audio.';
+=======
+                if (overlayStatusMsg) overlayStatusMsg.textContent = '??? Streaming AJN Matrix Interlude...';
+                announce('AJN archive loading. Sirius music playing.');
+            } catch (autoplayError) {
+                if (overlayStatusMsg) overlayStatusMsg.textContent = '?? Browser blocked autoplay °™ click below to activate audio.';
+>>>>>>> Stashed changes
                 startAudioBtn.classList.remove('hidden');
                 announce('Autoplay blocked. Click Initialize Audio Stream to unlock sound.');
             }
@@ -369,7 +402,11 @@
                     await audioElement.play();
                     if (audioElement.duration > SEEK_TO_SECONDS) audioElement.currentTime = SEEK_TO_SECONDS;
                     startAudioBtn.classList.add('hidden');
+<<<<<<< Updated upstream
                     if (overlayStatusMsg) overlayStatusMsg.textContent = 'üéôÔ∏è Streaming AJN Matrix Interlude...';
+=======
+                    if (overlayStatusMsg) overlayStatusMsg.textContent = '??? Streaming AJN Matrix Interlude...';
+>>>>>>> Stashed changes
                     announce('Audio stream initialized. Loading archive in background.');
                 } catch(e) { console.error('Manual start failed:', e); }
             }
@@ -509,7 +546,7 @@
         }
         
         async function fetchArchiveInBackground() {
-            feedStatusSpan.innerHTML = 'üì° Scanning full archive (including weekends)...';
+            feedStatusSpan.innerHTML = '?? Scanning full archive (including weekends)...';
             try {
                 const segments = await fetchAllArchiveSources();
                 if (segments.length === 0) throw new Error('No segments found');
@@ -519,7 +556,11 @@
                 backgroundFetchComplete = true;
                 masterArchive = archive;
                 availableDates = dates;
+<<<<<<< Updated upstream
                 feedStatusSpan.innerHTML = `‚úÖ ${availableDates.length} dates loaded (inc. weekends)`;
+=======
+                feedStatusSpan.innerHTML = `? ${availableDates.length} dates loaded (inc. weekends)`;
+>>>>>>> Stashed changes
                 updateCalendarDates();
                 if (availableDates.length && (!currentSegments || currentSegments.length === 0)) {
                     const newest = availableDates[0];
@@ -530,7 +571,11 @@
                 if (musicOverlay && musicOverlay.style.display === 'flex') {
                     const stopBtn = document.getElementById('stopMusicAndPlayBtn');
                     if (stopBtn && !stopBtn.classList.contains('system-ready-btn')) {
+<<<<<<< Updated upstream
                         stopBtn.textContent = '‚ö° System Ready ‚Äî Play Video';
+=======
+                        stopBtn.textContent = '? System Ready °™ Play Video';
+>>>>>>> Stashed changes
                         stopBtn.classList.add('system-ready-btn');
                         if (overlayStatusMsg) overlayStatusMsg.textContent = 'Full archive loaded. Click to start video.';
                         announce('Archive ready with weekends. Click System Ready button.');
@@ -538,7 +583,11 @@
                 }
                 updateProxyStatus('');
             } catch (err) {
+<<<<<<< Updated upstream
                 feedStatusSpan.innerHTML = '‚ö†Ô∏è Connection error';
+=======
+                feedStatusSpan.innerHTML = '?? Connection error';
+>>>>>>> Stashed changes
                 updateProxyStatus('Failed to load archive. Check network or try later.');
             }
         }
@@ -569,13 +618,21 @@
                 if (idx > 0 && seg.isWarRoom && currentSegments[idx-1].isAlex) {
                     const sep = document.createElement('div');
                     sep.className = 'relative my-2';
+<<<<<<< Updated upstream
                     sep.innerHTML = '<div class="border-t border-slate-700"></div><div class="text-center text-[10px] text-slate-500 -mt-3">‚öîÔ∏è WAR ROOM ‚öîÔ∏è</div>';
+=======
+                    sep.innerHTML = '<div class="border-t border-slate-700"></div><div class="text-center text-[10px] text-slate-500 -mt-3">?? WAR ROOM ??</div>';
+>>>>>>> Stashed changes
                     playlistContainer.appendChild(sep);
                 }
                 if (idx > 0 && seg.isSundayNight && (currentSegments[idx-1].isWarRoom || currentSegments[idx-1].isAlex)) {
                     const sep = document.createElement('div');
                     sep.className = 'relative my-2';
+<<<<<<< Updated upstream
                     sep.innerHTML = '<div class="border-t border-amber-700/40"></div><div class="text-center text-[10px] text-amber-500/70 -mt-3">üåô SUNDAY / WEEKEND SPECIAL</div>';
+=======
+                    sep.innerHTML = '<div class="border-t border-amber-700/40"></div><div class="text-center text-[10px] text-amber-500/70 -mt-3">?? SUNDAY / WEEKEND SPECIAL</div>';
+>>>>>>> Stashed changes
                     playlistContainer.appendChild(sep);
                 }
                 
@@ -610,7 +667,11 @@
                 flexDiv.appendChild(leftDiv);
                 const indicatorSpan = document.createElement('span');
                 indicatorSpan.className = isActive ? 'text-green-400 text-xs' : 'text-slate-500 text-xs';
+<<<<<<< Updated upstream
                 indicatorSpan.textContent = isActive ? '‚ñ∂' : '‚óè';
+=======
+                indicatorSpan.textContent = isActive ? '?' : '°Ò';
+>>>>>>> Stashed changes
                 flexDiv.appendChild(indicatorSpan);
                 div.appendChild(flexDiv);
                 div.addEventListener('click', () => { currentIndex = idx; loadVideoByIndex(idx); renderPlaylistSidebar(); });
@@ -663,7 +724,11 @@
             if (cached && Object.keys(cached.archive).length > 0) {
                 masterArchive = cached.archive;
                 availableDates = cached.dates;
+<<<<<<< Updated upstream
                 feedStatusSpan.innerHTML = `üìÖ ${availableDates.length} dates loaded`;
+=======
+                feedStatusSpan.innerHTML = `?? ${availableDates.length} dates loaded`;
+>>>>>>> Stashed changes
                 if (availableDates.length) {
                     const newest = availableDates[0];
                     selectedDateDisplay.innerText = `${newest.slice(0,4)}-${newest.slice(4,6)}-${newest.slice(6,8)}`;

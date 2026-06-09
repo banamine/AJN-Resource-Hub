@@ -1,0 +1,2122 @@
+This XML file does not appear to have any style information associated with it. The document tree is shown below.
+<rss xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" version="2.0">
+<channel>
+<title>AJN Hourly Video Podcast</title>
+<itunes:subtitle>Because there's a war on for your mind!</itunes:subtitle>
+<link>https://alexjones.media</link>
+<itunes:new-feed-url>https://rss.alexjones.media/AJNHourlyVideo.xml</itunes:new-feed-url>
+<itunes:summary>Hour by hour video podcast files of all AJN live shows.</itunes:summary>
+<description>Because there's a war on for your mind.</description>
+<language>en-us</language>
+<lastBuildDate>Mon, 25 May 2026 23:08:00 -0000</lastBuildDate>
+<itunes:owner>
+<itunes:name>AJN Hourly</itunes:name>
+<itunes:email>sysadmin+rss-nospam@ajn.email</itunes:email>
+</itunes:owner>
+<webMaster>sysadmin+rss-nospam@ajn.email</webMaster>
+<ttl>250</ttl>
+<itunes:category text="News & Politics"/>
+<itunes:image href="https://rss.alexjones.media/AJNHourlyVideo-600x600.png"/>
+<item>
+<title>VIDEO - 20260525_Mon_WarRoom-Hr3</title>
+<description>20260525_Mon_WarRoom-Hr3</description>
+<pubDate>Mon, 25 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260525_Mon_WarRoom-Hr3.m4v" length="213119516" type="video/m4v"/>
+<guid>20260525_Mon_WarRoom-Hr3.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260525_Mon_WarRoom-Hr2</title>
+<description>20260525_Mon_WarRoom-Hr2</description>
+<pubDate>Mon, 25 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260525_Mon_WarRoom-Hr2.m4v" length="213445474" type="video/m4v"/>
+<guid>20260525_Mon_WarRoom-Hr2.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260525_Mon_WarRoom-Hr1</title>
+<description>20260525_Mon_WarRoom-Hr1</description>
+<pubDate>Mon, 25 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260525_Mon_WarRoom-Hr1.m4v" length="213081667" type="video/m4v"/>
+<guid>20260525_Mon_WarRoom-Hr1.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260525_Mon_Alex-Hr4</title>
+<description>20260525_Mon_Alex-Hr4</description>
+<pubDate>Mon, 25 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260525_Mon_Alex-Hr4.m4v" length="213591139" type="video/m4v"/>
+<guid>20260525_Mon_Alex-Hr4.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260525_Mon_Alex-Hr3</title>
+<description>20260525_Mon_Alex-Hr3</description>
+<pubDate>Mon, 25 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260525_Mon_Alex-Hr3.m4v" length="213051462" type="video/m4v"/>
+<guid>20260525_Mon_Alex-Hr3.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260525_Mon_Alex-Hr2</title>
+<description>20260525_Mon_Alex-Hr2</description>
+<pubDate>Mon, 25 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260525_Mon_Alex-Hr2.m4v" length="213305406" type="video/m4v"/>
+<guid>20260525_Mon_Alex-Hr2.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260525_Mon_Alex-Hr1</title>
+<description>20260525_Mon_Alex-Hr1</description>
+<pubDate>Mon, 25 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260525_Mon_Alex-Hr1.m4v" length="212871675" type="video/m4v"/>
+<guid>20260525_Mon_Alex-Hr1.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260524_Sun_SundayLive-Hr2</title>
+<description>20260524_Sun_SundayLive-Hr2</description>
+<pubDate>Sun, 24 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260524_Sun_SundayLive-Hr2.m4v" length="213471724" type="video/m4v"/>
+<guid>20260524_Sun_SundayLive-Hr2.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260524_Sun_SundayLive-Hr1</title>
+<description>20260524_Sun_SundayLive-Hr1</description>
+<pubDate>Sun, 24 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260524_Sun_SundayLive-Hr1.m4v" length="213295597" type="video/m4v"/>
+<guid>20260524_Sun_SundayLive-Hr1.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260524_Sun_Alex-Hr2</title>
+<description>20260524_Sun_Alex-Hr2</description>
+<pubDate>Sun, 24 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260524_Sun_Alex-Hr2.m4v" length="213903818" type="video/m4v"/>
+<guid>20260524_Sun_Alex-Hr2.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260524_Sun_Alex-Hr1</title>
+<description>20260524_Sun_Alex-Hr1</description>
+<pubDate>Sun, 24 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260524_Sun_Alex-Hr1.m4v" length="213271115" type="video/m4v"/>
+<guid>20260524_Sun_Alex-Hr1.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260523_Sat_Alex-Special</title>
+<description>20260523_Sat_Alex-Special</description>
+<pubDate>Sat, 23 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260523_Sat_Alex-Special.m4v" length="492253558" type="video/m4v"/>
+<guid>20260523_Sat_Alex-Special.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260522_Fri_WarRoom-Hr3</title>
+<description>20260522_Fri_WarRoom-Hr3</description>
+<pubDate>Fri, 22 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260522_Fri_WarRoom-Hr3.m4v" length="213131809" type="video/m4v"/>
+<guid>20260522_Fri_WarRoom-Hr3.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260522_Fri_WarRoom-Hr2</title>
+<description>20260522_Fri_WarRoom-Hr2</description>
+<pubDate>Fri, 22 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260522_Fri_WarRoom-Hr2.m4v" length="213260698" type="video/m4v"/>
+<guid>20260522_Fri_WarRoom-Hr2.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260522_Fri_WarRoom-Hr1</title>
+<description>20260522_Fri_WarRoom-Hr1</description>
+<pubDate>Fri, 22 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260522_Fri_WarRoom-Hr1.m4v" length="213093503" type="video/m4v"/>
+<guid>20260522_Fri_WarRoom-Hr1.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260522_Fri_Alex-Hr4</title>
+<description>20260522_Fri_Alex-Hr4</description>
+<pubDate>Fri, 22 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260522_Fri_Alex-Hr4.m4v" length="213314349" type="video/m4v"/>
+<guid>20260522_Fri_Alex-Hr4.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260522_Fri_Alex-Hr3</title>
+<description>20260522_Fri_Alex-Hr3</description>
+<pubDate>Fri, 22 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260522_Fri_Alex-Hr3.m4v" length="213026983" type="video/m4v"/>
+<guid>20260522_Fri_Alex-Hr3.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260522_Fri_Alex-Hr2</title>
+<description>20260522_Fri_Alex-Hr2</description>
+<pubDate>Fri, 22 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260522_Fri_Alex-Hr2.m4v" length="213069892" type="video/m4v"/>
+<guid>20260522_Fri_Alex-Hr2.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260522_Fri_Alex-Hr1</title>
+<description>20260522_Fri_Alex-Hr1</description>
+<pubDate>Fri, 22 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260522_Fri_Alex-Hr1.m4v" length="213098618" type="video/m4v"/>
+<guid>20260522_Fri_Alex-Hr1.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260521_Thu_WarRoom-Hr3</title>
+<description>20260521_Thu_WarRoom-Hr3</description>
+<pubDate>Thu, 21 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260521_Thu_WarRoom-Hr3.m4v" length="213239032" type="video/m4v"/>
+<guid>20260521_Thu_WarRoom-Hr3.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260521_Thu_WarRoom-Hr2</title>
+<description>20260521_Thu_WarRoom-Hr2</description>
+<pubDate>Thu, 21 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260521_Thu_WarRoom-Hr2.m4v" length="213419757" type="video/m4v"/>
+<guid>20260521_Thu_WarRoom-Hr2.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260521_Thu_WarRoom-Hr1</title>
+<description>20260521_Thu_WarRoom-Hr1</description>
+<pubDate>Thu, 21 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260521_Thu_WarRoom-Hr1.m4v" length="213268195" type="video/m4v"/>
+<guid>20260521_Thu_WarRoom-Hr1.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260521_Thu_Alex-Hr4</title>
+<description>20260521_Thu_Alex-Hr4</description>
+<pubDate>Thu, 21 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260521_Thu_Alex-Hr4.m4v" length="213183919" type="video/m4v"/>
+<guid>20260521_Thu_Alex-Hr4.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260521_Thu_Alex-Hr3</title>
+<description>20260521_Thu_Alex-Hr3</description>
+<pubDate>Thu, 21 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260521_Thu_Alex-Hr3.m4v" length="213007471" type="video/m4v"/>
+<guid>20260521_Thu_Alex-Hr3.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260521_Thu_Alex-Hr2</title>
+<description>20260521_Thu_Alex-Hr2</description>
+<pubDate>Thu, 21 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260521_Thu_Alex-Hr2.m4v" length="213988516" type="video/m4v"/>
+<guid>20260521_Thu_Alex-Hr2.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260521_Thu_Alex-Hr1</title>
+<description>20260521_Thu_Alex-Hr1</description>
+<pubDate>Thu, 21 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260521_Thu_Alex-Hr1.m4v" length="213285901" type="video/m4v"/>
+<guid>20260521_Thu_Alex-Hr1.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260520_Wed_WarRoom-Hr3</title>
+<description>20260520_Wed_WarRoom-Hr3</description>
+<pubDate>Wed, 20 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260520_Wed_WarRoom-Hr3.m4v" length="213811570" type="video/m4v"/>
+<guid>20260520_Wed_WarRoom-Hr3.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260520_Wed_WarRoom-Hr2</title>
+<description>20260520_Wed_WarRoom-Hr2</description>
+<pubDate>Wed, 20 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260520_Wed_WarRoom-Hr2.m4v" length="214000213" type="video/m4v"/>
+<guid>20260520_Wed_WarRoom-Hr2.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260520_Wed_WarRoom-Hr1</title>
+<description>20260520_Wed_WarRoom-Hr1</description>
+<pubDate>Wed, 20 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260520_Wed_WarRoom-Hr1.m4v" length="213718058" type="video/m4v"/>
+<guid>20260520_Wed_WarRoom-Hr1.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260520_Wed_Alex-Hr4</title>
+<description>20260520_Wed_Alex-Hr4</description>
+<pubDate>Wed, 20 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260520_Wed_Alex-Hr4.m4v" length="213326078" type="video/m4v"/>
+<guid>20260520_Wed_Alex-Hr4.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260520_Wed_Alex-Hr3</title>
+<description>20260520_Wed_Alex-Hr3</description>
+<pubDate>Wed, 20 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260520_Wed_Alex-Hr3.m4v" length="212879834" type="video/m4v"/>
+<guid>20260520_Wed_Alex-Hr3.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260520_Wed_Alex-Hr2</title>
+<description>20260520_Wed_Alex-Hr2</description>
+<pubDate>Wed, 20 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260520_Wed_Alex-Hr2.m4v" length="214195310" type="video/m4v"/>
+<guid>20260520_Wed_Alex-Hr2.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260520_Wed_Alex-Hr1</title>
+<description>20260520_Wed_Alex-Hr1</description>
+<pubDate>Wed, 20 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260520_Wed_Alex-Hr1.m4v" length="213732210" type="video/m4v"/>
+<guid>20260520_Wed_Alex-Hr1.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260519_Tue_Alex-Hr1</title>
+<description>20260519_Tue_Alex-Hr1</description>
+<pubDate>Tue, 19 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260519_Tue_Alex-Hr1.m4v" length="214633324" type="video/m4v"/>
+<guid>20260519_Tue_Alex-Hr1.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260519_Tue_WarRoom-Hr3</title>
+<description>20260519_Tue_WarRoom-Hr3</description>
+<pubDate>Tue, 19 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260519_Tue_WarRoom-Hr3.m4v" length="213303166" type="video/m4v"/>
+<guid>20260519_Tue_WarRoom-Hr3.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260519_Tue_WarRoom-Hr2</title>
+<description>20260519_Tue_WarRoom-Hr2</description>
+<pubDate>Tue, 19 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260519_Tue_WarRoom-Hr2.m4v" length="213088682" type="video/m4v"/>
+<guid>20260519_Tue_WarRoom-Hr2.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260519_Tue_WarRoom-Hr1</title>
+<description>20260519_Tue_WarRoom-Hr1</description>
+<pubDate>Tue, 19 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260519_Tue_WarRoom-Hr1.m4v" length="213272889" type="video/m4v"/>
+<guid>20260519_Tue_WarRoom-Hr1.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260519_Tue_Alex-Hr4</title>
+<description>20260519_Tue_Alex-Hr4</description>
+<pubDate>Tue, 19 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260519_Tue_Alex-Hr4.m4v" length="213214736" type="video/m4v"/>
+<guid>20260519_Tue_Alex-Hr4.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260519_Tue_Alex-Hr3</title>
+<description>20260519_Tue_Alex-Hr3</description>
+<pubDate>Tue, 19 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260519_Tue_Alex-Hr3.m4v" length="213300825" type="video/m4v"/>
+<guid>20260519_Tue_Alex-Hr3.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260519_Tue_Alex-Hr2</title>
+<description>20260519_Tue_Alex-Hr2</description>
+<pubDate>Tue, 19 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260519_Tue_Alex-Hr2.m4v" length="213247207" type="video/m4v"/>
+<guid>20260519_Tue_Alex-Hr2.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260518_Mon_WarRoom-Hr3</title>
+<description>20260518_Mon_WarRoom-Hr3</description>
+<pubDate>Mon, 18 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260518_Mon_WarRoom-Hr3.m4v" length="214228206" type="video/m4v"/>
+<guid>20260518_Mon_WarRoom-Hr3.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260518_Mon_WarRoom-Hr2</title>
+<description>20260518_Mon_WarRoom-Hr2</description>
+<pubDate>Mon, 18 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260518_Mon_WarRoom-Hr2.m4v" length="213706219" type="video/m4v"/>
+<guid>20260518_Mon_WarRoom-Hr2.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260518_Mon_WarRoom-Hr1</title>
+<description>20260518_Mon_WarRoom-Hr1</description>
+<pubDate>Mon, 18 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260518_Mon_WarRoom-Hr1.m4v" length="213636340" type="video/m4v"/>
+<guid>20260518_Mon_WarRoom-Hr1.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260518_Mon_Alex-Hr4</title>
+<description>20260518_Mon_Alex-Hr4</description>
+<pubDate>Mon, 18 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260518_Mon_Alex-Hr4.m4v" length="213257756" type="video/m4v"/>
+<guid>20260518_Mon_Alex-Hr4.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260518_Mon_Alex-Hr3</title>
+<description>20260518_Mon_Alex-Hr3</description>
+<pubDate>Mon, 18 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260518_Mon_Alex-Hr3.m4v" length="213407645" type="video/m4v"/>
+<guid>20260518_Mon_Alex-Hr3.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260518_Mon_Alex-Hr2</title>
+<description>20260518_Mon_Alex-Hr2</description>
+<pubDate>Mon, 18 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260518_Mon_Alex-Hr2.m4v" length="213262152" type="video/m4v"/>
+<guid>20260518_Mon_Alex-Hr2.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260518_Mon_Alex-Hr1</title>
+<description>20260518_Mon_Alex-Hr1</description>
+<pubDate>Mon, 18 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260518_Mon_Alex-Hr1.m4v" length="213448457" type="video/m4v"/>
+<guid>20260518_Mon_Alex-Hr1.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260517_Sun_SundayLive-Hr2</title>
+<description>20260517_Sun_SundayLive-Hr2</description>
+<pubDate>Sun, 17 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260517_Sun_SundayLive-Hr2.m4v" length="214024555" type="video/m4v"/>
+<guid>20260517_Sun_SundayLive-Hr2.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260517_Sun_SundayLive-Hr1</title>
+<description>20260517_Sun_SundayLive-Hr1</description>
+<pubDate>Sun, 17 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260517_Sun_SundayLive-Hr1.m4v" length="213823901" type="video/m4v"/>
+<guid>20260517_Sun_SundayLive-Hr1.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260517_Sun_Alex-Hr2</title>
+<description>20260517_Sun_Alex-Hr2</description>
+<pubDate>Sun, 17 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260517_Sun_Alex-Hr2.m4v" length="212256454" type="video/m4v"/>
+<guid>20260517_Sun_Alex-Hr2.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260517_Sun_Alex-Hr1</title>
+<description>20260517_Sun_Alex-Hr1</description>
+<pubDate>Sun, 17 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260517_Sun_Alex-Hr1.m4v" length="213097918" type="video/m4v"/>
+<guid>20260517_Sun_Alex-Hr1.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260516_Sat_Alex-Special</title>
+<description>20260516_Sat_Alex-Special</description>
+<pubDate>Sat, 16 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260516_Sat_Alex-Special.m4v" length="416676158" type="video/m4v"/>
+<guid>20260516_Sat_Alex-Special.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260515_Fri_Alex-Hr2</title>
+<description>20260515_Fri_Alex-Hr2</description>
+<pubDate>Fri, 15 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260515_Fri_Alex-Hr2.m4v" length="213938013" type="video/m4v"/>
+<guid>20260515_Fri_Alex-Hr2.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260515_Fri_Alex-Hr1</title>
+<description>20260515_Fri_Alex-Hr1</description>
+<pubDate>Fri, 15 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260515_Fri_Alex-Hr1.m4v" length="213569906" type="video/m4v"/>
+<guid>20260515_Fri_Alex-Hr1.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260515_Fri_WarRoom-Hr3</title>
+<description>20260515_Fri_WarRoom-Hr3</description>
+<pubDate>Fri, 15 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260515_Fri_WarRoom-Hr3.m4v" length="212890691" type="video/m4v"/>
+<guid>20260515_Fri_WarRoom-Hr3.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260515_Fri_WarRoom-Hr2</title>
+<description>20260515_Fri_WarRoom-Hr2</description>
+<pubDate>Fri, 15 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260515_Fri_WarRoom-Hr2.m4v" length="212971463" type="video/m4v"/>
+<guid>20260515_Fri_WarRoom-Hr2.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260515_Fri_WarRoom-Hr1</title>
+<description>20260515_Fri_WarRoom-Hr1</description>
+<pubDate>Fri, 15 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260515_Fri_WarRoom-Hr1.m4v" length="213340470" type="video/m4v"/>
+<guid>20260515_Fri_WarRoom-Hr1.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260515_Fri_Alex-Hr4</title>
+<description>20260515_Fri_Alex-Hr4</description>
+<pubDate>Fri, 15 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260515_Fri_Alex-Hr4.m4v" length="213245673" type="video/m4v"/>
+<guid>20260515_Fri_Alex-Hr4.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260515_Fri_Alex-Hr3</title>
+<description>20260515_Fri_Alex-Hr3</description>
+<pubDate>Fri, 15 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260515_Fri_Alex-Hr3.m4v" length="213054400" type="video/m4v"/>
+<guid>20260515_Fri_Alex-Hr3.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260514_Thu_WarRoom-Hr3</title>
+<description>20260514_Thu_WarRoom-Hr3</description>
+<pubDate>Thu, 14 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260514_Thu_WarRoom-Hr3.m4v" length="213565707" type="video/m4v"/>
+<guid>20260514_Thu_WarRoom-Hr3.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260514_Thu_WarRoom-Hr2</title>
+<description>20260514_Thu_WarRoom-Hr2</description>
+<pubDate>Thu, 14 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260514_Thu_WarRoom-Hr2.m4v" length="212835080" type="video/m4v"/>
+<guid>20260514_Thu_WarRoom-Hr2.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260514_Thu_WarRoom-Hr1</title>
+<description>20260514_Thu_WarRoom-Hr1</description>
+<pubDate>Thu, 14 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260514_Thu_WarRoom-Hr1.m4v" length="214405023" type="video/m4v"/>
+<guid>20260514_Thu_WarRoom-Hr1.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260514_Thu_Alex-Hr4</title>
+<description>20260514_Thu_Alex-Hr4</description>
+<pubDate>Thu, 14 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260514_Thu_Alex-Hr4.m4v" length="213556558" type="video/m4v"/>
+<guid>20260514_Thu_Alex-Hr4.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260514_Thu_Alex-Hr3</title>
+<description>20260514_Thu_Alex-Hr3</description>
+<pubDate>Thu, 14 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260514_Thu_Alex-Hr3.m4v" length="213651183" type="video/m4v"/>
+<guid>20260514_Thu_Alex-Hr3.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260514_Thu_Alex-Hr2</title>
+<description>20260514_Thu_Alex-Hr2</description>
+<pubDate>Thu, 14 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260514_Thu_Alex-Hr2.m4v" length="213617113" type="video/m4v"/>
+<guid>20260514_Thu_Alex-Hr2.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260514_Thu_Alex-Hr1</title>
+<description>20260514_Thu_Alex-Hr1</description>
+<pubDate>Thu, 14 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260514_Thu_Alex-Hr1.m4v" length="213818736" type="video/m4v"/>
+<guid>20260514_Thu_Alex-Hr1.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260513_Wed_WarRoom-Hr3</title>
+<description>20260513_Wed_WarRoom-Hr3</description>
+<pubDate>Wed, 13 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260513_Wed_WarRoom-Hr3.m4v" length="214023507" type="video/m4v"/>
+<guid>20260513_Wed_WarRoom-Hr3.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260513_Wed_WarRoom-Hr2</title>
+<description>20260513_Wed_WarRoom-Hr2</description>
+<pubDate>Wed, 13 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260513_Wed_WarRoom-Hr2.m4v" length="214993957" type="video/m4v"/>
+<guid>20260513_Wed_WarRoom-Hr2.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260513_Wed_WarRoom-Hr1</title>
+<description>20260513_Wed_WarRoom-Hr1</description>
+<pubDate>Wed, 13 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260513_Wed_WarRoom-Hr1.m4v" length="214224399" type="video/m4v"/>
+<guid>20260513_Wed_WarRoom-Hr1.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260513_Wed_Alex-Hr4</title>
+<description>20260513_Wed_Alex-Hr4</description>
+<pubDate>Wed, 13 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260513_Wed_Alex-Hr4.m4v" length="214708972" type="video/m4v"/>
+<guid>20260513_Wed_Alex-Hr4.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260513_Wed_Alex-Hr3</title>
+<description>20260513_Wed_Alex-Hr3</description>
+<pubDate>Wed, 13 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260513_Wed_Alex-Hr3.m4v" length="212845764" type="video/m4v"/>
+<guid>20260513_Wed_Alex-Hr3.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260513_Wed_Alex-Hr2</title>
+<description>20260513_Wed_Alex-Hr2</description>
+<pubDate>Wed, 13 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260513_Wed_Alex-Hr2.m4v" length="213735521" type="video/m4v"/>
+<guid>20260513_Wed_Alex-Hr2.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260513_Wed_Alex-Hr1</title>
+<description>20260513_Wed_Alex-Hr1</description>
+<pubDate>Wed, 13 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260513_Wed_Alex-Hr1.m4v" length="213482995" type="video/m4v"/>
+<guid>20260513_Wed_Alex-Hr1.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260512_Tue_WarRoom-Hr3</title>
+<description>20260512_Tue_WarRoom-Hr3</description>
+<pubDate>Tue, 12 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260512_Tue_WarRoom-Hr3.m4v" length="213945858" type="video/m4v"/>
+<guid>20260512_Tue_WarRoom-Hr3.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260512_Tue_WarRoom-Hr2</title>
+<description>20260512_Tue_WarRoom-Hr2</description>
+<pubDate>Tue, 12 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260512_Tue_WarRoom-Hr2.m4v" length="214920686" type="video/m4v"/>
+<guid>20260512_Tue_WarRoom-Hr2.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260512_Tue_WarRoom-Hr1</title>
+<description>20260512_Tue_WarRoom-Hr1</description>
+<pubDate>Tue, 12 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260512_Tue_WarRoom-Hr1.m4v" length="214480389" type="video/m4v"/>
+<guid>20260512_Tue_WarRoom-Hr1.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260512_Tue_Alex-Hr4</title>
+<description>20260512_Tue_Alex-Hr4</description>
+<pubDate>Tue, 12 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260512_Tue_Alex-Hr4.m4v" length="213912681" type="video/m4v"/>
+<guid>20260512_Tue_Alex-Hr4.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260512_Tue_Alex-Hr3</title>
+<description>20260512_Tue_Alex-Hr3</description>
+<pubDate>Tue, 12 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260512_Tue_Alex-Hr3.m4v" length="212956465" type="video/m4v"/>
+<guid>20260512_Tue_Alex-Hr3.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260512_Tue_Alex-Hr2</title>
+<description>20260512_Tue_Alex-Hr2</description>
+<pubDate>Tue, 12 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260512_Tue_Alex-Hr2.m4v" length="213244530" type="video/m4v"/>
+<guid>20260512_Tue_Alex-Hr2.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260512_Tue_Alex-Hr1</title>
+<description>20260512_Tue_Alex-Hr1</description>
+<pubDate>Tue, 12 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260512_Tue_Alex-Hr1.m4v" length="214423070" type="video/m4v"/>
+<guid>20260512_Tue_Alex-Hr1.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260511_Mon_WarRoom-Hr3</title>
+<description>20260511_Mon_WarRoom-Hr3</description>
+<pubDate>Mon, 11 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260511_Mon_WarRoom-Hr3.m4v" length="214593503" type="video/m4v"/>
+<guid>20260511_Mon_WarRoom-Hr3.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260511_Mon_WarRoom-Hr2</title>
+<description>20260511_Mon_WarRoom-Hr2</description>
+<pubDate>Mon, 11 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260511_Mon_WarRoom-Hr2.m4v" length="214283400" type="video/m4v"/>
+<guid>20260511_Mon_WarRoom-Hr2.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260511_Mon_WarRoom-Hr1</title>
+<description>20260511_Mon_WarRoom-Hr1</description>
+<pubDate>Mon, 11 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260511_Mon_WarRoom-Hr1.m4v" length="214451030" type="video/m4v"/>
+<guid>20260511_Mon_WarRoom-Hr1.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260511_Mon_Alex-Hr4</title>
+<description>20260511_Mon_Alex-Hr4</description>
+<pubDate>Mon, 11 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260511_Mon_Alex-Hr4.m4v" length="215222770" type="video/m4v"/>
+<guid>20260511_Mon_Alex-Hr4.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260511_Mon_Alex-Hr3</title>
+<description>20260511_Mon_Alex-Hr3</description>
+<pubDate>Mon, 11 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260511_Mon_Alex-Hr3.m4v" length="213603289" type="video/m4v"/>
+<guid>20260511_Mon_Alex-Hr3.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260511_Mon_Alex-Hr2</title>
+<description>20260511_Mon_Alex-Hr2</description>
+<pubDate>Mon, 11 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260511_Mon_Alex-Hr2.m4v" length="213305578" type="video/m4v"/>
+<guid>20260511_Mon_Alex-Hr2.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260511_Mon_Alex-Hr1</title>
+<description>20260511_Mon_Alex-Hr1</description>
+<pubDate>Mon, 11 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260511_Mon_Alex-Hr1.m4v" length="213666558" type="video/m4v"/>
+<guid>20260511_Mon_Alex-Hr1.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260510_Sun_SundayLive-Hr2</title>
+<description>20260510_Sun_SundayLive-Hr2</description>
+<pubDate>Sun, 10 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260510_Sun_SundayLive-Hr2.m4v" length="216626730" type="video/m4v"/>
+<guid>20260510_Sun_SundayLive-Hr2.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260510_Sun_SundayLive-Hr1</title>
+<description>20260510_Sun_SundayLive-Hr1</description>
+<pubDate>Sun, 10 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260510_Sun_SundayLive-Hr1.m4v" length="214667588" type="video/m4v"/>
+<guid>20260510_Sun_SundayLive-Hr1.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260510_Sun_Alex-Hr2</title>
+<description>20260510_Sun_Alex-Hr2</description>
+<pubDate>Sun, 10 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260510_Sun_Alex-Hr2.m4v" length="212865660" type="video/m4v"/>
+<guid>20260510_Sun_Alex-Hr2.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260510_Sun_Alex-Hr1</title>
+<description>20260510_Sun_Alex-Hr1</description>
+<pubDate>Sun, 10 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260510_Sun_Alex-Hr1.m4v" length="212980476" type="video/m4v"/>
+<guid>20260510_Sun_Alex-Hr1.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260509_Sat_Alex-Special</title>
+<description>20260509_Sat_Alex-Special</description>
+<pubDate>Sat, 09 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260509_Sat_Alex-Special.m4v" length="750164021" type="video/m4v"/>
+<guid>20260509_Sat_Alex-Special.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260508_Fri_WarRoom-Hr3</title>
+<description>20260508_Fri_WarRoom-Hr3</description>
+<pubDate>Fri, 08 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260508_Fri_WarRoom-Hr3.m4v" length="213704335" type="video/m4v"/>
+<guid>20260508_Fri_WarRoom-Hr3.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260508_Fri_WarRoom-Hr2</title>
+<description>20260508_Fri_WarRoom-Hr2</description>
+<pubDate>Fri, 08 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260508_Fri_WarRoom-Hr2.m4v" length="214926709" type="video/m4v"/>
+<guid>20260508_Fri_WarRoom-Hr2.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260508_Fri_WarRoom-Hr1</title>
+<description>20260508_Fri_WarRoom-Hr1</description>
+<pubDate>Fri, 08 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260508_Fri_WarRoom-Hr1.m4v" length="215065634" type="video/m4v"/>
+<guid>20260508_Fri_WarRoom-Hr1.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260508_Fri_Alex-Hr4</title>
+<description>20260508_Fri_Alex-Hr4</description>
+<pubDate>Fri, 08 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260508_Fri_Alex-Hr4.m4v" length="214472116" type="video/m4v"/>
+<guid>20260508_Fri_Alex-Hr4.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260508_Fri_Alex-Hr3</title>
+<description>20260508_Fri_Alex-Hr3</description>
+<pubDate>Fri, 08 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260508_Fri_Alex-Hr3.m4v" length="213787694" type="video/m4v"/>
+<guid>20260508_Fri_Alex-Hr3.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260508_Fri_Alex-Hr2</title>
+<description>20260508_Fri_Alex-Hr2</description>
+<pubDate>Fri, 08 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260508_Fri_Alex-Hr2.m4v" length="213595144" type="video/m4v"/>
+<guid>20260508_Fri_Alex-Hr2.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260508_Fri_Alex-Hr1</title>
+<description>20260508_Fri_Alex-Hr1</description>
+<pubDate>Fri, 08 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260508_Fri_Alex-Hr1.m4v" length="213623478" type="video/m4v"/>
+<guid>20260508_Fri_Alex-Hr1.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260507_Thu_WarRoom-Hr3</title>
+<description>20260507_Thu_WarRoom-Hr3</description>
+<pubDate>Thu, 07 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260507_Thu_WarRoom-Hr3.m4v" length="213627937" type="video/m4v"/>
+<guid>20260507_Thu_WarRoom-Hr3.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260507_Thu_WarRoom-Hr2</title>
+<description>20260507_Thu_WarRoom-Hr2</description>
+<pubDate>Thu, 07 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260507_Thu_WarRoom-Hr2.m4v" length="214800127" type="video/m4v"/>
+<guid>20260507_Thu_WarRoom-Hr2.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260507_Thu_WarRoom-Hr1</title>
+<description>20260507_Thu_WarRoom-Hr1</description>
+<pubDate>Thu, 07 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260507_Thu_WarRoom-Hr1.m4v" length="215351897" type="video/m4v"/>
+<guid>20260507_Thu_WarRoom-Hr1.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260507_Thu_Alex-Hr4</title>
+<description>20260507_Thu_Alex-Hr4</description>
+<pubDate>Thu, 07 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260507_Thu_Alex-Hr4.m4v" length="213042395" type="video/m4v"/>
+<guid>20260507_Thu_Alex-Hr4.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260507_Thu_Alex-Hr3</title>
+<description>20260507_Thu_Alex-Hr3</description>
+<pubDate>Thu, 07 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260507_Thu_Alex-Hr3.m4v" length="213415228" type="video/m4v"/>
+<guid>20260507_Thu_Alex-Hr3.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260507_Thu_Alex-Hr2</title>
+<description>20260507_Thu_Alex-Hr2</description>
+<pubDate>Thu, 07 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260507_Thu_Alex-Hr2.m4v" length="213035138" type="video/m4v"/>
+<guid>20260507_Thu_Alex-Hr2.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260507_Thu_Alex-Hr1</title>
+<description>20260507_Thu_Alex-Hr1</description>
+<pubDate>Thu, 07 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260507_Thu_Alex-Hr1.m4v" length="213468852" type="video/m4v"/>
+<guid>20260507_Thu_Alex-Hr1.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260506_Wed_WarRoom-Hr3</title>
+<description>20260506_Wed_WarRoom-Hr3</description>
+<pubDate>Wed, 06 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260506_Wed_WarRoom-Hr3.m4v" length="213659544" type="video/m4v"/>
+<guid>20260506_Wed_WarRoom-Hr3.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260506_Wed_WarRoom-Hr2</title>
+<description>20260506_Wed_WarRoom-Hr2</description>
+<pubDate>Wed, 06 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260506_Wed_WarRoom-Hr2.m4v" length="213597422" type="video/m4v"/>
+<guid>20260506_Wed_WarRoom-Hr2.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260506_Wed_WarRoom-Hr1</title>
+<description>20260506_Wed_WarRoom-Hr1</description>
+<pubDate>Wed, 06 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260506_Wed_WarRoom-Hr1.m4v" length="213533226" type="video/m4v"/>
+<guid>20260506_Wed_WarRoom-Hr1.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260506_Wed_Alex-Hr4</title>
+<description>20260506_Wed_Alex-Hr4</description>
+<pubDate>Wed, 06 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260506_Wed_Alex-Hr4.m4v" length="212812344" type="video/m4v"/>
+<guid>20260506_Wed_Alex-Hr4.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260506_Wed_Alex-Hr3</title>
+<description>20260506_Wed_Alex-Hr3</description>
+<pubDate>Wed, 06 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260506_Wed_Alex-Hr3.m4v" length="212997893" type="video/m4v"/>
+<guid>20260506_Wed_Alex-Hr3.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260506_Wed_Alex-Hr2</title>
+<description>20260506_Wed_Alex-Hr2</description>
+<pubDate>Wed, 06 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260506_Wed_Alex-Hr2.m4v" length="213147321" type="video/m4v"/>
+<guid>20260506_Wed_Alex-Hr2.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260506_Wed_Alex-Hr1</title>
+<description>20260506_Wed_Alex-Hr1</description>
+<pubDate>Wed, 06 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260506_Wed_Alex-Hr1.m4v" length="213698618" type="video/m4v"/>
+<guid>20260506_Wed_Alex-Hr1.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260505_Tue_WarRoom-Hr3</title>
+<description>20260505_Tue_WarRoom-Hr3</description>
+<pubDate>Tue, 05 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260505_Tue_WarRoom-Hr3.m4v" length="213398327" type="video/m4v"/>
+<guid>20260505_Tue_WarRoom-Hr3.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260505_Tue_WarRoom-Hr2</title>
+<description>20260505_Tue_WarRoom-Hr2</description>
+<pubDate>Tue, 05 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260505_Tue_WarRoom-Hr2.m4v" length="213261263" type="video/m4v"/>
+<guid>20260505_Tue_WarRoom-Hr2.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260505_Tue_WarRoom-Hr1</title>
+<description>20260505_Tue_WarRoom-Hr1</description>
+<pubDate>Tue, 05 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260505_Tue_WarRoom-Hr1.m4v" length="214509546" type="video/m4v"/>
+<guid>20260505_Tue_WarRoom-Hr1.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260505_Tue_Alex-Hr4</title>
+<description>20260505_Tue_Alex-Hr4</description>
+<pubDate>Tue, 05 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260505_Tue_Alex-Hr4.m4v" length="212876598" type="video/m4v"/>
+<guid>20260505_Tue_Alex-Hr4.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260505_Tue_Alex-Hr3</title>
+<description>20260505_Tue_Alex-Hr3</description>
+<pubDate>Tue, 05 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260505_Tue_Alex-Hr3.m4v" length="214655580" type="video/m4v"/>
+<guid>20260505_Tue_Alex-Hr3.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260505_Tue_Alex-Hr2</title>
+<description>20260505_Tue_Alex-Hr2</description>
+<pubDate>Tue, 05 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260505_Tue_Alex-Hr2.m4v" length="214155187" type="video/m4v"/>
+<guid>20260505_Tue_Alex-Hr2.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260505_Tue_Alex-Hr1</title>
+<description>20260505_Tue_Alex-Hr1</description>
+<pubDate>Tue, 05 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260505_Tue_Alex-Hr1.m4v" length="212993922" type="video/m4v"/>
+<guid>20260505_Tue_Alex-Hr1.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260504_Mon_WarRoom-Hr3</title>
+<description>20260504_Mon_WarRoom-Hr3</description>
+<pubDate>Mon, 04 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260504_Mon_WarRoom-Hr3.m4v" length="215594254" type="video/m4v"/>
+<guid>20260504_Mon_WarRoom-Hr3.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260504_Mon_WarRoom-Hr2</title>
+<description>20260504_Mon_WarRoom-Hr2</description>
+<pubDate>Mon, 04 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260504_Mon_WarRoom-Hr2.m4v" length="214772544" type="video/m4v"/>
+<guid>20260504_Mon_WarRoom-Hr2.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260504_Mon_WarRoom-Hr1</title>
+<description>20260504_Mon_WarRoom-Hr1</description>
+<pubDate>Mon, 04 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260504_Mon_WarRoom-Hr1.m4v" length="214065091" type="video/m4v"/>
+<guid>20260504_Mon_WarRoom-Hr1.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260504_Mon_Alex-Hr4</title>
+<description>20260504_Mon_Alex-Hr4</description>
+<pubDate>Mon, 04 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260504_Mon_Alex-Hr4.m4v" length="212966721" type="video/m4v"/>
+<guid>20260504_Mon_Alex-Hr4.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260504_Mon_Alex-Hr3</title>
+<description>20260504_Mon_Alex-Hr3</description>
+<pubDate>Mon, 04 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260504_Mon_Alex-Hr3.m4v" length="213712004" type="video/m4v"/>
+<guid>20260504_Mon_Alex-Hr3.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260504_Mon_Alex-Hr2</title>
+<description>20260504_Mon_Alex-Hr2</description>
+<pubDate>Mon, 04 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260504_Mon_Alex-Hr2.m4v" length="213656053" type="video/m4v"/>
+<guid>20260504_Mon_Alex-Hr2.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260504_Mon_Alex-Hr1</title>
+<description>20260504_Mon_Alex-Hr1</description>
+<pubDate>Mon, 04 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260504_Mon_Alex-Hr1.m4v" length="214324792" type="video/m4v"/>
+<guid>20260504_Mon_Alex-Hr1.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260503_Sun_SundayLive-Hr2</title>
+<description>20260503_Sun_SundayLive-Hr2</description>
+<pubDate>Sun, 03 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260503_Sun_SundayLive-Hr2.m4v" length="214961202" type="video/m4v"/>
+<guid>20260503_Sun_SundayLive-Hr2.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260503_Sun_SundayLive-Hr1</title>
+<description>20260503_Sun_SundayLive-Hr1</description>
+<pubDate>Sun, 03 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260503_Sun_SundayLive-Hr1.m4v" length="214604077" type="video/m4v"/>
+<guid>20260503_Sun_SundayLive-Hr1.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260503_Sun_Alex-Hr2</title>
+<description>20260503_Sun_Alex-Hr2</description>
+<pubDate>Sun, 03 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260503_Sun_Alex-Hr2.m4v" length="214251112" type="video/m4v"/>
+<guid>20260503_Sun_Alex-Hr2.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260503_Sun_Alex-Hr1</title>
+<description>20260503_Sun_Alex-Hr1</description>
+<pubDate>Sun, 03 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260503_Sun_Alex-Hr1.m4v" length="214169843" type="video/m4v"/>
+<guid>20260503_Sun_Alex-Hr1.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260501_Fri_WarRoom-Hr3</title>
+<description>20260501_Fri_WarRoom-Hr3</description>
+<pubDate>Fri, 01 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260501_Fri_WarRoom-Hr3.m4v" length="215011915" type="video/m4v"/>
+<guid>20260501_Fri_WarRoom-Hr3.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260501_Fri_WarRoom-Hr2</title>
+<description>20260501_Fri_WarRoom-Hr2</description>
+<pubDate>Fri, 01 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260501_Fri_WarRoom-Hr2.m4v" length="214651612" type="video/m4v"/>
+<guid>20260501_Fri_WarRoom-Hr2.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260501_Fri_WarRoom-Hr1</title>
+<description>20260501_Fri_WarRoom-Hr1</description>
+<pubDate>Fri, 01 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260501_Fri_WarRoom-Hr1.m4v" length="214013609" type="video/m4v"/>
+<guid>20260501_Fri_WarRoom-Hr1.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260501_Fri_Alex-Hr4</title>
+<description>20260501_Fri_Alex-Hr4</description>
+<pubDate>Fri, 01 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260501_Fri_Alex-Hr4.m4v" length="214711067" type="video/m4v"/>
+<guid>20260501_Fri_Alex-Hr4.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260501_Fri_Alex-Hr3</title>
+<description>20260501_Fri_Alex-Hr3</description>
+<pubDate>Fri, 01 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260501_Fri_Alex-Hr3.m4v" length="213401324" type="video/m4v"/>
+<guid>20260501_Fri_Alex-Hr3.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260501_Fri_Alex-Hr2</title>
+<description>20260501_Fri_Alex-Hr2</description>
+<pubDate>Fri, 01 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260501_Fri_Alex-Hr2.m4v" length="214029997" type="video/m4v"/>
+<guid>20260501_Fri_Alex-Hr2.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260501_Fri_Alex-Hr1</title>
+<description>20260501_Fri_Alex-Hr1</description>
+<pubDate>Fri, 01 May 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260501_Fri_Alex-Hr1.m4v" length="213408143" type="video/m4v"/>
+<guid>20260501_Fri_Alex-Hr1.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260430_Thu_WarRoom-Hr3</title>
+<description>20260430_Thu_WarRoom-Hr3</description>
+<pubDate>Thu, 30 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260430_Thu_WarRoom-Hr3.m4v" length="214334944" type="video/m4v"/>
+<guid>20260430_Thu_WarRoom-Hr3.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260430_Thu_WarRoom-Hr2</title>
+<description>20260430_Thu_WarRoom-Hr2</description>
+<pubDate>Thu, 30 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260430_Thu_WarRoom-Hr2.m4v" length="211739208" type="video/m4v"/>
+<guid>20260430_Thu_WarRoom-Hr2.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260430_Thu_WarRoom-Hr1</title>
+<description>20260430_Thu_WarRoom-Hr1</description>
+<pubDate>Thu, 30 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260430_Thu_WarRoom-Hr1.m4v" length="212958598" type="video/m4v"/>
+<guid>20260430_Thu_WarRoom-Hr1.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260430_Thu_Alex-Hr4</title>
+<description>20260430_Thu_Alex-Hr4</description>
+<pubDate>Thu, 30 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260430_Thu_Alex-Hr4.m4v" length="211973210" type="video/m4v"/>
+<guid>20260430_Thu_Alex-Hr4.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260430_Thu_Alex-Hr3</title>
+<description>20260430_Thu_Alex-Hr3</description>
+<pubDate>Thu, 30 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260430_Thu_Alex-Hr3.m4v" length="211520375" type="video/m4v"/>
+<guid>20260430_Thu_Alex-Hr3.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260430_Thu_Alex-Hr2</title>
+<description>20260430_Thu_Alex-Hr2</description>
+<pubDate>Thu, 30 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260430_Thu_Alex-Hr2.m4v" length="212261679" type="video/m4v"/>
+<guid>20260430_Thu_Alex-Hr2.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260430_Thu_Alex-Hr1</title>
+<description>20260430_Thu_Alex-Hr1</description>
+<pubDate>Thu, 30 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260430_Thu_Alex-Hr1.m4v" length="211625993" type="video/m4v"/>
+<guid>20260430_Thu_Alex-Hr1.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260429_Wed_WarRoom-Hr3</title>
+<description>20260429_Wed_WarRoom-Hr3</description>
+<pubDate>Wed, 29 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260429_Wed_WarRoom-Hr3.m4v" length="213327375" type="video/m4v"/>
+<guid>20260429_Wed_WarRoom-Hr3.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260429_Wed_WarRoom-Hr2</title>
+<description>20260429_Wed_WarRoom-Hr2</description>
+<pubDate>Wed, 29 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260429_Wed_WarRoom-Hr2.m4v" length="213409379" type="video/m4v"/>
+<guid>20260429_Wed_WarRoom-Hr2.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260429_Wed_WarRoom-Hr1</title>
+<description>20260429_Wed_WarRoom-Hr1</description>
+<pubDate>Wed, 29 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260429_Wed_WarRoom-Hr1.m4v" length="214739420" type="video/m4v"/>
+<guid>20260429_Wed_WarRoom-Hr1.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260429_Wed_Alex-Hr4</title>
+<description>20260429_Wed_Alex-Hr4</description>
+<pubDate>Wed, 29 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260429_Wed_Alex-Hr4.m4v" length="213066880" type="video/m4v"/>
+<guid>20260429_Wed_Alex-Hr4.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260429_Wed_Alex-Hr3</title>
+<description>20260429_Wed_Alex-Hr3</description>
+<pubDate>Wed, 29 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260429_Wed_Alex-Hr3.m4v" length="213098042" type="video/m4v"/>
+<guid>20260429_Wed_Alex-Hr3.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260429_Wed_Alex-Hr2</title>
+<description>20260429_Wed_Alex-Hr2</description>
+<pubDate>Wed, 29 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260429_Wed_Alex-Hr2.m4v" length="213136333" type="video/m4v"/>
+<guid>20260429_Wed_Alex-Hr2.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260429_Wed_Alex-Hr1</title>
+<description>20260429_Wed_Alex-Hr1</description>
+<pubDate>Wed, 29 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260429_Wed_Alex-Hr1.m4v" length="212457867" type="video/m4v"/>
+<guid>20260429_Wed_Alex-Hr1.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260428_Tue_WarRoom-Hr3</title>
+<description>20260428_Tue_WarRoom-Hr3</description>
+<pubDate>Tue, 28 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260428_Tue_WarRoom-Hr3.m4v" length="212452732" type="video/m4v"/>
+<guid>20260428_Tue_WarRoom-Hr3.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260428_Tue_WarRoom-Hr2</title>
+<description>20260428_Tue_WarRoom-Hr2</description>
+<pubDate>Tue, 28 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260428_Tue_WarRoom-Hr2.m4v" length="213733634" type="video/m4v"/>
+<guid>20260428_Tue_WarRoom-Hr2.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260428_Tue_WarRoom-Hr1</title>
+<description>20260428_Tue_WarRoom-Hr1</description>
+<pubDate>Tue, 28 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260428_Tue_WarRoom-Hr1.m4v" length="214344374" type="video/m4v"/>
+<guid>20260428_Tue_WarRoom-Hr1.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260428_Tue_Alex-Hr4</title>
+<description>20260428_Tue_Alex-Hr4</description>
+<pubDate>Tue, 28 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260428_Tue_Alex-Hr4.m4v" length="213288928" type="video/m4v"/>
+<guid>20260428_Tue_Alex-Hr4.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260428_Tue_Alex-Hr3</title>
+<description>20260428_Tue_Alex-Hr3</description>
+<pubDate>Tue, 28 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260428_Tue_Alex-Hr3.m4v" length="215547235" type="video/m4v"/>
+<guid>20260428_Tue_Alex-Hr3.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260428_Tue_Alex-Hr2</title>
+<description>20260428_Tue_Alex-Hr2</description>
+<pubDate>Tue, 28 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260428_Tue_Alex-Hr2.m4v" length="212033283" type="video/m4v"/>
+<guid>20260428_Tue_Alex-Hr2.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260428_Tue_Alex-Hr1</title>
+<description>20260428_Tue_Alex-Hr1</description>
+<pubDate>Tue, 28 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260428_Tue_Alex-Hr1.m4v" length="213817694" type="video/m4v"/>
+<guid>20260428_Tue_Alex-Hr1.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260427_Mon_WarRoom-Hr3</title>
+<description>20260427_Mon_WarRoom-Hr3</description>
+<pubDate>Mon, 27 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260427_Mon_WarRoom-Hr3.m4v" length="213732795" type="video/m4v"/>
+<guid>20260427_Mon_WarRoom-Hr3.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260427_Mon_WarRoom-Hr2</title>
+<description>20260427_Mon_WarRoom-Hr2</description>
+<pubDate>Mon, 27 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260427_Mon_WarRoom-Hr2.m4v" length="213236690" type="video/m4v"/>
+<guid>20260427_Mon_WarRoom-Hr2.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260427_Mon_WarRoom-Hr1</title>
+<description>20260427_Mon_WarRoom-Hr1</description>
+<pubDate>Mon, 27 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260427_Mon_WarRoom-Hr1.m4v" length="213126615" type="video/m4v"/>
+<guid>20260427_Mon_WarRoom-Hr1.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260427_Mon_Alex-Hr4</title>
+<description>20260427_Mon_Alex-Hr4</description>
+<pubDate>Mon, 27 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260427_Mon_Alex-Hr4.m4v" length="213239718" type="video/m4v"/>
+<guid>20260427_Mon_Alex-Hr4.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260427_Mon_Alex-Hr3</title>
+<description>20260427_Mon_Alex-Hr3</description>
+<pubDate>Mon, 27 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260427_Mon_Alex-Hr3.m4v" length="211277456" type="video/m4v"/>
+<guid>20260427_Mon_Alex-Hr3.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260427_Mon_Alex-Hr2</title>
+<description>20260427_Mon_Alex-Hr2</description>
+<pubDate>Mon, 27 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260427_Mon_Alex-Hr2.m4v" length="213820516" type="video/m4v"/>
+<guid>20260427_Mon_Alex-Hr2.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260427_Mon_Alex-Hr1</title>
+<description>20260427_Mon_Alex-Hr1</description>
+<pubDate>Mon, 27 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260427_Mon_Alex-Hr1.m4v" length="212686067" type="video/m4v"/>
+<guid>20260427_Mon_Alex-Hr1.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260426_Sun_TNT-Hr2</title>
+<description>20260426_Sun_TNT-Hr2</description>
+<pubDate>Sun, 26 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260426_Sun_TNT-Hr2.m4v" length="213290211" type="video/m4v"/>
+<guid>20260426_Sun_TNT-Hr2.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260426_Sun_TNT-Hr1</title>
+<description>20260426_Sun_TNT-Hr1</description>
+<pubDate>Sun, 26 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260426_Sun_TNT-Hr1.m4v" length="213741144" type="video/m4v"/>
+<guid>20260426_Sun_TNT-Hr1.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260426_Sun_Alex-Hr2</title>
+<description>20260426_Sun_Alex-Hr2</description>
+<pubDate>Sun, 26 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260426_Sun_Alex-Hr2.m4v" length="214561921" type="video/m4v"/>
+<guid>20260426_Sun_Alex-Hr2.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260426_Sun_Alex-Hr1</title>
+<description>20260426_Sun_Alex-Hr1</description>
+<pubDate>Sun, 26 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260426_Sun_Alex-Hr1.m4v" length="214219813" type="video/m4v"/>
+<guid>20260426_Sun_Alex-Hr1.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260426_Sun_Sortor</title>
+<description>20260426_Sun_Sortor</description>
+<pubDate>Sun, 26 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260426_Sun_Sortor.m4v" length="215444787" type="video/m4v"/>
+<guid>20260426_Sun_Sortor.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260424_Fri_WarRoom-Hr3</title>
+<description>20260424_Fri_WarRoom-Hr3</description>
+<pubDate>Fri, 24 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260424_Fri_WarRoom-Hr3.m4v" length="210793753" type="video/m4v"/>
+<guid>20260424_Fri_WarRoom-Hr3.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260424_Fri_WarRoom-Hr2</title>
+<description>20260424_Fri_WarRoom-Hr2</description>
+<pubDate>Fri, 24 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260424_Fri_WarRoom-Hr2.m4v" length="214404721" type="video/m4v"/>
+<guid>20260424_Fri_WarRoom-Hr2.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260424_Fri_WarRoom-Hr1</title>
+<description>20260424_Fri_WarRoom-Hr1</description>
+<pubDate>Fri, 24 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260424_Fri_WarRoom-Hr1.m4v" length="215728035" type="video/m4v"/>
+<guid>20260424_Fri_WarRoom-Hr1.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260424_Fri_Alex-Hr4</title>
+<description>20260424_Fri_Alex-Hr4</description>
+<pubDate>Fri, 24 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260424_Fri_Alex-Hr4.m4v" length="211584843" type="video/m4v"/>
+<guid>20260424_Fri_Alex-Hr4.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260424_Fri_Alex-Hr3</title>
+<description>20260424_Fri_Alex-Hr3</description>
+<pubDate>Fri, 24 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260424_Fri_Alex-Hr3.m4v" length="212782620" type="video/m4v"/>
+<guid>20260424_Fri_Alex-Hr3.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260424_Fri_Alex-Hr2</title>
+<description>20260424_Fri_Alex-Hr2</description>
+<pubDate>Fri, 24 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260424_Fri_Alex-Hr2.m4v" length="212183153" type="video/m4v"/>
+<guid>20260424_Fri_Alex-Hr2.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260424_Fri_Alex-Hr1</title>
+<description>20260424_Fri_Alex-Hr1</description>
+<pubDate>Fri, 24 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260424_Fri_Alex-Hr1.m4v" length="211729268" type="video/m4v"/>
+<guid>20260424_Fri_Alex-Hr1.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260423_Thu_WarRoom-Hr3</title>
+<description>20260423_Thu_WarRoom-Hr3</description>
+<pubDate>Thu, 23 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260423_Thu_WarRoom-Hr3.m4v" length="212663763" type="video/m4v"/>
+<guid>20260423_Thu_WarRoom-Hr3.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260423_Thu_WarRoom-Hr1</title>
+<description>20260423_Thu_WarRoom-Hr1</description>
+<pubDate>Thu, 23 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260423_Thu_WarRoom-Hr1.m4v" length="214250831" type="video/m4v"/>
+<guid>20260423_Thu_WarRoom-Hr1.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260423_Thu_Alex-Hr4</title>
+<description>20260423_Thu_Alex-Hr4</description>
+<pubDate>Thu, 23 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260423_Thu_Alex-Hr4.m4v" length="213204639" type="video/m4v"/>
+<guid>20260423_Thu_Alex-Hr4.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260423_Thu_Alex-Hr3</title>
+<description>20260423_Thu_Alex-Hr3</description>
+<pubDate>Thu, 23 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260423_Thu_Alex-Hr3.m4v" length="214529925" type="video/m4v"/>
+<guid>20260423_Thu_Alex-Hr3.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260423_Thu_Alex-Hr2</title>
+<description>20260423_Thu_Alex-Hr2</description>
+<pubDate>Thu, 23 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260423_Thu_Alex-Hr2.m4v" length="213269917" type="video/m4v"/>
+<guid>20260423_Thu_Alex-Hr2.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260423_Thu_Alex-Hr1</title>
+<description>20260423_Thu_Alex-Hr1</description>
+<pubDate>Thu, 23 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260423_Thu_Alex-Hr1.m4v" length="213276425" type="video/m4v"/>
+<guid>20260423_Thu_Alex-Hr1.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260422_Wed_WarRoom-Hr3</title>
+<description>20260422_Wed_WarRoom-Hr3</description>
+<pubDate>Wed, 22 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260422_Wed_WarRoom-Hr3.m4v" length="213539222" type="video/m4v"/>
+<guid>20260422_Wed_WarRoom-Hr3.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260422_Wed_WarRoom-Hr2</title>
+<description>20260422_Wed_WarRoom-Hr2</description>
+<pubDate>Wed, 22 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260422_Wed_WarRoom-Hr2.m4v" length="213741662" type="video/m4v"/>
+<guid>20260422_Wed_WarRoom-Hr2.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260422_Wed_WarRoom-Hr1</title>
+<description>20260422_Wed_WarRoom-Hr1</description>
+<pubDate>Wed, 22 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260422_Wed_WarRoom-Hr1.m4v" length="212812875" type="video/m4v"/>
+<guid>20260422_Wed_WarRoom-Hr1.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260422_Wed_Alex-Hr4</title>
+<description>20260422_Wed_Alex-Hr4</description>
+<pubDate>Wed, 22 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260422_Wed_Alex-Hr4.m4v" length="212490623" type="video/m4v"/>
+<guid>20260422_Wed_Alex-Hr4.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260422_Wed_Alex-Hr3</title>
+<description>20260422_Wed_Alex-Hr3</description>
+<pubDate>Wed, 22 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260422_Wed_Alex-Hr3.m4v" length="212753454" type="video/m4v"/>
+<guid>20260422_Wed_Alex-Hr3.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260422_Wed_Alex-Hr2</title>
+<description>20260422_Wed_Alex-Hr2</description>
+<pubDate>Wed, 22 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260422_Wed_Alex-Hr2.m4v" length="213088251" type="video/m4v"/>
+<guid>20260422_Wed_Alex-Hr2.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260422_Wed_Alex-Hr1</title>
+<description>20260422_Wed_Alex-Hr1</description>
+<pubDate>Wed, 22 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260422_Wed_Alex-Hr1.m4v" length="212585870" type="video/m4v"/>
+<guid>20260422_Wed_Alex-Hr1.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260421_Tue_WarRoom-Hr3</title>
+<description>20260421_Tue_WarRoom-Hr3</description>
+<pubDate>Tue, 21 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260421_Tue_WarRoom-Hr3.m4v" length="211993253" type="video/m4v"/>
+<guid>20260421_Tue_WarRoom-Hr3.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260421_Tue_WarRoom-Hr2</title>
+<description>20260421_Tue_WarRoom-Hr2</description>
+<pubDate>Tue, 21 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260421_Tue_WarRoom-Hr2.m4v" length="212389989" type="video/m4v"/>
+<guid>20260421_Tue_WarRoom-Hr2.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260421_Tue_WarRoom-Hr1</title>
+<description>20260421_Tue_WarRoom-Hr1</description>
+<pubDate>Tue, 21 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260421_Tue_WarRoom-Hr1.m4v" length="213614601" type="video/m4v"/>
+<guid>20260421_Tue_WarRoom-Hr1.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260421_Tue_Alex-Hr4</title>
+<description>20260421_Tue_Alex-Hr4</description>
+<pubDate>Tue, 21 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260421_Tue_Alex-Hr4.m4v" length="212925091" type="video/m4v"/>
+<guid>20260421_Tue_Alex-Hr4.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260421_Tue_Alex-Hr3</title>
+<description>20260421_Tue_Alex-Hr3</description>
+<pubDate>Tue, 21 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260421_Tue_Alex-Hr3.m4v" length="213534364" type="video/m4v"/>
+<guid>20260421_Tue_Alex-Hr3.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260421_Tue_Alex-Hr2</title>
+<description>20260421_Tue_Alex-Hr2</description>
+<pubDate>Tue, 21 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260421_Tue_Alex-Hr2.m4v" length="212859355" type="video/m4v"/>
+<guid>20260421_Tue_Alex-Hr2.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260421_Tue_Alex-Hr1</title>
+<description>20260421_Tue_Alex-Hr1</description>
+<pubDate>Tue, 21 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260421_Tue_Alex-Hr1.m4v" length="212322070" type="video/m4v"/>
+<guid>20260421_Tue_Alex-Hr1.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260420_Mon_WarRoom-Hr3</title>
+<description>20260420_Mon_WarRoom-Hr3</description>
+<pubDate>Mon, 20 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260420_Mon_WarRoom-Hr3.m4v" length="210795716" type="video/m4v"/>
+<guid>20260420_Mon_WarRoom-Hr3.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260420_Mon_WarRoom-Hr2</title>
+<description>20260420_Mon_WarRoom-Hr2</description>
+<pubDate>Mon, 20 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260420_Mon_WarRoom-Hr2.m4v" length="210300790" type="video/m4v"/>
+<guid>20260420_Mon_WarRoom-Hr2.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260420_Mon_WarRoom-Hr1</title>
+<description>20260420_Mon_WarRoom-Hr1</description>
+<pubDate>Mon, 20 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260420_Mon_WarRoom-Hr1.m4v" length="210627018" type="video/m4v"/>
+<guid>20260420_Mon_WarRoom-Hr1.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260420_Mon_Alex-Hr4</title>
+<description>20260420_Mon_Alex-Hr4</description>
+<pubDate>Mon, 20 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260420_Mon_Alex-Hr4.m4v" length="213909017" type="video/m4v"/>
+<guid>20260420_Mon_Alex-Hr4.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260420_Mon_Alex-Hr3</title>
+<description>20260420_Mon_Alex-Hr3</description>
+<pubDate>Mon, 20 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260420_Mon_Alex-Hr3.m4v" length="213240734" type="video/m4v"/>
+<guid>20260420_Mon_Alex-Hr3.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260420_Mon_Alex-Hr2</title>
+<description>20260420_Mon_Alex-Hr2</description>
+<pubDate>Mon, 20 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260420_Mon_Alex-Hr2.m4v" length="212713131" type="video/m4v"/>
+<guid>20260420_Mon_Alex-Hr2.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260420_Mon_Alex-Hr1</title>
+<description>20260420_Mon_Alex-Hr1</description>
+<pubDate>Mon, 20 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260420_Mon_Alex-Hr1.m4v" length="213401764" type="video/m4v"/>
+<guid>20260420_Mon_Alex-Hr1.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260419_Sun_TNT-Hr2</title>
+<description>20260419_Sun_TNT-Hr2</description>
+<pubDate>Sun, 19 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260419_Sun_TNT-Hr2.m4v" length="213711149" type="video/m4v"/>
+<guid>20260419_Sun_TNT-Hr2.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260419_Sun_TNT-Hr1</title>
+<description>20260419_Sun_TNT-Hr1</description>
+<pubDate>Sun, 19 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260419_Sun_TNT-Hr1.m4v" length="214976682" type="video/m4v"/>
+<guid>20260419_Sun_TNT-Hr1.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260419_Sun_Alex-Hr2</title>
+<description>20260419_Sun_Alex-Hr2</description>
+<pubDate>Sun, 19 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260419_Sun_Alex-Hr2.m4v" length="213409345" type="video/m4v"/>
+<guid>20260419_Sun_Alex-Hr2.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260419_Sun_Alex-Hr1</title>
+<description>20260419_Sun_Alex-Hr1</description>
+<pubDate>Sun, 19 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260419_Sun_Alex-Hr1.m4v" length="212648602" type="video/m4v"/>
+<guid>20260419_Sun_Alex-Hr1.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260419_Sun_Sortor</title>
+<description>20260419_Sun_Sortor</description>
+<pubDate>Sun, 19 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260419_Sun_Sortor.m4v" length="212377895" type="video/m4v"/>
+<guid>20260419_Sun_Sortor.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260417_Fri_WarRoom-Hr3</title>
+<description>20260417_Fri_WarRoom-Hr3</description>
+<pubDate>Fri, 17 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260417_Fri_WarRoom-Hr3.m4v" length="212703570" type="video/m4v"/>
+<guid>20260417_Fri_WarRoom-Hr3.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260417_Fri_WarRoom-Hr2</title>
+<description>20260417_Fri_WarRoom-Hr2</description>
+<pubDate>Fri, 17 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260417_Fri_WarRoom-Hr2.m4v" length="215518943" type="video/m4v"/>
+<guid>20260417_Fri_WarRoom-Hr2.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260417_Fri_WarRoom-Hr1</title>
+<description>20260417_Fri_WarRoom-Hr1</description>
+<pubDate>Fri, 17 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260417_Fri_WarRoom-Hr1.m4v" length="214523703" type="video/m4v"/>
+<guid>20260417_Fri_WarRoom-Hr1.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260417_Fri_Alex-Hr4</title>
+<description>20260417_Fri_Alex-Hr4</description>
+<pubDate>Fri, 17 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260417_Fri_Alex-Hr4.m4v" length="213179909" type="video/m4v"/>
+<guid>20260417_Fri_Alex-Hr4.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260417_Fri_Alex-Hr3</title>
+<description>20260417_Fri_Alex-Hr3</description>
+<pubDate>Fri, 17 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260417_Fri_Alex-Hr3.m4v" length="214669938" type="video/m4v"/>
+<guid>20260417_Fri_Alex-Hr3.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260417_Fri_Alex-Hr2</title>
+<description>20260417_Fri_Alex-Hr2</description>
+<pubDate>Fri, 17 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260417_Fri_Alex-Hr2.m4v" length="214059599" type="video/m4v"/>
+<guid>20260417_Fri_Alex-Hr2.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260417_Fri_Alex-Hr1</title>
+<description>20260417_Fri_Alex-Hr1</description>
+<pubDate>Fri, 17 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260417_Fri_Alex-Hr1.m4v" length="212848454" type="video/m4v"/>
+<guid>20260417_Fri_Alex-Hr1.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260416_Thu_WarRoom-Hr3</title>
+<description>20260416_Thu_WarRoom-Hr3</description>
+<pubDate>Thu, 16 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260416_Thu_WarRoom-Hr3.m4v" length="213757772" type="video/m4v"/>
+<guid>20260416_Thu_WarRoom-Hr3.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260416_Thu_WarRoom-Hr2</title>
+<description>20260416_Thu_WarRoom-Hr2</description>
+<pubDate>Thu, 16 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260416_Thu_WarRoom-Hr2.m4v" length="212561628" type="video/m4v"/>
+<guid>20260416_Thu_WarRoom-Hr2.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260416_Thu_WarRoom-Hr1</title>
+<description>20260416_Thu_WarRoom-Hr1</description>
+<pubDate>Thu, 16 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260416_Thu_WarRoom-Hr1.m4v" length="213706113" type="video/m4v"/>
+<guid>20260416_Thu_WarRoom-Hr1.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260416_Thu_Alex-Hr4</title>
+<description>20260416_Thu_Alex-Hr4</description>
+<pubDate>Thu, 16 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260416_Thu_Alex-Hr4.m4v" length="211341482" type="video/m4v"/>
+<guid>20260416_Thu_Alex-Hr4.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260416_Thu_Alex-Hr3</title>
+<description>20260416_Thu_Alex-Hr3</description>
+<pubDate>Thu, 16 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260416_Thu_Alex-Hr3.m4v" length="213693217" type="video/m4v"/>
+<guid>20260416_Thu_Alex-Hr3.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260416_Thu_Alex-Hr2</title>
+<description>20260416_Thu_Alex-Hr2</description>
+<pubDate>Thu, 16 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260416_Thu_Alex-Hr2.m4v" length="212771650" type="video/m4v"/>
+<guid>20260416_Thu_Alex-Hr2.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260416_Thu_Alex-Hr1</title>
+<description>20260416_Thu_Alex-Hr1</description>
+<pubDate>Thu, 16 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260416_Thu_Alex-Hr1.m4v" length="212996280" type="video/m4v"/>
+<guid>20260416_Thu_Alex-Hr1.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260415_Wed_WarRoom-Hr3</title>
+<description>20260415_Wed_WarRoom-Hr3</description>
+<pubDate>Wed, 15 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260415_Wed_WarRoom-Hr3.m4v" length="213126691" type="video/m4v"/>
+<guid>20260415_Wed_WarRoom-Hr3.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260415_Wed_WarRoom-Hr2</title>
+<description>20260415_Wed_WarRoom-Hr2</description>
+<pubDate>Wed, 15 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260415_Wed_WarRoom-Hr2.m4v" length="213021253" type="video/m4v"/>
+<guid>20260415_Wed_WarRoom-Hr2.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260415_Wed_WarRoom-Hr1</title>
+<description>20260415_Wed_WarRoom-Hr1</description>
+<pubDate>Wed, 15 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260415_Wed_WarRoom-Hr1.m4v" length="214287157" type="video/m4v"/>
+<guid>20260415_Wed_WarRoom-Hr1.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260415_Wed_Alex-Hr4</title>
+<description>20260415_Wed_Alex-Hr4</description>
+<pubDate>Wed, 15 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260415_Wed_Alex-Hr4.m4v" length="213966918" type="video/m4v"/>
+<guid>20260415_Wed_Alex-Hr4.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260415_Wed_Alex-Hr3</title>
+<description>20260415_Wed_Alex-Hr3</description>
+<pubDate>Wed, 15 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260415_Wed_Alex-Hr3.m4v" length="213195521" type="video/m4v"/>
+<guid>20260415_Wed_Alex-Hr3.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260415_Wed_Alex-Hr2</title>
+<description>20260415_Wed_Alex-Hr2</description>
+<pubDate>Wed, 15 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260415_Wed_Alex-Hr2.m4v" length="213411615" type="video/m4v"/>
+<guid>20260415_Wed_Alex-Hr2.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260415_Wed_Alex-Hr1</title>
+<description>20260415_Wed_Alex-Hr1</description>
+<pubDate>Wed, 15 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260415_Wed_Alex-Hr1.m4v" length="214388200" type="video/m4v"/>
+<guid>20260415_Wed_Alex-Hr1.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260414_Tue_WarRoom-Hr3</title>
+<description>20260414_Tue_WarRoom-Hr3</description>
+<pubDate>Tue, 14 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260414_Tue_WarRoom-Hr3.m4v" length="211561110" type="video/m4v"/>
+<guid>20260414_Tue_WarRoom-Hr3.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260414_Tue_WarRoom-Hr2</title>
+<description>20260414_Tue_WarRoom-Hr2</description>
+<pubDate>Tue, 14 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260414_Tue_WarRoom-Hr2.m4v" length="212686125" type="video/m4v"/>
+<guid>20260414_Tue_WarRoom-Hr2.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260414_Tue_WarRoom-Hr1</title>
+<description>20260414_Tue_WarRoom-Hr1</description>
+<pubDate>Tue, 14 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260414_Tue_WarRoom-Hr1.m4v" length="214367199" type="video/m4v"/>
+<guid>20260414_Tue_WarRoom-Hr1.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260414_Tue_Alex-Hr4</title>
+<description>20260414_Tue_Alex-Hr4</description>
+<pubDate>Tue, 14 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260414_Tue_Alex-Hr4.m4v" length="213662486" type="video/m4v"/>
+<guid>20260414_Tue_Alex-Hr4.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260414_Tue_Alex-Hr3</title>
+<description>20260414_Tue_Alex-Hr3</description>
+<pubDate>Tue, 14 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260414_Tue_Alex-Hr3.m4v" length="213815442" type="video/m4v"/>
+<guid>20260414_Tue_Alex-Hr3.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260414_Tue_Alex-Hr2</title>
+<description>20260414_Tue_Alex-Hr2</description>
+<pubDate>Tue, 14 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260414_Tue_Alex-Hr2.m4v" length="214918500" type="video/m4v"/>
+<guid>20260414_Tue_Alex-Hr2.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260414_Tue_Alex-Hr1</title>
+<description>20260414_Tue_Alex-Hr1</description>
+<pubDate>Tue, 14 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260414_Tue_Alex-Hr1.m4v" length="213027966" type="video/m4v"/>
+<guid>20260414_Tue_Alex-Hr1.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260413_Mon_WarRoom-Hr3</title>
+<description>20260413_Mon_WarRoom-Hr3</description>
+<pubDate>Mon, 13 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260413_Mon_WarRoom-Hr3.m4v" length="212953264" type="video/m4v"/>
+<guid>20260413_Mon_WarRoom-Hr3.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260413_Mon_WarRoom-Hr2</title>
+<description>20260413_Mon_WarRoom-Hr2</description>
+<pubDate>Mon, 13 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260413_Mon_WarRoom-Hr2.m4v" length="214198482" type="video/m4v"/>
+<guid>20260413_Mon_WarRoom-Hr2.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260413_Mon_WarRoom-Hr1</title>
+<description>20260413_Mon_WarRoom-Hr1</description>
+<pubDate>Mon, 13 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260413_Mon_WarRoom-Hr1.m4v" length="212191817" type="video/m4v"/>
+<guid>20260413_Mon_WarRoom-Hr1.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260413_Mon_Alex-Hr4</title>
+<description>20260413_Mon_Alex-Hr4</description>
+<pubDate>Mon, 13 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260413_Mon_Alex-Hr4.m4v" length="211877571" type="video/m4v"/>
+<guid>20260413_Mon_Alex-Hr4.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260413_Mon_Alex-Hr3</title>
+<description>20260413_Mon_Alex-Hr3</description>
+<pubDate>Mon, 13 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260413_Mon_Alex-Hr3.m4v" length="212866701" type="video/m4v"/>
+<guid>20260413_Mon_Alex-Hr3.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260413_Mon_Alex-Hr2</title>
+<description>20260413_Mon_Alex-Hr2</description>
+<pubDate>Mon, 13 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260413_Mon_Alex-Hr2.m4v" length="215044656" type="video/m4v"/>
+<guid>20260413_Mon_Alex-Hr2.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260413_Mon_Alex-Hr1</title>
+<description>20260413_Mon_Alex-Hr1</description>
+<pubDate>Mon, 13 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260413_Mon_Alex-Hr1.m4v" length="213878507" type="video/m4v"/>
+<guid>20260413_Mon_Alex-Hr1.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260412_Sun_TNT-Hr2</title>
+<description>20260412_Sun_TNT-Hr2</description>
+<pubDate>Sun, 12 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260412_Sun_TNT-Hr2.m4v" length="217221374" type="video/m4v"/>
+<guid>20260412_Sun_TNT-Hr2.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260412_Sun_TNT-Hr1</title>
+<description>20260412_Sun_TNT-Hr1</description>
+<pubDate>Sun, 12 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260412_Sun_TNT-Hr1.m4v" length="215008000" type="video/m4v"/>
+<guid>20260412_Sun_TNT-Hr1.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260412_Sun_Alex-Hr2</title>
+<description>20260412_Sun_Alex-Hr2</description>
+<pubDate>Sun, 12 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260412_Sun_Alex-Hr2.m4v" length="213245100" type="video/m4v"/>
+<guid>20260412_Sun_Alex-Hr2.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260412_Sun_Alex-Hr1</title>
+<description>20260412_Sun_Alex-Hr1</description>
+<pubDate>Sun, 12 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260412_Sun_Alex-Hr1.m4v" length="212672039" type="video/m4v"/>
+<guid>20260412_Sun_Alex-Hr1.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260412_Sun_Sortor</title>
+<description>20260412_Sun_Sortor</description>
+<pubDate>Sun, 12 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260412_Sun_Sortor.m4v" length="212875092" type="video/m4v"/>
+<guid>20260412_Sun_Sortor.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260410_Fri_WarRoom-Hr3</title>
+<description>20260410_Fri_WarRoom-Hr3</description>
+<pubDate>Fri, 10 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260410_Fri_WarRoom-Hr3.m4v" length="213816145" type="video/m4v"/>
+<guid>20260410_Fri_WarRoom-Hr3.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260410_Fri_WarRoom-Hr2</title>
+<description>20260410_Fri_WarRoom-Hr2</description>
+<pubDate>Fri, 10 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260410_Fri_WarRoom-Hr2.m4v" length="215093396" type="video/m4v"/>
+<guid>20260410_Fri_WarRoom-Hr2.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260410_Fri_WarRoom-Hr1</title>
+<description>20260410_Fri_WarRoom-Hr1</description>
+<pubDate>Fri, 10 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260410_Fri_WarRoom-Hr1.m4v" length="212990680" type="video/m4v"/>
+<guid>20260410_Fri_WarRoom-Hr1.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260410_Fri_Alex-Hr4</title>
+<description>20260410_Fri_Alex-Hr4</description>
+<pubDate>Fri, 10 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260410_Fri_Alex-Hr4.m4v" length="213339843" type="video/m4v"/>
+<guid>20260410_Fri_Alex-Hr4.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260410_Fri_Alex-Hr3</title>
+<description>20260410_Fri_Alex-Hr3</description>
+<pubDate>Fri, 10 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260410_Fri_Alex-Hr3.m4v" length="212262925" type="video/m4v"/>
+<guid>20260410_Fri_Alex-Hr3.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260410_Fri_Alex-Hr2</title>
+<description>20260410_Fri_Alex-Hr2</description>
+<pubDate>Fri, 10 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260410_Fri_Alex-Hr2.m4v" length="213804083" type="video/m4v"/>
+<guid>20260410_Fri_Alex-Hr2.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260410_Fri_Alex-Hr1</title>
+<description>20260410_Fri_Alex-Hr1</description>
+<pubDate>Fri, 10 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260410_Fri_Alex-Hr1.m4v" length="214527960" type="video/m4v"/>
+<guid>20260410_Fri_Alex-Hr1.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260410_Fri_AmericanJournal-Hr3</title>
+<description>20260410_Fri_AmericanJournal-Hr3</description>
+<pubDate>Fri, 10 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260410_Fri_AmericanJournal-Hr3.m4v" length="212135119" type="video/m4v"/>
+<guid>20260410_Fri_AmericanJournal-Hr3.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260410_Fri_AmericanJournal-Hr2</title>
+<description>20260410_Fri_AmericanJournal-Hr2</description>
+<pubDate>Fri, 10 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260410_Fri_AmericanJournal-Hr2.m4v" length="213723776" type="video/m4v"/>
+<guid>20260410_Fri_AmericanJournal-Hr2.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260410_Fri_AmericanJournal-Hr1</title>
+<description>20260410_Fri_AmericanJournal-Hr1</description>
+<pubDate>Fri, 10 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260410_Fri_AmericanJournal-Hr1.m4v" length="212882878" type="video/m4v"/>
+<guid>20260410_Fri_AmericanJournal-Hr1.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260409_Thu_WarRoom-Hr3</title>
+<description>20260409_Thu_WarRoom-Hr3</description>
+<pubDate>Thu, 09 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260409_Thu_WarRoom-Hr3.m4v" length="213845345" type="video/m4v"/>
+<guid>20260409_Thu_WarRoom-Hr3.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260409_Thu_WarRoom-Hr2</title>
+<description>20260409_Thu_WarRoom-Hr2</description>
+<pubDate>Thu, 09 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260409_Thu_WarRoom-Hr2.m4v" length="214053982" type="video/m4v"/>
+<guid>20260409_Thu_WarRoom-Hr2.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260409_Thu_WarRoom-Hr1</title>
+<description>20260409_Thu_WarRoom-Hr1</description>
+<pubDate>Thu, 09 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260409_Thu_WarRoom-Hr1.m4v" length="213137150" type="video/m4v"/>
+<guid>20260409_Thu_WarRoom-Hr1.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260409_Thu_Alex-Hr4</title>
+<description>20260409_Thu_Alex-Hr4</description>
+<pubDate>Thu, 09 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260409_Thu_Alex-Hr4.m4v" length="213433137" type="video/m4v"/>
+<guid>20260409_Thu_Alex-Hr4.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260409_Thu_Alex-Hr3</title>
+<description>20260409_Thu_Alex-Hr3</description>
+<pubDate>Thu, 09 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260409_Thu_Alex-Hr3.m4v" length="213369271" type="video/m4v"/>
+<guid>20260409_Thu_Alex-Hr3.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260409_Thu_Alex-Hr2</title>
+<description>20260409_Thu_Alex-Hr2</description>
+<pubDate>Thu, 09 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260409_Thu_Alex-Hr2.m4v" length="212951449" type="video/m4v"/>
+<guid>20260409_Thu_Alex-Hr2.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260409_Thu_Alex-Hr1</title>
+<description>20260409_Thu_Alex-Hr1</description>
+<pubDate>Thu, 09 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260409_Thu_Alex-Hr1.m4v" length="213194606" type="video/m4v"/>
+<guid>20260409_Thu_Alex-Hr1.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260409_Thu_AmericanJournal-Hr3</title>
+<description>20260409_Thu_AmericanJournal-Hr3</description>
+<pubDate>Thu, 09 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260409_Thu_AmericanJournal-Hr3.m4v" length="212340346" type="video/m4v"/>
+<guid>20260409_Thu_AmericanJournal-Hr3.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260409_Thu_AmericanJournal-Hr2</title>
+<description>20260409_Thu_AmericanJournal-Hr2</description>
+<pubDate>Thu, 09 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260409_Thu_AmericanJournal-Hr2.m4v" length="212113115" type="video/m4v"/>
+<guid>20260409_Thu_AmericanJournal-Hr2.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260409_Thu_AmericanJournal-Hr1</title>
+<description>20260409_Thu_AmericanJournal-Hr1</description>
+<pubDate>Thu, 09 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260409_Thu_AmericanJournal-Hr1.m4v" length="213140291" type="video/m4v"/>
+<guid>20260409_Thu_AmericanJournal-Hr1.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260408_Wed_WarRoom-Hr3</title>
+<description>20260408_Wed_WarRoom-Hr3</description>
+<pubDate>Wed, 08 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260408_Wed_WarRoom-Hr3.m4v" length="212137407" type="video/m4v"/>
+<guid>20260408_Wed_WarRoom-Hr3.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260408_Wed_WarRoom-Hr2</title>
+<description>20260408_Wed_WarRoom-Hr2</description>
+<pubDate>Wed, 08 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260408_Wed_WarRoom-Hr2.m4v" length="212582292" type="video/m4v"/>
+<guid>20260408_Wed_WarRoom-Hr2.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260408_Wed_WarRoom-Hr1</title>
+<description>20260408_Wed_WarRoom-Hr1</description>
+<pubDate>Wed, 08 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260408_Wed_WarRoom-Hr1.m4v" length="212989113" type="video/m4v"/>
+<guid>20260408_Wed_WarRoom-Hr1.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260408_Wed_Alex-Hr4</title>
+<description>20260408_Wed_Alex-Hr4</description>
+<pubDate>Wed, 08 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260408_Wed_Alex-Hr4.m4v" length="211337152" type="video/m4v"/>
+<guid>20260408_Wed_Alex-Hr4.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260408_Wed_Alex-Hr3</title>
+<description>20260408_Wed_Alex-Hr3</description>
+<pubDate>Wed, 08 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260408_Wed_Alex-Hr3.m4v" length="212730244" type="video/m4v"/>
+<guid>20260408_Wed_Alex-Hr3.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260408_Wed_Alex-Hr2</title>
+<description>20260408_Wed_Alex-Hr2</description>
+<pubDate>Wed, 08 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260408_Wed_Alex-Hr2.m4v" length="213534650" type="video/m4v"/>
+<guid>20260408_Wed_Alex-Hr2.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260408_Wed_Alex-Hr1</title>
+<description>20260408_Wed_Alex-Hr1</description>
+<pubDate>Wed, 08 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260408_Wed_Alex-Hr1.m4v" length="214286988" type="video/m4v"/>
+<guid>20260408_Wed_Alex-Hr1.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260408_Wed_AmericanJournal-Hr3</title>
+<description>20260408_Wed_AmericanJournal-Hr3</description>
+<pubDate>Wed, 08 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260408_Wed_AmericanJournal-Hr3.m4v" length="212734648" type="video/m4v"/>
+<guid>20260408_Wed_AmericanJournal-Hr3.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260408_Wed_AmericanJournal-Hr2</title>
+<description>20260408_Wed_AmericanJournal-Hr2</description>
+<pubDate>Wed, 08 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260408_Wed_AmericanJournal-Hr2.m4v" length="214394144" type="video/m4v"/>
+<guid>20260408_Wed_AmericanJournal-Hr2.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260408_Wed_AmericanJournal-Hr1</title>
+<description>20260408_Wed_AmericanJournal-Hr1</description>
+<pubDate>Wed, 08 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260408_Wed_AmericanJournal-Hr1.m4v" length="216388002" type="video/m4v"/>
+<guid>20260408_Wed_AmericanJournal-Hr1.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260407_Tue_WarRoom-Hr3</title>
+<description>20260407_Tue_WarRoom-Hr3</description>
+<pubDate>Tue, 07 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260407_Tue_WarRoom-Hr3.m4v" length="213990995" type="video/m4v"/>
+<guid>20260407_Tue_WarRoom-Hr3.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260407_Tue_WarRoom-Hr2</title>
+<description>20260407_Tue_WarRoom-Hr2</description>
+<pubDate>Tue, 07 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260407_Tue_WarRoom-Hr2.m4v" length="213697249" type="video/m4v"/>
+<guid>20260407_Tue_WarRoom-Hr2.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260407_Tue_WarRoom-Hr1</title>
+<description>20260407_Tue_WarRoom-Hr1</description>
+<pubDate>Tue, 07 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260407_Tue_WarRoom-Hr1.m4v" length="212535274" type="video/m4v"/>
+<guid>20260407_Tue_WarRoom-Hr1.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260407_Tue_Alex-Hr4</title>
+<description>20260407_Tue_Alex-Hr4</description>
+<pubDate>Tue, 07 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260407_Tue_Alex-Hr4.m4v" length="214698696" type="video/m4v"/>
+<guid>20260407_Tue_Alex-Hr4.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260407_Tue_Alex-Hr3</title>
+<description>20260407_Tue_Alex-Hr3</description>
+<pubDate>Tue, 07 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260407_Tue_Alex-Hr3.m4v" length="212558328" type="video/m4v"/>
+<guid>20260407_Tue_Alex-Hr3.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260407_Tue_Alex-Hr2</title>
+<description>20260407_Tue_Alex-Hr2</description>
+<pubDate>Tue, 07 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260407_Tue_Alex-Hr2.m4v" length="212131446" type="video/m4v"/>
+<guid>20260407_Tue_Alex-Hr2.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260407_Tue_Alex-Hr1</title>
+<description>20260407_Tue_Alex-Hr1</description>
+<pubDate>Tue, 07 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260407_Tue_Alex-Hr1.m4v" length="213495036" type="video/m4v"/>
+<guid>20260407_Tue_Alex-Hr1.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260407_Tue_AmericanJournal-Hr3</title>
+<description>20260407_Tue_AmericanJournal-Hr3</description>
+<pubDate>Tue, 07 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260407_Tue_AmericanJournal-Hr3.m4v" length="211123577" type="video/m4v"/>
+<guid>20260407_Tue_AmericanJournal-Hr3.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260407_Tue_AmericanJournal-Hr2</title>
+<description>20260407_Tue_AmericanJournal-Hr2</description>
+<pubDate>Tue, 07 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260407_Tue_AmericanJournal-Hr2.m4v" length="212029876" type="video/m4v"/>
+<guid>20260407_Tue_AmericanJournal-Hr2.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260407_Tue_AmericanJournal-Hr1</title>
+<description>20260407_Tue_AmericanJournal-Hr1</description>
+<pubDate>Tue, 07 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260407_Tue_AmericanJournal-Hr1.m4v" length="213630818" type="video/m4v"/>
+<guid>20260407_Tue_AmericanJournal-Hr1.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260406_Mon_WarRoom-Hr3</title>
+<description>20260406_Mon_WarRoom-Hr3</description>
+<pubDate>Mon, 06 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260406_Mon_WarRoom-Hr3.m4v" length="215294993" type="video/m4v"/>
+<guid>20260406_Mon_WarRoom-Hr3.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260406_Mon_WarRoom-Hr2</title>
+<description>20260406_Mon_WarRoom-Hr2</description>
+<pubDate>Mon, 06 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260406_Mon_WarRoom-Hr2.m4v" length="215524039" type="video/m4v"/>
+<guid>20260406_Mon_WarRoom-Hr2.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260406_Mon_WarRoom-Hr1</title>
+<description>20260406_Mon_WarRoom-Hr1</description>
+<pubDate>Mon, 06 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260406_Mon_WarRoom-Hr1.m4v" length="214057986" type="video/m4v"/>
+<guid>20260406_Mon_WarRoom-Hr1.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260406_Mon_Alex-Hr4</title>
+<description>20260406_Mon_Alex-Hr4</description>
+<pubDate>Mon, 06 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260406_Mon_Alex-Hr4.m4v" length="213190588" type="video/m4v"/>
+<guid>20260406_Mon_Alex-Hr4.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260406_Mon_Alex-Hr3</title>
+<description>20260406_Mon_Alex-Hr3</description>
+<pubDate>Mon, 06 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260406_Mon_Alex-Hr3.m4v" length="212841241" type="video/m4v"/>
+<guid>20260406_Mon_Alex-Hr3.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260406_Mon_Alex-Hr2</title>
+<description>20260406_Mon_Alex-Hr2</description>
+<pubDate>Mon, 06 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260406_Mon_Alex-Hr2.m4v" length="215271833" type="video/m4v"/>
+<guid>20260406_Mon_Alex-Hr2.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260406_Mon_Alex-Hr1</title>
+<description>20260406_Mon_Alex-Hr1</description>
+<pubDate>Mon, 06 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260406_Mon_Alex-Hr1.m4v" length="212252279" type="video/m4v"/>
+<guid>20260406_Mon_Alex-Hr1.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260406_Mon_AmericanJournal-Hr3</title>
+<description>20260406_Mon_AmericanJournal-Hr3</description>
+<pubDate>Mon, 06 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260406_Mon_AmericanJournal-Hr3.m4v" length="212698896" type="video/m4v"/>
+<guid>20260406_Mon_AmericanJournal-Hr3.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260406_Mon_AmericanJournal-Hr2</title>
+<description>20260406_Mon_AmericanJournal-Hr2</description>
+<pubDate>Mon, 06 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260406_Mon_AmericanJournal-Hr2.m4v" length="212778668" type="video/m4v"/>
+<guid>20260406_Mon_AmericanJournal-Hr2.m4v</guid>
+</item>
+<item>
+<title>VIDEO - 20260406_Mon_AmericanJournal-Hr1</title>
+<description>20260406_Mon_AmericanJournal-Hr1</description>
+<pubDate>Mon, 06 Apr 2026 22:00:00 -0000</pubDate>
+<enclosure url="https://ajn.archives.pub/hourly-m4v/20260406_Mon_AmericanJournal-Hr1.m4v" length="213622422" type="video/m4v"/>
+<guid>20260406_Mon_AmericanJournal-Hr1.m4v</guid>
+</item>
+<itunes:explicit>no</itunes:explicit>
+</channel>
+</rss>

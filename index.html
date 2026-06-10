@@ -2,29 +2,671 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>AJN Archive Player</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>AJN Archive Player · Sirius Edition · Full Archive + Weekends</title>
+    <meta name="description" content="AJN Hourly Video Archive - Full feed with weekend shows and robust CORS proxy handling">
+    <meta name="theme-color" content="#0a0f1c">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background: #0a0f1c; }
+        .player-container { background: #000; border-radius: 1.2rem; overflow: hidden; position: relative; }
+        .segment-item { transition: all 0.2s ease; cursor: pointer; }
+        .segment-item:hover { background: #1e293b; transform: translateX(4px); }
+        .segment-active { background: #0f2b3d; border-left: 3px solid #3b82f6; }
+        .playlist-scroll { max-height: 400px; overflow-y: auto; scrollbar-width: thin; }
+        .playlist-scroll::-webkit-scrollbar { width: 5px; }
+        .playlist-scroll::-webkit-scrollbar-track { background: #1e293b; }
+        .playlist-scroll::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 10px; }
+        .update-toast {
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+            background: #1e293b; border: 1px solid #3b82f6; border-radius: 50px;
+            padding: 12px 24px; display: flex; gap: 16px; align-items: center;
+            z-index: 9999; backdrop-filter: blur(10px); animation: slideUp 0.3s ease;
+        }
+        @keyframes slideUp { from { opacity: 0; transform: translateX(-50%) translateY(20px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
+        .flatpickr-calendar { background: #1e293b !important; border-color: #334155 !important; }
+        .flatpickr-day { color: #cbd5e1 !important; }
+        .flatpickr-day.selected { background: #3b82f6 !important; }
+        .flatpickr-day.today { border-color: #10b981 !important; }
+        button:disabled { opacity: 0.5; cursor: not-allowed; }
+        
+        .music-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(10, 15, 28, 0.94);
+            backdrop-filter: blur(12px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            z-index: 20;
+            transition: opacity 0.6s ease;
+        }
+        .music-overlay-content {
+            text-align: center;
+            padding: 2rem;
+            background: rgba(30, 41, 59, 0.75);
+            border-radius: 2rem;
+            border: 1px solid #3b82f6;
+            max-width: 85%;
+            box-shadow: 0 20px 35px -12px rgba(0,0,0,0.5);
+        }
+        .vinyl-spinner {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #1e293b, #0f172a);
+            box-shadow: 0 0 0 4px #334155, 0 0 0 8px #1e293b;
+            margin: 0 auto 20px auto;
+            animation: spin 2s linear infinite;
+            position: relative;
+        }
+        .vinyl-spinner::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 12px;
+            height: 12px;
+            background: #3b82f6;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .pulse-wave {
+            display: flex;
+            gap: 6px;
+            justify-content: center;
+            margin-top: 16px;
+        }
+        .pulse-wave span {
+            width: 4px;
+            height: 20px;
+            background: #3b82f6;
+            border-radius: 2px;
+            animation: wave 0.8s ease-in-out infinite;
+        }
+        .pulse-wave span:nth-child(2) { animation-delay: 0.1s; height: 30px; }
+        .pulse-wave span:nth-child(3) { animation-delay: 0.2s; height: 25px; }
+        .pulse-wave span:nth-child(4) { animation-delay: 0.3s; height: 35px; }
+        .pulse-wave span:nth-child(5) { animation-delay: 0.4s; height: 20px; }
+        @keyframes wave { 0%, 100% { transform: scaleY(0.5); } 50% { transform: scaleY(1); } }
+        .overlay-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #e2e8f0;
+            margin: 16px 0 8px;
+        }
+        .overlay-sub {
+            font-size: 0.75rem;
+            color: #94a3b8;
+            margin-bottom: 20px;
+        }
+        .stop-music-btn, .init-audio-btn, .retry-fetch-btn {
+            border: none;
+            border-radius: 40px;
+            padding: 10px 24px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin: 4px;
+        }
+        .stop-music-btn { background: #ef4444; color: white; }
+        .stop-music-btn:hover { background: #dc2626; transform: scale(1.02); }
+        .init-audio-btn { background: #10b981; color: white; }
+        .init-audio-btn:hover { background: #059669; transform: scale(1.02); }
+        .retry-fetch-btn { background: #f59e0b; color: #0f172a; }
+        .retry-fetch-btn:hover { background: #d97706; transform: scale(1.02); }
+        .system-ready-btn {
+            background: #22c55e;
+            box-shadow: 0 0 15px rgba(34,197,94,0.5);
+            animation: pulse-green 1.2s infinite;
+        }
+        @keyframes pulse-green { 0%, 100% { box-shadow: 0 0 5px #22c55e; } 50% { box-shadow: 0 0 20px #22c55e; } }
+        .hidden-overlay { opacity: 0; pointer-events: none; }
+        .hidden { display: none !important; }
+        
+        .audio-pill {
+            position: fixed;
+            bottom: 16px;
+            right: 16px;
+            z-index: 10000;
+            background: rgba(30, 41, 59, 0.95);
+            backdrop-filter: blur(8px);
+            border-radius: 40px;
+            padding: 6px 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border: 1px solid #3b82f6;
+            font-size: 11px;
+        }
+        .audio-pill button {
+            background: #ef4444;
+            border: none;
+            border-radius: 30px;
+            padding: 3px 12px;
+            color: white;
+            font-size: 10px;
+            cursor: pointer;
+        }
+        .fade-out { opacity: 0; pointer-events: none; transition: opacity 0.6s ease; }
+        .proxy-status {
+            font-size: 9px;
+            color: #94a3b8;
+            margin-top: 8px;
+            word-break: break-word;
+        }
+        .date-input {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 9999px;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            color: #e2e8f0;
+            cursor: pointer;
+            width: 140px;
+            text-align: center;
+        }
+        .date-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+        }
+    </style>
 </head>
-<body class="bg-slate-900 text-white p-5">
-    <h1 class="text-2xl font-bold">AJN Archive Player</h1>
-    <div id="feed-status" class="mt-4 p-2 bg-slate-800 rounded">Initializing...</div>
-    <div id="playlist-container" class="mt-4"></div>
+<body class="font-sans antialiased text-gray-200">
+
+    <div id="audioPill" class="audio-pill" style="display: none;">
+        <span class="status-text">🎵 Sirius</span>
+        <button id="pillStopBtn">Stop</button>
+    </div>
+
+    <div id="update-toast" style="display: none;" class="update-toast">
+        <span>🔄 New dates available!</span>
+        <button id="refresh-cache-btn" class="bg-blue-600 px-4 py-1 rounded-full text-sm">Refresh</button>
+    </div>
+
+    <main id="main-content">
+        <div class="max-w-7xl mx-auto px-4 py-5 md:py-7">
+            <header class="flex flex-col md:flex-row justify-between items-center gap-4 border-b border-slate-800 pb-5 mb-6">
+                <div>
+                    <h1 class="text-3xl font-extrabold bg-gradient-to-r from-emerald-400 to-blue-500 bg-clip-text text-transparent">AJN Archive Player · Full Archive</h1>
+                    <p class="text-sm text-slate-400">Alex Jones + WarRoom + Sunday Night Live · RSS XML + Worker Proxy</p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <input type="text" id="datePickerInput" class="date-input" placeholder="Pick a date" readonly>
+                    <div class="text-xs bg-slate-800 px-3 py-1.5 rounded-full">
+                        <span id="feed-status">Initializing...</span>
+                    </div>
+                </div>
+            </header>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div class="lg:col-span-2">
+                    <div class="player-container bg-slate-900 border border-slate-700 rounded-2xl overflow-hidden relative">
+                        <div class="bg-black aspect-video relative">
+                            <video id="main-video" controls class="w-full h-full object-contain" poster="https://placehold.co/1280x720/0f172a/3b82f6?text=AJN+Archive"></video>
+                            
+                            <div id="musicOverlay" class="music-overlay" style="display: none;">
+                                <div class="music-overlay-content">
+                                    <div class="vinyl-spinner"></div>
+                                    <div class="pulse-wave">
+                                        <span></span><span></span><span></span><span></span><span></span>
+                                    </div>
+                                    <div class="overlay-title">🎵 The Alan Parsons Project · Sirius</div>
+                                    <div class="overlay-sub" id="overlayStatusMsg">Loading AJN full archive — please wait</div>
+                                    <div class="flex flex-col gap-2 max-w-xs mx-auto">
+                                        <button id="startAudioBtn" class="init-audio-btn hidden">🔊 Initialize Audio Stream</button>
+                                        <button id="stopMusicAndPlayBtn" class="stop-music-btn">⏹ Stop Music & Play Video</button>
+                                        <button id="manualRetryBtn" class="retry-fetch-btn hidden">🔄 Retry Archive Fetch</button>
+                                    </div>
+                                    <div id="proxyStatusMsg" class="proxy-status"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-4 bg-slate-800/80 border-t border-slate-700">
+                            <div class="flex flex-wrap justify-between items-center gap-3">
+                                <div class="flex-1 min-w-0">
+                                    <h2 id="current-title" class="text-white font-bold text-lg truncate">Select a date to begin</h2>
+                                    <div class="flex items-center gap-3 mt-1">
+                                        <span id="position-badge" class="text-[10px] bg-slate-700 px-2 py-0.5 rounded-full">0 / 0</span>
+                                    </div>
+                                </div>
+                                <div class="flex gap-2">
+                                    <button id="prev-segment-btn" class="bg-slate-700 hover:bg-slate-600 px-3 py-1.5 rounded-full text-sm transition">◀ Prev</button>
+                                    <button id="next-segment-btn" class="bg-blue-700 hover:bg-blue-600 px-3 py-1.5 rounded-full text-sm transition">Next ▶</button>
+                                </div>
+                            </div>
+                            <div class="mt-3 w-full bg-slate-700 rounded-full h-1.5 overflow-hidden">
+                                <div id="progress-bar" class="bg-blue-500 h-full w-0 transition-all duration-300"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden flex flex-col h-[560px]">
+                    <div class="bg-slate-950 px-4 py-3 border-b border-slate-800 flex justify-between">
+                        <h3 class="font-bold text-white text-sm">📋 Playlist · Weekends Included</h3>
+                        <span id="segment-count" class="text-[11px] text-slate-400">0 items</span>
+                    </div>
+                    <div id="playlist-container" class="playlist-scroll p-2 space-y-2 flex-1">
+                        <div class="text-center text-slate-500 text-sm py-10 italic">Loading episodes from RSS feed...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
 
     <script>
-        // REPLACE THIS URL WITH YOUR ACTUAL WORKER URL
-        const WORKER_URL = 'https://muddy-unit-f498.banamine.workers.dev/';
+        // ========== ALL STATE VARIABLES ==========
+        let allEpisodes = [];          // raw episodes from RSS
+        let episodesByDate = {};       // grouped by YYYY-MM-DD
+        let availableDates = [];
+        let currentFilterDate = null;
+        let currentPlaylist = [];
+        let currentIndex = 0;
+        let flatpickrInstance = null;
         
-        async function init() {
+        // Audio / UI elements
+        let audioElement = null;
+        let loadingStarted = false;
+        let backgroundFetchComplete = false;
+        let fetchInProgress = false;
+        
+        const musicOverlay = document.getElementById('musicOverlay');
+        const overlayStatusMsg = document.getElementById('overlayStatusMsg');
+        const stopMusicAndPlayBtn = document.getElementById('stopMusicAndPlayBtn');
+        const startAudioBtn = document.getElementById('startAudioBtn');
+        const manualRetryBtn = document.getElementById('manualRetryBtn');
+        const audioPill = document.getElementById('audioPill');
+        const pillStopBtn = document.getElementById('pillStopBtn');
+        const videoPlayer = document.getElementById('main-video');
+        const proxyStatusSpan = document.getElementById('proxyStatusMsg');
+        const currentTitleSpan = document.getElementById('current-title');
+        const positionBadge = document.getElementById('position-badge');
+        const progressFill = document.getElementById('progress-bar');
+        const feedStatusSpan = document.getElementById('feed-status');
+        const segmentCountSpan = document.getElementById('segment-count');
+        const playlistContainer = document.getElementById('playlist-container');
+        const datePickerInput = document.getElementById('datePickerInput');
+        
+        // ========== UTILITIES ==========
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str.replace(/[&<>]/g, function(m) {
+                if (m === '&') return '&amp;';
+                if (m === '<') return '&lt;';
+                if (m === '>') return '&gt;';
+                return m;
+            });
+        }
+        
+        function formatDateKey(date) {
+            return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;
+        }
+        
+        function formatDisplayDate(dateStr) { // expects YYYY-MM-DD
+            const parts = dateStr.split('-');
+            return `${parts[1]}/${parts[2]}/${parts[0]}`;
+        }
+        
+        // Parse show/hour from title (e.g., "Alex Jones Show Hr1")
+        function parseShowAndHour(title) {
+            let show = 'Unknown';
+            let hour = '';
+            const lower = title.toLowerCase();
+            if (lower.includes('war room')) show = 'War Room';
+            else if (lower.includes('sunday night live') || lower.includes('snl')) show = 'Sunday Night Live';
+            else if (lower.includes('alex jones')) show = 'Alex Jones';
+            
+            const hourMatch = title.match(/Hr(\d)/i);
+            if (hourMatch) hour = `Hr${hourMatch[1]}`;
+            return { show, hour };
+        }
+        
+        // ========== SIRIUS AUDIO (unchanged, working) ==========
+        const SIRIUS_PRIMARY = 'https://raw.githubusercontent.com/banamine/AJN-Resource-Hub/main/The%20Alan%20Parsons%20Project%20-%20Sirius%20(Official%20Audio).mp3';
+        const SIRIUS_FALLBACK = 'https://archive.org/download/a-132-5_20260424/1.%20The%20Alan%20Parsons%20Project%20-%20Sirius%20%28Official%20Audio%29.mp4';
+        const SEEK_TO_SECONDS = 25;
+        
+        function initSiriusAudio() {
+            if (audioElement) return;
+            audioElement = new Audio();
+            audioElement.loop = true;
+            audioElement.volume = 0.28;
+            const loadAudio = (url) => {
+                audioElement.src = url;
+                audioElement.load();
+                audioElement.addEventListener('canplay', () => {
+                    if (audioElement.duration > SEEK_TO_SECONDS) audioElement.currentTime = SEEK_TO_SECONDS;
+                }, { once: true });
+            };
+            loadAudio(SIRIUS_PRIMARY);
+            audioElement.addEventListener('error', () => {
+                if (currentAudioSource === 0) {
+                    currentAudioSource = 1;
+                    loadAudio(SIRIUS_FALLBACK);
+                } else {
+                    if (overlayStatusMsg) overlayStatusMsg.textContent = 'Loading archive (audio unavailable)';
+                }
+            });
+        }
+        let currentAudioSource = 0;
+        
+        async function startSiriusAndOverlay() {
+            if (!audioElement) initSiriusAudio();
+            if (musicOverlay) {
+                musicOverlay.style.display = 'flex';
+                setTimeout(() => musicOverlay.classList.remove('hidden-overlay'), 10);
+            }
+            if (audioPill) audioPill.style.display = 'flex';
             try {
-                const response = await fetch(WORKER_URL);
-                const html = await response.text();
-                document.getElementById('feed-status').innerText = '✅ Archive Loaded';
-                console.log('Archive data received successfully');
-            } catch (e) {
-                document.getElementById('feed-status').innerText = '⚠️ Error: ' + e.message;
+                await audioElement.play();
+                if (audioElement.currentTime < SEEK_TO_SECONDS && audioElement.duration > SEEK_TO_SECONDS) {
+                    audioElement.currentTime = SEEK_TO_SECONDS;
+                }
+                startAudioBtn.classList.add('hidden');
+                if (overlayStatusMsg) overlayStatusMsg.textContent = '🎙️ Streaming AJN Matrix Interlude...';
+            } catch (autoplayError) {
+                if (overlayStatusMsg) overlayStatusMsg.textContent = '🔇 Browser blocked autoplay — click below to activate audio.';
+                startAudioBtn.classList.remove('hidden');
             }
         }
-        init();
+        
+        function stopMusicAndPlayVideo() {
+            if (audioElement) {
+                audioElement.pause();
+                audioElement.currentTime = 0;
+            }
+            if (musicOverlay) {
+                musicOverlay.classList.add('hidden-overlay');
+                setTimeout(() => { if(musicOverlay) musicOverlay.style.display = 'none'; }, 600);
+            }
+            if (audioPill) {
+                audioPill.classList.add('fade-out');
+                setTimeout(() => { if(audioPill) audioPill.style.display = 'none'; }, 600);
+            }
+            if (currentPlaylist.length && currentIndex !== undefined) {
+                loadVideoByIndex(currentIndex);
+            } else if (backgroundFetchComplete && currentPlaylist.length) {
+                loadVideoByIndex(0);
+            }
+        }
+        
+        startAudioBtn?.addEventListener('click', async () => {
+            if (audioElement) {
+                try {
+                    await audioElement.play();
+                    if (audioElement.duration > SEEK_TO_SECONDS) audioElement.currentTime = SEEK_TO_SECONDS;
+                    startAudioBtn.classList.add('hidden');
+                    if (overlayStatusMsg) overlayStatusMsg.textContent = '🎙️ Streaming AJN Matrix Interlude...';
+                } catch(e) {}
+            }
+        });
+        stopMusicAndPlayBtn?.addEventListener('click', stopMusicAndPlayVideo);
+        pillStopBtn?.addEventListener('click', stopMusicAndPlayVideo);
+        
+        // ========== FETCH RSS XML VIA WORKER PROXY ==========
+        const WORKER_PROXY = 'https://muddy-unit-f498.banamine.workers.dev/?url=';
+        const RSS_FEED_URL = 'https://rss.alexjones.media/AJNHourlyVideo.xml';
+        
+        async function fetchRSSFeed() {
+            feedStatusSpan.innerHTML = '📡 Fetching RSS feed via Cloudflare Worker...';
+            updateProxyStatus('Connecting to worker proxy...');
+            try {
+                const response = await fetch(WORKER_PROXY + encodeURIComponent(RSS_FEED_URL));
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                const xmlText = await response.text();
+                const parser = new DOMParser();
+                const xmlDoc = parser.parseFromString(xmlText, 'application/xml');
+                const parseError = xmlDoc.querySelector('parsererror');
+                if (parseError) throw new Error('Invalid XML');
+                return xmlDoc;
+            } catch (err) {
+                updateProxyStatus(`Worker fetch failed: ${err.message}`);
+                throw err;
+            }
+        }
+        
+        function parseEpisodesFromXML(xmlDoc) {
+            const items = xmlDoc.querySelectorAll('item');
+            const episodes = [];
+            items.forEach(item => {
+                const title = item.querySelector('title')?.textContent?.trim() || '';
+                const enclosure = item.querySelector('enclosure');
+                const videoUrl = enclosure?.getAttribute('url') || '';
+                const pubDateStr = item.querySelector('pubDate')?.textContent;
+                if (!videoUrl || !videoUrl.includes('.m4v')) return;
+                
+                let pubDate = pubDateStr ? new Date(pubDateStr) : new Date(0);
+                const dateKey = formatDateKey(pubDate);
+                const { show, hour } = parseShowAndHour(title);
+                
+                episodes.push({
+                    id: videoUrl.split('/').pop() + '_' + dateKey,
+                    title,
+                    videoUrl,
+                    pubDate,
+                    dateKey,
+                    formattedDate: dateKey,
+                    show,
+                    hour
+                });
+            });
+            // sort descending (newest first)
+            episodes.sort((a,b) => b.pubDate - a.pubDate);
+            return episodes;
+        }
+        
+        function groupEpisodesByDate(episodes) {
+            const groups = {};
+            episodes.forEach(ep => {
+                if (!groups[ep.dateKey]) groups[ep.dateKey] = [];
+                groups[ep.dateKey].push(ep);
+            });
+            return groups;
+        }
+        
+        // ========== RENDER PLAYLIST (simple DOM) ==========
+        function renderPlaylist() {
+            if (!playlistContainer) return;
+            if (!currentPlaylist.length) {
+                playlistContainer.innerHTML = '<div class="text-center text-slate-500 text-sm py-10">No episodes for selected date</div>';
+                segmentCountSpan.innerText = '0 items';
+                return;
+            }
+            
+            const fragment = document.createDocumentFragment();
+            for (let idx = 0; idx < currentPlaylist.length; idx++) {
+                const ep = currentPlaylist[idx];
+                const isActive = (idx === currentIndex);
+                const showType = ep.show;
+                
+                const div = document.createElement('div');
+                div.className = `segment-item p-3 rounded-xl border-l-4 ${isActive ? 'segment-active border-blue-500 bg-slate-800/60' : 'border-transparent bg-slate-800/30 hover:bg-slate-800/70'}`;
+                div.setAttribute('data-index', idx);
+                
+                const flexDiv = document.createElement('div');
+                flexDiv.className = 'flex justify-between items-center gap-2';
+                const leftDiv = document.createElement('div');
+                leftDiv.className = 'flex-1 min-w-0';
+                const topRow = document.createElement('div');
+                topRow.className = 'flex items-center gap-2 flex-wrap';
+                const showSpan = document.createElement('span');
+                showSpan.className = `text-xs font-semibold ${ep.show === 'War Room' ? 'text-purple-400' : (ep.show === 'Sunday Night Live' ? 'text-amber-400' : 'text-blue-400')}`;
+                showSpan.textContent = escapeHtml(ep.show);
+                topRow.appendChild(showSpan);
+                if (ep.hour) {
+                    const hourSpan = document.createElement('span');
+                    hourSpan.className = 'text-xs font-mono text-slate-300';
+                    hourSpan.textContent = escapeHtml(ep.hour);
+                    topRow.appendChild(hourSpan);
+                }
+                const dateSpan = document.createElement('span');
+                dateSpan.className = 'text-[10px] bg-slate-700 px-1.5 py-0.5 rounded-full';
+                dateSpan.textContent = formatDisplayDate(ep.dateKey);
+                topRow.appendChild(dateSpan);
+                leftDiv.appendChild(topRow);
+                const titleP = document.createElement('p');
+                titleP.className = 'text-sm font-medium text-white truncate mt-1';
+                titleP.textContent = escapeHtml(ep.title.substring(0, 70));
+                leftDiv.appendChild(titleP);
+                flexDiv.appendChild(leftDiv);
+                const indicatorSpan = document.createElement('span');
+                indicatorSpan.className = isActive ? 'text-green-400 text-xs' : 'text-slate-500 text-xs';
+                indicatorSpan.textContent = isActive ? '▶' : '●';
+                flexDiv.appendChild(indicatorSpan);
+                div.appendChild(flexDiv);
+                div.addEventListener('click', () => {
+                    currentIndex = idx;
+                    loadVideoByIndex(currentIndex);
+                    renderPlaylist();
+                });
+                fragment.appendChild(div);
+            }
+            playlistContainer.innerHTML = '';
+            playlistContainer.appendChild(fragment);
+            segmentCountSpan.innerText = `${currentPlaylist.length} videos`;
+            
+            // scroll active into view
+            const activeEl = playlistContainer.querySelector('.segment-active');
+            if (activeEl) activeEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+        
+        function loadVideoByIndex(index) {
+            if (!currentPlaylist[index]) return;
+            const ep = currentPlaylist[index];
+            videoPlayer.pause();
+            videoPlayer.src = ep.videoUrl;
+            videoPlayer.load();
+            videoPlayer.play().catch(e => console.log('Playback error:', e));
+            currentTitleSpan.textContent = escapeHtml(ep.title);
+            positionBadge.innerText = `${index + 1} / ${currentPlaylist.length}`;
+            progressFill.style.width = '0%';
+            if (loadingStarted) {
+                if (audioElement && !audioElement.paused) stopMusicAndPlayVideo();
+                loadingStarted = false;
+            }
+        }
+        
+        function applyDateFilter(dateKey) {
+            if (!dateKey || !episodesByDate[dateKey]) {
+                currentPlaylist = [];
+            } else {
+                currentPlaylist = episodesByDate[dateKey];
+            }
+            currentIndex = 0;
+            renderPlaylist();
+            if (currentPlaylist.length) loadVideoByIndex(0);
+        }
+        
+        // ========== MAIN INITIALIZATION ==========
+        async function loadAndInitialize(manualRetry = false) {
+            if (fetchInProgress) return;
+            fetchInProgress = true;
+            if (manualRetry) {
+                feedStatusSpan.innerHTML = '🔄 Manual retry...';
+                overlayStatusMsg.textContent = 'Retrying RSS fetch via Worker...';
+                manualRetryBtn.classList.add('hidden');
+            }
+            try {
+                const xmlDoc = await fetchRSSFeed();
+                const episodes = parseEpisodesFromXML(xmlDoc);
+                if (!episodes.length) throw new Error('No episodes found in RSS feed');
+                allEpisodes = episodes;
+                episodesByDate = groupEpisodesByDate(episodes);
+                availableDates = Object.keys(episodesByDate).sort().reverse();
+                backgroundFetchComplete = true;
+                feedStatusSpan.innerHTML = `✅ ${availableDates.length} dates (RSS XML)`;
+                updateProxyStatus('Feed loaded via Worker proxy');
+                
+                // initialize flatpickr with available dates
+                if (flatpickrInstance) flatpickrInstance.destroy();
+                flatpickrInstance = flatpickr(datePickerInput, {
+                    dateFormat: "Y-m-d",
+                    onChange: (dates) => {
+                        if (dates.length) {
+                            const ymd = formatDateKey(dates[0]);
+                            if (episodesByDate[ymd]) {
+                                currentFilterDate = ymd;
+                                applyDateFilter(ymd);
+                            }
+                        }
+                    }
+                });
+                const dateObjects = availableDates.map(d => new Date(d));
+                flatpickrInstance.set('enable', dateObjects);
+                
+                // load most recent date
+                const newest = availableDates[0];
+                if (newest) {
+                    datePickerInput.value = newest;
+                    currentFilterDate = newest;
+                    applyDateFilter(newest);
+                }
+                
+                if (musicOverlay && musicOverlay.style.display === 'flex') {
+                    const stopBtn = document.getElementById('stopMusicAndPlayBtn');
+                    if (stopBtn && !stopBtn.classList.contains('system-ready-btn')) {
+                        stopBtn.textContent = '⚡ System Ready — Play Video';
+                        stopBtn.classList.add('system-ready-btn');
+                        overlayStatusMsg.textContent = 'Full archive loaded. Click to start video.';
+                    }
+                }
+            } catch (err) {
+                console.error(err);
+                feedStatusSpan.innerHTML = '⚠️ RSS fetch failed';
+                updateProxyStatus(`Error: ${err.message}`);
+                if (manualRetryBtn) manualRetryBtn.classList.remove('hidden');
+                overlayStatusMsg.textContent = 'Archive fetch failed. Click "Retry Archive Fetch" to try again.';
+            } finally {
+                fetchInProgress = false;
+            }
+        }
+        
+        function updateProxyStatus(msg) {
+            if (proxyStatusSpan) proxyStatusSpan.textContent = msg ? msg.substring(0, 100) : '';
+        }
+        
+        // event listeners for buttons
+        document.getElementById('prev-segment-btn')?.addEventListener('click', () => {
+            if (currentIndex > 0) {
+                currentIndex--;
+                loadVideoByIndex(currentIndex);
+                renderPlaylist();
+            }
+        });
+        document.getElementById('next-segment-btn')?.addEventListener('click', () => {
+            if (currentIndex + 1 < currentPlaylist.length) {
+                currentIndex++;
+                loadVideoByIndex(currentIndex);
+                renderPlaylist();
+            }
+        });
+        document.getElementById('refresh-cache-btn')?.addEventListener('click', () => window.location.reload());
+        manualRetryBtn?.addEventListener('click', () => loadAndInitialize(true));
+        
+        videoPlayer.addEventListener('timeupdate', () => {
+            if (videoPlayer.duration) progressFill.style.width = `${(videoPlayer.currentTime / videoPlayer.duration) * 100}%`;
+        });
+        videoPlayer.addEventListener('ended', () => {
+            if (currentIndex + 1 < currentPlaylist.length) {
+                currentIndex++;
+                loadVideoByIndex(currentIndex);
+                renderPlaylist();
+            }
+        });
+        
+        // start everything
+        initSiriusAudio();
+        startSiriusAndOverlay();
+        loadingStarted = true;
+        loadAndInitialize(false);
     </script>
 </body>
 </html>

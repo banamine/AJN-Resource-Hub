@@ -1,3 +1,9 @@
+name: Deploy Worker
+on:
+  push:
+    branches: ["cloudflare/workers-autoconfig"]
+  workflow_dispatch:
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -7,5 +13,6 @@ jobs:
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          # Ensure your wrangler.json or wrangler.toml is in the root
         env:
-          FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true # Add this line
+          FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
